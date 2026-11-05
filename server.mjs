@@ -1,3 +1,4 @@
+import { sendStaticFile } from './server/static-files.mjs';
 import { createServer } from 'node:http';
 import { ImageCaptcha } from './server/image-captcha.mjs';
 import { mergeChat } from './src/lib/chatSyncMerge.js';
@@ -303,7 +304,7 @@ createServer(async(req,res)=>{
   const relative=normalize(pathname==='/'?'index.html':pathname.slice(1));
   if(relative.startsWith('..')||relative.startsWith('.')){res.writeHead(403).end('Forbidden');return;}
   if(relative.startsWith('server')||relative.startsWith('tests')||relative.startsWith('auth-store')||relative.startsWith('package')){res.writeHead(404).end('Not found');return;}
-  try{const body=await readFile(join(root,relative));res.writeHead(200,{'Content-Type':types[extname(relative)]||'application/octet-stream','Cache-Control':'no-store'});res.end(req.method==='HEAD'?undefined:body);}
+  try{await sendStaticFile(req,res,join(root,relative),types[extname(relative)]||'application/octet-stream');}
   catch{res.writeHead(404,{'Content-Type':'text/plain; charset=utf-8'}).end('Not found');}
 }).listen(port,process.env.HOST||'0.0.0.0',()=>{
   console.log(`VitaBalance is running on port ${port}`);

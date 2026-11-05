@@ -1,3 +1,4 @@
+import {timeoutSignal} from './browserSignals.js';
 import {mergeAccountState} from './accountMerge.js';
 import { ref } from 'vue';
 import { mergeChat, stampChat } from './chatSyncMerge.js';
@@ -15,7 +16,7 @@ async function syncChat(){
  const identity=actor,key=scopedKey(CHAT_KEY),before=globalThis.localStorage.getItem(key);
  chatBusy=true;chatSyncStatus.value='syncing';
  try{
-  const response=await fetch('/api/chat',{method:before?'PUT':'GET',cache:'no-store',signal:AbortSignal.timeout(15000),headers:{'Content-Type':'application/json'},...(before?{body:JSON.stringify({...parseChat(before),expectedUserId:identity})}:{})});
+  const response=await fetch('/api/chat',{method:before?'PUT':'GET',cache:'no-store',signal:timeoutSignal(15000),headers:{'Content-Type':'application/json'},...(before?{body:JSON.stringify({...parseChat(before),expectedUserId:identity})}:{})});
   const result=await response.json();if(!response.ok)throw Error(result.error);
   if(chatStopped||actor!==identity||result.userId!==identity)return;
   const current=globalThis.localStorage.getItem(key),state=mergeChat(result.state,parseChat(current)),serialized=JSON.stringify(state);
@@ -43,7 +44,7 @@ export function ownsStorageKey(key, identity = actor) {
 const pendingKey = () => scopedKey('__account_sync_pending.v1');
 
 async function requestAccountData(method = 'GET', localState, baseLocalState) {
-  const options = { method, cache: 'no-store', signal:AbortSignal.timeout(15000), headers: { 'Content-Type': 'application/json' } };
+  const options = { method, cache: 'no-store', signal:timeoutSignal(15000), headers: { 'Content-Type': 'application/json' } };
   if (method === 'PUT') options.body = JSON.stringify({ localState, baseLocalState, expectedUserId:actor==='guest'?undefined:actor });
   const response = await fetch('/api/data', options);
   const payload = await response.json().catch(() => ({}));
@@ -135,13 +136,13 @@ async function hydrateSignedInWorkspace(userId) {
 
 export async function initializeStorageScope() {
   try {
-    const response = await fetch('/api/auth/me', { cache: 'no-store', signal: AbortSignal.timeout(8000) });
+    const response = await fetch('/api/auth/me', { cache: 'no-store', signal: timeoutSignal(20000) });
     if (!response.ok) throw Error('identity');
     const me = await response.json();
     accountUser.value = me.authenticated && typeof me.user?.id === 'string' ? me.user : null;
     actor = accountUser.value?.id || 'guest';
     accountSyncStatus.value = actor === 'guest' ? 'guest' : 'syncing';
-    if (actor !== 'guest') { try{await hydrateSignedInWorkspace(actor);}catch{accountSyncStatus.value='error';} await syncChat(); }
+    if (actor !== 'guest') { try{await hydrateSignedInWorkspace(actor);}catch{accountSyncStatus.value='error';} void syncChat(); }
   } catch {
     throw new Error('无法确认当前使用空间，暂停读取本地数据。');
   }
@@ -153,7 +154,7 @@ export async function initializeStorageScope() {
     if (checking || document.hidden) return;
     checking = true;
     try {
-      const response = await fetch('/api/auth/me', { cache: 'no-store', signal: AbortSignal.timeout(4000) });
+      const response = await fetch('/api/auth/me', { cache: 'no-store', signal: timeoutSignal(4000) });
       if (!response.ok) return;
       const me = await response.json();
       const next = me.authenticated && typeof me.user?.id === 'string' ? me.user.id : 'guest';

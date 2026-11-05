@@ -3,8 +3,30 @@ import { initializeStorageScope } from './lib/storageScope.js';
 import './styles/content.css';
 import './styles/campus.css';
 
-async function boot(){
- try{await initializeStorageScope();const {default:App}=await import('./App.vue');createApp(App).mount('#app');}
- catch{const root=document.querySelector('#app');if(root){const message=document.createElement('p');message.textContent='暂时无法确认当前使用空间，已暂停读取本地档案。请确认本地服务已启动，然后刷新重试。';const retry=document.createElement('button');retry.textContent='刷新重试';retry.onclick=()=>location.reload();root.append(message,retry);}}
+const root = document.querySelector('#app');
+function showStartup(message, retry = false) {
+  if (!root) return;
+  root.replaceChildren();
+  const panel = document.createElement('section');
+  panel.className = 'vb-startup';
+  panel.setAttribute('role', retry ? 'alert' : 'status');
+  const title = document.createElement('h1'); title.textContent = '维衡 AI';
+  const text = document.createElement('p'); text.textContent = message;
+  panel.append(title, text);
+  if (retry) {
+    const button = document.createElement('button'); button.textContent = '重新打开';
+    button.onclick = () => location.reload(); panel.append(button);
+  }
+  root.append(panel);
 }
-boot();
+async function boot() {
+  showStartup('正在打开，请稍候…');
+  // Fetch the page code while checking identity, without reading another user's data.
+  const page = import('./App.vue');
+  void page.catch(() => {});
+  try { await initializeStorageScope(); }
+  catch { showStartup('暂时无法连接账号服务，请检查网络后重试。已有数据会保留。', true); return; }
+  try { const {default: App} = await page; createApp(App).mount('#app'); }
+  catch { showStartup('页面加载未完成，请检查网络后重新打开。已有数据会保留。', true); }
+}
+void boot();

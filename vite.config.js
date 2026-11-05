@@ -20,6 +20,6 @@ export default defineConfig(({ command }) => ({
     outDir: 'content-dist',
     emptyOutDir: true,
     lib: { entry: 'src/main.js', formats: ['es'], fileName: 'vitabalance', cssFileName: 'vitabalance' },
-    rollupOptions: { output: { chunkFileNames: 'chunks/[name]-[hash].js' } }
+    rollupOptions: { output: { chunkFileNames: 'chunks/[name]-[hash].js', manualChunks(id) { if (id.includes('/node_modules/@vue/') || id.includes('/node_modules/vue/')) return 'vue-runtime'; } } }
   }
 }));
