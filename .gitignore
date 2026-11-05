@@ -4,3 +4,4 @@
 node_modules/
 data/
 *.log
+content-dist/.local-source.json

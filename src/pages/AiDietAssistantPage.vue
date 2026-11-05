@@ -502,10 +502,10 @@ function clearLocalHistory(): void {
 </script>
 
 <template>
-  <section class="vb-chat-page vb-simple-chat" aria-label="AI 饮食助手对话">
+  <section class="vb-chat-page vb-simple-chat" aria-label="维衡AI助手对话">
     <header class="vb-simple-header">
       <div class="vb-simple-title">
-        <h1>AI 饮食助手</h1>
+        <h1>维衡AI助手</h1>
         <p>聊聊想法；开启记忆后，也能延续之前的对话。</p>
       </div>
       <div class="vb-simple-actions">

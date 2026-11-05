@@ -3,6 +3,7 @@ import { access, readFile, readdir, stat, writeFile } from 'node:fs/promises';
 import { join, relative } from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { createServer } from 'node:net';
 
 // npm start always uses this checkout and checks actual bytes, so copying an old
 // timestamp or editing from VS Code cannot silently start a stale frontend.
@@ -55,7 +56,26 @@ try {
   const { ALL_FOODS, FOOD_DATA_VERSION } = await import('../src/data/catalogue.js');
   console.log(`食物数据：${FOOD_DATA_VERSION}；${ALL_FOODS.length} 条；本地配图 ${ALL_FOODS.filter(food => food.image).length} 条。`);
   if (process.argv.includes('--build-only')) process.exit(0);
-  console.log('若提示端口被占用，请在原来的启动终端按 Ctrl+C，再从本项目运行 npm start。');
+  for (const name of ['.env', '.env.local']) {
+    try { process.loadEnvFile(join(root, name)); } catch { /* Optional local configuration. */ }
+  }
+  const port = Number(process.env.PORT || 4173);
+  const host = process.env.HOST || '0.0.0.0';
+  const available = await new Promise((resolve, reject) => {
+    const probe = createServer();
+    probe.once('error', error => error.code === 'EADDRINUSE' ? resolve(false) : reject(error));
+    probe.listen(port, host, () => probe.close(() => resolve(true)));
+  });
+  if (!available) {
+    let isWebsite = false;
+    try {
+      const response = await fetch(`http://127.0.0.1:${port}/`, { signal: AbortSignal.timeout(5000) });
+      isWebsite = response.ok && /<title>[^<]*(维衡|VitaBalance)/i.test(await response.text());
+    } catch { /* An occupied port need not be an HTTP service. */ }
+    if (!isWebsite) throw new Error(`端口 ${port} 已被其他服务占用，请先关闭该服务后重试。`);
+    console.log(`维衡 AI 已在运行，无需重复启动。\n网站首页：http://localhost:${port}/\n登录/注册：http://localhost:${port}/?login=1\n请刷新浏览器查看页面；修改服务端代码后，需在原启动终端按 Ctrl+C 再启动。`);
+    process.exit(0);
+  }
   await run([join(root, 'server.mjs')]);
 } catch (error) {
   console.error(`本地启动失败：${error.message}`);

@@ -1,4 +1,4 @@
-/* Content-only design tokens. No canvas, ambient layer, html or body selectors. */
+/* Content-only design tokens; the background shell and canvas are unchanged. */
 .vb-app {
   --vb-ink:#243d32; --vb-muted:#7c8e83; --vb-faint:#9aa89f;
   --vb-accent:#347a5d; --vb-accent-hover:#276247; --vb-accent-soft:rgba(214,235,218,.55);
@@ -613,3 +613,30 @@
 .vb-account-dialog{max-height:calc(100dvh - 40px);overflow:auto}.vb-field select{padding:10px;background:var(--vb-input);color:var(--vb-ink);border:1px solid var(--vb-line);border-radius:10px}
 @media(max-width:760px){.vb-sidebar{height:calc(112px + env(safe-area-inset-bottom));background:rgba(22,55,43,.9);padding-bottom:calc(6px + env(safe-area-inset-bottom))}.vb-main{padding-bottom:calc(112px + env(safe-area-inset-bottom))}.vb-sidebar nav{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr))}.vb-sidebar .vb-nav-button{min-height:44px}.vb-sidebar .vb-nav-button.is-active{box-shadow:inset 0 2px 0 #c0e6cb}.vb-intake-analysis{padding:18px}.vb-intake-analysis .vb-section-heading{flex-wrap:wrap;gap:12px}.vb-trend-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.vb-page-title h1{overflow-wrap:anywhere}.vb-page-actions{flex-wrap:wrap}.vb-account-dialog{max-height:calc(100dvh - 24px)}}
 @media(prefers-reduced-transparency:reduce){.vb-sidebar,.vb-app[data-theme="dark"] .vb-sidebar{background:#294e3e;-webkit-backdrop-filter:none;backdrop-filter:none}.vb-app[data-theme="dark"] .vb-sidebar{background:#10251b}}
+
+/* Theme changes crossfade the whole viewport in both directions. */
+.vb-theme-crossfade::view-transition-group(root){animation-duration:460ms;animation-timing-function:cubic-bezier(.22,.61,.36,1)}
+.vb-theme-crossfade::view-transition-image-pair(root){isolation:isolate}
+.vb-theme-crossfade::view-transition-old(root){animation:none;opacity:1;mix-blend-mode:normal}
+.vb-theme-crossfade::view-transition-new(root){animation:vb-theme-fade-in 460ms cubic-bezier(.22,.61,.36,1) both;mix-blend-mode:normal}
+
+@keyframes vb-theme-fade-in{from{opacity:0}to{opacity:1}}
+/* Native transitions are unavailable in older browsers: soften color changes. */
+@supports not (view-transition-name:root){
+ .vb-app,.vb-app :is(.vb-sidebar,.vb-topbar,.vb-glass,.vb-macro-card,.vb-pill,.vb-intake-grid>div,input,select,textarea){transition:background-color 460ms ease,color 460ms ease,border-color 460ms ease,box-shadow 460ms ease}
+}
+@media(prefers-reduced-motion:reduce){
+ .vb-theme-crossfade::view-transition-group(root),.vb-theme-crossfade::view-transition-old(root),.vb-theme-crossfade::view-transition-new(root){animation:none!important}
+ .vb-app,.vb-app *{transition:none!important}
+}
+
+
+/* Desktop navigation only: one liquid selection surface behind existing buttons. */
+.vb-nav-liquid{display:none;pointer-events:none}
+@media(min-width:761px){
+ .vb-sidebar nav.has-liquid-highlight{position:relative;isolation:isolate}
+ .vb-sidebar nav.has-liquid-highlight>.vb-nav-liquid{display:block;position:absolute;top:0;z-index:0;pointer-events:none;transform-origin:center top;background:rgba(188,225,201,.2);border:1px solid rgba(216,241,224,.32);box-shadow:inset 3px 0 0 #c0e6cb,inset 0 1px 0 rgba(255,255,255,.1),0 0 12px rgba(170,226,191,.09);-webkit-backdrop-filter:blur(14px) saturate(125%);backdrop-filter:blur(14px) saturate(125%)}
+ .vb-sidebar nav.has-liquid-highlight>.vb-nav-button{z-index:1}
+ .vb-sidebar nav.has-liquid-highlight>.vb-nav-button.is-active{background:transparent;border-color:transparent;box-shadow:none}
+}
+@media(prefers-reduced-transparency:reduce){.vb-sidebar nav.has-liquid-highlight>.vb-nav-liquid{background:#507761;-webkit-backdrop-filter:none;backdrop-filter:none}}

@@ -5,6 +5,19 @@ export type EntrySource = 'photo' | 'manual' | 'catalogue' | 'legacy';
 export type ReportStatus = 'pending' | 'complete' | 'failed' | 'interrupted';
 
 export type NutrientValues = Record<string, number | null | undefined>;
+export interface NutritionSnapshot {
+  schema: number;
+  foodId: string | null;
+  basisGrams: number;
+  units: Record<string,string>;
+  values: NutrientValues;
+  ranges: Record<string,{low:number;high:number}>;
+  dataType: string;
+  dataVersion: string;
+  capturedAt: string;
+  source: Partial<FoodDataSource> | null;
+  estimate: {model:string;generatedAt:string;assumption:string;recipe:string} | null;
+}
 
 export interface FoodReference {
   key: string;
@@ -33,6 +46,7 @@ export interface FoodDataSource {
 
 /** Untrusted form/storage input, normalized before it is used in calculations. */
 export interface FoodEntryInput {
+  nutritionSnapshot?: NutritionSnapshot | null;
   id?: string;
   foodId?: string | null;
   name?: string;
@@ -45,6 +59,7 @@ export interface FoodEntryInput {
 }
 
 export interface FoodEntry {
+  nutritionSnapshot?: NutritionSnapshot;
   id: string;
   foodId: string | null;
   name: string;
@@ -91,6 +106,8 @@ export interface DailyRecord {
 }
 
 export interface NutrientTotal {
+  range?: {low:number;high:number} | null;
+  estimatedCount?: number;
   value: number | null;
   known: number;
   missing: string[];

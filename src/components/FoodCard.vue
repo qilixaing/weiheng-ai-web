@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import {foodTitle,foodState} from '../lib/foodPresentation.js';
 import { MACROS,formatNutrient } from '../lib/foodNutrition.js';
 import { useFoodPhoto } from '../composables/useFoodPhoto.js';
-import storedEstimates from '../data/aiFoodEstimates.json';
+import storedEstimates from '../data/aiFoodEstimates.json' with {type:'json'};
 import AppIcon from './AppIcon.vue';
 import FoodImage from './FoodImage.vue';
 const props=defineProps({food:Object,compared:Boolean});defineEmits(['detail','compare']);

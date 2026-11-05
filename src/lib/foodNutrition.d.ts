@@ -18,6 +18,7 @@ export function portion(food: Pick<FoodReference, 'nutrients'>, grams: number): 
 export function normalizeEntries(entries: unknown): FoodEntry[];
 export function recordEntries(record: Partial<DailyRecord> | null | undefined): FoodEntry[];
 export function calculateIntake(entries: unknown): IntakeSummary;
+export function formatTotal(total: import('../types/nutrition').NutrientTotal): string;
 export function fingerprint(value: unknown): string;
 export function recordVersion(record: DailyRecord): string;
 export function analysisVersion(record: DailyRecord, profile?: NutritionProfile | null): string;

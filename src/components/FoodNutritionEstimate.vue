@@ -3,7 +3,7 @@ import {ref,watch,onBeforeUnmount} from 'vue';
 import {aiRequest} from '../lib/aiClient.js';
 import {MACROS} from '../lib/foodNutrition.js';
 import {appStorage} from '../lib/storageScope.js';
-import storedEstimates from '../data/aiFoodEstimates.json';
+import storedEstimates from '../data/aiFoodEstimates.json' with {type:'json'};
 const props=defineProps({food:Object});const emit=defineEmits(['resolved']);
 const loading=ref(false),error=ref(''),result=ref(null),recipe=ref('');let sequence=0;
 function loadStored(food){try{const cached=JSON.parse(appStorage.getItem('weiheng.food-estimate.'+food?.key)||'null');if(cached?.estimate){result.value={...cached,cached:true};recipe.value=cached.recipe||'';emit('resolved',result.value);return true;}}catch{}const row=storedEstimates.estimates?.[food?.key];if(!row)return false;result.value={foodId:food.key,status:'complete',basisGrams:100,valueType:'ai-estimate',cached:true,model:row.model,generatedAt:row.generatedAt,estimate:{entryId:food.key,name:food.name,grams:100,values:row.values,assumption:row.assumption}};emit('resolved',result.value);return true;}

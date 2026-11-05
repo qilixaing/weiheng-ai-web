@@ -7,6 +7,8 @@ import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {createNutritionSnapshot} from '../src/lib/nutritionSnapshot.js';
+import {FOOD_BY_ID} from '../src/data/catalogue.js';
 import {AuthStore} from '../auth-store.mjs';
 import {testCaptcha} from './captcha-helper.mjs';
 test('HTTP reset is generic, captcha protected, revokes sessions; stale data writes cannot overwrite',async t=>{
@@ -18,11 +20,12 @@ test('HTTP reset is generic, captcha protected, revokes sessions; stale data wri
  const base='http://localhost:'+port;let ready=false;for(let i=0;i<80;i++){try{if((await fetch(base+'/api/auth/me')).ok){ready=true;break;}}catch{}await new Promise(r=>setTimeout(r,100));}assert.ok(ready);
  const cookie='vb_session='+registered.token;
  const put=body=>fetch(base+'/api/data',{method:'PUT',headers:{'Content-Type':'application/json',cookie},body:JSON.stringify(body)});
- const first=JSON.stringify({records:[{date:'2026-11-01',entries:[]}]}),next=JSON.stringify({records:[{date:'2026-11-02',entries:[]}]});
+ const snapshot=createNutritionSnapshot(FOOD_BY_ID.tofu);const first=JSON.stringify({records:[{date:'2026-11-01',entries:[{foodId:'tofu',grams:150,nutritionSnapshot:snapshot}]}]}),next=JSON.stringify({records:[{date:'2026-11-02',entries:[]}]});
  assert.equal((await put({localState:first,baseLocalState:null,expectedUserId:registered.user.id})).status,200);
  assert.equal((await put({localState:next,baseLocalState:null})).status,409);
  assert.equal((await put({localState:next,baseLocalState:first,expectedUserId:other.user.id})).status,409);
  assert.equal((await (await fetch(base+'/api/data',{headers:{cookie}})).json()).data.localState,first);
+ const secondSession=db.login('reset@example.com','original-password-123');const secondDevice=await (await fetch(base+'/api/data',{headers:{cookie:'vb_session='+secondSession.token}})).json();assert.deepEqual(JSON.parse(secondDevice.data.localState).records[0].entries[0].nutritionSnapshot,snapshot);
  assert.equal((await put({localState:next,baseLocalState:first,expectedUserId:registered.user.id})).status,200);
  assert.equal((await fetch(base+'/api/data')).status,401);
  assert.equal((await (await fetch(base+'/api/data',{headers:{cookie:'vb_session='+other.token}})).json()).data.localState,null);

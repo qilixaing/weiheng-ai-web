@@ -5,6 +5,7 @@ import { reactive, computed, watch, ref } from 'vue';
 import { calculateNutrition, validateProfile, ACTIVITIES } from '../lib/nutrition.js';
 import { makeRecord, recordEntries, recordVersion, validDate } from '../lib/foodNutrition.js';
 import { FOOD_BY_ID } from '../data/catalogue.js';
+import {createNutritionSnapshot,normalizeSnapshot} from '../lib/nutritionSnapshot.js';
 import { isAppResetting } from '../lib/appDataReset.js';
 
 /** @typedef {import('../types/nutrition').NutritionProfile} NutritionProfile */
@@ -87,7 +88,7 @@ export function useLocalNutrition() {
   /** @param {string} date @returns {StoredDraft|null} */
   function ensureDraft(date){if(!validDate(date))return null;if(!state.drafts[date]){const record=state.records.find(item=>item.date===date);state.drafts[date]={date,entries:recordEntries(record),notes:record?.notes||'',photoId:record?.photoId||null,recognition:null,appliedBatches:[]};}return state.drafts[date];}
   /** @param {FoodEntryInput & {date: string}} input */
-  function addToDraft(input){const draft=ensureDraft(input.date);if(!draft)return false;draft.entries.push({id:crypto.randomUUID(),foodId:input.foodId||null,name:FOOD_BY_ID[input.foodId||'']?.name||input.name||'',grams:Number(input.grams),meal:input.meal||'unspecified',group:input.group,source:input.source||'catalogue',estimated:!!input.estimated,referenceConfirmed:true});return !storageError.value;}
+  function addToDraft(input){const draft=ensureDraft(input.date);if(!draft)return false;const food=FOOD_BY_ID[input.foodId||''];draft.entries.push({id:crypto.randomUUID(),foodId:input.foodId||null,name:food?.name||input.name||'',grams:Number(input.grams),meal:input.meal||'unspecified',group:input.group,source:input.source||'catalogue',estimated:!!input.estimated,referenceConfirmed:true,nutritionSnapshot:normalizeSnapshot(input.nutritionSnapshot,food?.key)||createNutritionSnapshot(food)});return !storageError.value;}
   /** @param {string} date @param {string} key */
   function toggleHabit(date, key) {
     const current = new Set(state.habits[date] || []);

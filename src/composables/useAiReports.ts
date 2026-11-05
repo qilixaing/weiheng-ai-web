@@ -2,6 +2,8 @@ import { ref, type Ref } from 'vue';
 import { localAll, localPut } from '../lib/localDatabase.js';
 import { aiRequest } from '../lib/aiClient.js';
 import { FOOD_BY_ID } from '../data/catalogue.js';
+import {entryNutrient} from '../lib/nutritionSnapshot.js';
+import {currentActor} from '../lib/storageScope.js';
 import {
   MACROS,
   analysisVersion,
@@ -29,7 +31,7 @@ function errorMessage(error: unknown): string {
 function missingMacroEntries(entries: FoodEntry[]): FoodEntry[] {
   return entries.filter((entry) => {
     const food = entry.referenceConfirmed === false ? undefined : FOOD_BY_ID[entry.foodId || ''];
-    return MACROS.some((metric) => typeof food?.nutrients?.[metric.id] !== 'number');
+    return MACROS.some((metric) => {const n=entryNutrient(entry,food,metric.id);return typeof n.value!=='number'&&!n.range;});
   });
 }
 
@@ -94,9 +96,11 @@ async function generateReport(
   profile: NutritionProfile | null,
   { force = false }: GenerateReportOptions = {},
 ): Promise<AiNutritionReport | undefined> {
+  const identity=currentActor();
   await loadReports();
+  if(currentActor()!==identity)return;
   const version = analysisVersion(record, profile);
-  const key = `${record.date}:${version}`;
+  const key = `${identity}:${record.date}:${version}`;
   const active = running.get(key);
   if (active) return active;
 
@@ -114,6 +118,8 @@ async function generateReport(
     height: profile?.height,
     weight: profile?.weight,
     activity: profile?.activity,
+    ageMonths: profile?.ageMonths,
+    physiologicalStage: profile?.physiologicalStage,
   };
   const entries: FoodEntry[] = recordEntries(record);
   const report: AiNutritionReport = {
@@ -143,6 +149,7 @@ async function generateReport(
         profile: safeProfile,
         requestId: report.id,
       });
+      if(currentActor()!==identity)return;
       const missing = missingMacroEntries(entries);
       if (missing.length) {
         const estimation = response.calculation?.estimation;
@@ -153,7 +160,7 @@ async function generateReport(
           && missing.every((entry) => {
             const estimate = estimates.find((item) => item.entryId === String(entries.indexOf(entry)));
             const food = entry.referenceConfirmed === false ? undefined : FOOD_BY_ID[entry.foodId || ''];
-            const keys = MACROS.filter((metric) => typeof food?.nutrients?.[metric.id] !== 'number').map((metric) => metric.id);
+            const keys = MACROS.filter((metric) => {const n=entryNutrient(entry,food,metric.id);return typeof n.value!=='number'&&!n.range;}).map((metric) => metric.id);
             return Boolean(estimate && keys.every((key) => {
               const range = estimate.values[key as keyof typeof estimate.values];
               return range && Number.isFinite(range.low) && Number.isFinite(range.high) && range.high > range.low;
@@ -172,6 +179,7 @@ async function generateReport(
         calculation: response.calculation,
       });
     } catch (error: unknown) {
+      if(currentActor()!==identity)return;
       await persist({ ...report, status: 'failed', error: errorMessage(error) });
     }
     return reports.value.find((item) => item.id === report.id);
