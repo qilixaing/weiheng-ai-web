@@ -2,6 +2,6 @@
 .env.*
 !.env.example
 node_modules/
-data/
+/data/
 *.log
 content-dist/.local-source.json
