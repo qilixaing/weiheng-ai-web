@@ -1,0 +1,11 @@
+{
+  "version": "2.0.0",
+  "tasks": [{
+    "label": "维衡 AI：启动最新本地版",
+    "type": "shell",
+    "command": "npm start",
+    "options": {"cwd": "${workspaceFolder}"},
+    "problemMatcher": [],
+    "group": {"kind":"build", "isDefault":true}
+  }]
+}

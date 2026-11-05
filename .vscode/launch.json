@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [{
+    "name": "维衡 AI：启动最新本地版",
+    "type": "node",
+    "request": "launch",
+    "program": "${workspaceFolder}/scripts/local-start.mjs",
+    "cwd": "${workspaceFolder}",
+    "console": "integratedTerminal",
+    "skipFiles": ["<node_internals>/**"]
+  }]
+}

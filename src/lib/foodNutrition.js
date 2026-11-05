@@ -1,0 +1,31 @@
+// @ts-check
+import { FOOD_BY_ID, FOOD_GROUPS, FOOD_DATA_VERSION } from '../data/catalogue.js';
+export const MEALS=[['breakfast','早餐'],['lunch','午餐'],['dinner','晚餐'],['snack','加餐'],['unspecified','未指定餐次']];
+export const NUTRIENTS=[
+ ['energy','热量','kcal','主要营养'],['protein','蛋白质','g','主要营养'],['carbs','碳水化合物（差减法）','g','主要营养'],['fat','脂肪','g','主要营养'],['fiber','膳食纤维','g','其他'],['water','水分','g','其他'],['cholesterol','胆固醇','mg','其他'],
+ ['vitaminA','维生素 A','μg RAE','维生素'],['vitaminC','维生素 C','mg','维生素'],['vitaminD','维生素 D','μg','维生素'],['vitaminE','维生素 E（α-生育酚）','mg','维生素'],['vitaminK','维生素 K','μg','维生素'],['b1','维生素 B₁','mg','维生素'],['b2','维生素 B₂','mg','维生素'],['b6','维生素 B₆','mg','维生素'],['b12','维生素 B₁₂','μg','维生素'],['folate','叶酸','μg DFE','维生素'],
+ ['calcium','钙','mg','矿物质'],['iron','铁','mg','矿物质'],['magnesium','镁','mg','矿物质'],['phosphorus','磷','mg','矿物质'],['potassium','钾','mg','矿物质'],['sodium','钠','mg','矿物质'],['zinc','锌','mg','矿物质'],['copper','铜','mg','矿物质'],['manganese','锰','mg','矿物质'],['selenium','硒','μg','矿物质'],['iodine','碘','μg','矿物质']
+].map(([id,name,unit,section])=>({id,name,unit,section}));
+export const MACROS=NUTRIENTS.slice(0,4);
+export const todayDate=()=>{const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
+/** @param {unknown} value */
+export const formatNutrient=value=>value===null||value===undefined||!Number.isFinite(Number(value))?'暂无数据':Number(value).toLocaleString('zh-CN',{maximumFractionDigits:2});
+/** @param {unknown} value */
+export const validDate=value=>/^\d{4}-\d{2}-\d{2}$/.test(String(value))&&!Number.isNaN(Date.parse(value+'T12:00:00Z'))&&new Date(value+'T12:00:00Z').toISOString().slice(0,10)===value;
+/** @param {{nutrients?:Record<string,number|null|undefined>}|null|undefined} food @param {number} grams */
+export function portion(food,grams){return Object.fromEntries(NUTRIENTS.map(({id})=>[id,typeof food?.nutrients?.[id]==='number'?food.nutrients[id]*Number(grams)/100:null]));}
+/** @param {unknown} entries */
+export function normalizeEntries(entries){return(Array.isArray(entries)?entries:[]).slice(0,300).flatMap((entry,index)=>{const food=FOOD_BY_ID[entry.foodId],grams=Number(entry.grams),name=food?.name||String(entry.name||'').trim().slice(0,100);if(!name||!Number.isFinite(grams)||grams<0.1||grams>5000)return[];return[{id:String(entry.id||`entry-${index}`),foodId:food?.key||null,name,grams:Math.round(grams*10)/10,meal:MEALS.some(([id])=>id===entry.meal)?entry.meal:'unspecified',group:food?.group||(FOOD_GROUPS.some(g=>g.key===entry.group)?entry.group:'snacks'),source:['photo','manual','catalogue','legacy'].includes(entry.source)?entry.source:'catalogue',estimated:!!entry.estimated,referenceConfirmed:entry.referenceConfirmed!==false}];});}
+/** @param {Partial<import('../types/nutrition').DailyRecord>|null|undefined} record */
+export function recordEntries(record){if(Array.isArray(record?.entries))return normalizeEntries(record.entries);const entries=/** @type {unknown[]} */ (Object.entries(record?.grams||record?.items||{}).filter(([,value])=>Number(value)>0).map(([id,value])=>({id:'legacy-'+id,foodId:id,name:FOOD_BY_ID[id]?.name||id,grams:record?.grams?Number(value):Number(value)*(FOOD_BY_ID[id]?.grams||100),source:'legacy',referenceConfirmed:false})));entries.push(...(record?.customFoods||[]).map((item,i)=>({...item,id:item.id||'custom-'+i,foodId:null,source:'manual'})));return normalizeEntries(entries);}
+/** @param {unknown} entries */
+export function calculateIntake(entries){const items=normalizeEntries(entries);const totals=Object.fromEntries(NUTRIENTS.map(({id})=>{let known=0,value=0;const missing=[];for(const entry of items){const food=entry.foodId?FOOD_BY_ID[entry.foodId]:undefined,n=entry.referenceConfirmed===false?null:food?.nutrients?.[id];if(typeof n==='number'&&Number.isFinite(n)){known++;value+=n*entry.grams/100;}else missing.push(entry.name);}return[id,{value:known?value:null,known,missing,complete:items.length>0&&!missing.length}];}));return{totals,itemCount:items.length,knownEnergyCount:totals.energy.known,dataVersion:FOOD_DATA_VERSION,basis:'按可食部克数计算，不再乘食部比例'};}
+/** @param {unknown} value */
+export function fingerprint(value){const text=JSON.stringify(value);let hash=14695981039346656037n;for(let i=0;i<text.length;i++)hash=BigInt.asUintN(64,(hash^BigInt(text.charCodeAt(i)))*1099511628211n);return hash.toString(16).padStart(16,'0');}
+/** @param {import('../types/nutrition').DailyRecord} record */
+export function recordVersion(record){return fingerprint({date:record.date,entries:recordEntries(record).map(({foodId,name,grams,meal,referenceConfirmed})=>({foodId,name,grams,meal,referenceConfirmed})),notes:record.notes||'',photoId:record.photoId||null,dataVersion:FOOD_DATA_VERSION});}
+/** @param {import('../types/nutrition').DailyRecord} record @param {import('../types/nutrition').NutritionProfile|null|undefined} profile */
+export function analysisVersion(record,profile){return fingerprint({logicVersion:'ai-missing-nutrient-ranges-v1',record:recordVersion(record),profile:profile?{sex:profile.sex,age:profile.age,height:profile.height,weight:profile.weight,activity:profile.activity}:null});}
+/** @param {import('../types/nutrition').DailyRecordDraft} draft @param {import('../types/nutrition').DailyRecord|null|undefined} previous */
+export function makeRecord(draft,previous){const entries=normalizeEntries(draft.entries),grams=/** @type {Record<string,number>} */ ({}),foods=/** @type {Record<string,number>} */ (Object.fromEntries(FOOD_GROUPS.map(group=>[group.key,0])));for(const entry of entries){if(entry.foodId)grams[entry.foodId]=(grams[entry.foodId]||0)+entry.grams;foods[entry.group]=(foods[entry.group]||0)+entry.grams;}const record=/** @type {import('../types/nutrition').DailyRecord} */ ({date:draft.date,entries,grams,foods,customFoods:entries.filter(entry=>!entry.foodId),notes:String(draft.notes||'').trim().slice(0,240),photoId:draft.photoId||null,createdAt:previous?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString(),schemaVersion:3});record.version=recordVersion(record);return record;}
+

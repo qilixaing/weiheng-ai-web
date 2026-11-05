@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "allowJs": true,
+    "checkJs": false,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"]
+  },
+  "include": [
+    "src/types/**/*.ts",
+    "src/lib/**/*.d.ts",
+    "src/data/**/*.d.ts",
+    "src/composables/**/*.ts",
+    "src/**/*.vue",
+    "src/lib/foodNutrition.js",
+    "src/composables/useLocalNutrition.js"
+  ]
+}

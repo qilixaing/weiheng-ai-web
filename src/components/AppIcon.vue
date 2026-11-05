@@ -1,0 +1,43 @@
+<script setup>
+defineProps({ name: { type: String, default: 'leaf' }, size: { type: [Number, String], default: 20 } });
+const paths = {
+  paperclip: ['m8 12 6-6a3 3 0 0 1 4 4l-8 8a5 5 0 0 1-7-7l9-9m-7 12 7-7a1 1 0 0 1 2 2l-7 7'],
+  report: ['M5 3h10l4 4v14H5V3ZM14 3v5h5M8 12h8m-8 4h6'],
+  sparkles: ['m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z'],
+  grid: ['M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z'],
+  chart: ['M4 20V10m8 10V4m8 16v-7M2 20h20'],
+  bowl: ['M3 11h18c0 6-4 9-9 9s-9-3-9-9ZM8 4v3m4-5v5m4-3v3'],
+  list: ['M8 5h13M8 12h13M8 19h13M3 5h.01M3 12h.01M3 19h.01'],
+  person: ['M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM4 21v-2a8 8 0 0 1 16 0v2'],
+  shield: ['m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z','m8 12 3 3 5-6'],
+  sun: ['M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8ZM12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5'],
+  moon: ['M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z'],
+  arrow: ['M4 12h16m-6-6 6 6-6 6'],
+  chevron: ['m9 5 7 7-7 7'],
+  back: ['M20 12H4m6-6-6 6 6 6'],
+  check: ['m5 12 4 4L19 6'],
+  plus: ['M12 5v14M5 12h14'],
+  close: ['m6 6 12 12M6 18 18 6'],
+  edit: ['m15 4 5 5M4 20l5-1L21 7a2.1 2.1 0 0 0-4-4L5 15l-1 5Z'],
+  leaf: ['M20 3C8 2 3 7 4 14c1 5 7 6 11 2 4-4 5-13 5-13ZM4 21l12-13'],
+  flame: ['M12 2c1 5-6 6-6 12a6 6 0 0 0 12 0c0-3-2-5-3-6 0 3-2 4-3 4 2-5 0-10 0-10Z'],
+  activity: ['M2 12h5l3-8 4 16 3-8h5'],
+  chair: ['M7 4v8h10V4M5 12v5h14v-5M7 17v4m10-4v4'],
+  walk: ['M15 4h.01M12 8l-3 5H5m7-5 4 5h4M12 8l-1 8-5 5m5-5 6 5'],
+  drop: ['M12 3s7 8 7 12a7 7 0 0 1-14 0c0-4 7-12 7-12Z'],
+  grain: ['M12 22V3M12 8C6 9 4 6 4 3c5-1 8 1 8 5Zm0 7c-6 1-8-2-8-5 5-1 8 1 8 5Zm0-5c6 1 8-2 8-5-5-1-8 1-8 5Zm0 7c6 1 8-2 8-5-5-1-8 1-8 5Z'],
+  apple: ['M12 7c-7-4-11 1-8 8 2 6 5 6 8 4 3 2 6 2 8-4 3-7-1-12-8-8ZM12 7c0-4 3-5 5-4'],
+  milk: ['M8 3h8v4l3 4v10H5V11l3-4V3Zm0 4h8M5 12h14'],
+  egg: ['M12 3c-3 0-7 8-7 12a7 7 0 0 0 14 0c0-4-4-12-7-12Z'],
+  fish: ['M18 12c-3-7-11-7-15 0 4 7 12 7 15 0Zm0 0 4-5v10l-4-5ZM7 11h.01'],
+  cookie: ['M20 12a5 5 0 0 1-7-8A9 9 0 1 0 20 12ZM8 9h.01M7 15h.01M13 16h.01'],
+  search: ['M16 10a6 6 0 1 1-12 0 6 6 0 0 1 12 0Zm-1 5 6 6'],
+  calendar: ['M5 5h14a2 2 0 0 1 2 2v13H3V7a2 2 0 0 1 2-2ZM7 2v6m10-6v6M3 11h18'],
+  info: ['M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20ZM12 11v6m0-10h.01'],
+  lock: ['M6 10h12v11H6V10Zm2 0V6a4 4 0 0 1 8 0v4m-4 5v2'],
+  camera: ['M4 7h3l2-3h6l2 3h3a2 2 0 0 1 2 2v10H2V9a2 2 0 0 1 2-2Zm8 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z'],
+  upload: ['M12 16V4m-5 5 5-5 5 5M4 15v5h16v-5'],
+  image: ['M4 4h16v16H4zM4 15l4-4 4 4 3-3 5 5M15 9h.01']
+};
+</script>
+<template><svg :width="size" :height="size" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path v-for="(path,index) in (paths[name] || paths.leaf)" :key="index" :d="path" /></svg></template>

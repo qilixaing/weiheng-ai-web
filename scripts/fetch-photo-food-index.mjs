@@ -1,0 +1,4 @@
+import fs from 'node:fs/promises';
+const q=`SELECT ?item ?itemLabel ?itemDescription ?image WHERE { { SELECT DISTINCT ?item ?image WHERE { ?item rdfs:label ?zh; wdt:P18 ?image; wdt:P31/wdt:P279* wd:Q2095. FILTER(LANG(?zh) = "zh") } LIMIT 1800 } SERVICE wikibase:label { bd:serviceParam wikibase:language "zh-hans,zh-cn,zh,en". } }`;
+const r=await fetch('https://query.wikidata.org/sparql?format=json&query='+encodeURIComponent(q),{headers:{'User-Agent':'WeihengFoodLibrary/1.0 (https://weihengai.top; open educational food photo library)','Accept':'application/sparql-results+json'},signal:AbortSignal.timeout(60000)});
+if(!r.ok)throw new Error('Wikidata HTTP '+r.status);const body=await r.text();await fs.writeFile(new URL('../../wikidata-chinese-food-photos.json',import.meta.url),body);console.log(JSON.stringify({rows:JSON.parse(body).results.bindings.length}));

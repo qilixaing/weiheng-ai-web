@@ -1,0 +1,13 @@
+import fs from 'node:fs/promises';
+import {ALL_FOODS,FOOD_BY_ID,FOOD_DATA_VERSION,searchFoods} from '../src/data/catalogue.js';
+import {FOOD_CATEGORIES} from '../src/data/foodCategories.js';
+const gallery=JSON.parse(await fs.readFile(new URL('../src/data/foodGallerySources.json',import.meta.url)));
+const photos=JSON.parse(await fs.readFile(new URL('../src/data/foodPhotoSources.json',import.meta.url)));
+const baseUrls=new Set(photos.map(x=>x.sourceUrl.replaceAll('_',' ')));
+const allUrls=new Set([...baseUrls,...gallery.map(x=>x.sourceUrl.replaceAll('_',' '))]);
+const metrics=['energy','protein','carbs','fat','fiber'];
+const rows=FOOD_CATEGORIES.map(c=>{const foods=ALL_FOODS.filter(x=>x.category===c.id);return`| ${c.name} | ${foods.length} | ${foods.filter(x=>x.source).length} | ${photos.filter(x=>FOOD_BY_ID[x.foodId]?.category===c.id).length} | ${gallery.filter(x=>x.category===c.id).length} | ${metrics.map(m=>m+':'+foods.filter(x=>typeof x.nutrients?.[m]!=='number').length).join(' / ')} |`;});
+const times=[];for(let i=0;i<100;i++){const t=performance.now();searchFoods(['米饭','banana','鸡肉','番茄','rice','白菜'][i%6],12);times.push(performance.now()-t);}
+const report=`# 本地食物与图片覆盖报告\n\n数据版本：${FOOD_DATA_VERSION}。由 scripts/audit-campus-assets.mjs 从实际目录生成。\n\n- 目录：${ALL_FOODS.length}条；有来源营养样本：${ALL_FOODS.filter(x=>x.source).length}条。新增2081条原始USDA样本和30条营养待核对的校园菜式。\n- 原有食物配图映射：${photos.length}条，${baseUrls.size}个独立来源。新增参考图库：${gallery.length}张；合计${allUrls.size}个独立图片来源。\n- 新照片存于 assets/food-gallery，总计约${(await Promise.all(gallery.map(x=>fs.stat(new URL('..'+x.image,import.meta.url))))).reduce((n,s)=>n+s.size,0)/1024/1024|0}MB。只有用户打开图库才加载清单，每页24张，图片懒加载；食物列表每页12条。\n- 100次本机检索：平均${(times.reduce((n,x)=>n+x,0)/times.length).toFixed(2)}ms，最慢${Math.max(...times).toFixed(2)}ms。这是单机脚本观测，不是手机或多人负载基准。\n\n| 分类 | 目录条目 | 有来源样本 | 原有配图映射 | 新参考照片 | 缺失营养字段数 |\n| --- | ---: | ---: | ---: | ---: | --- |\n${rows.join('\n')}\n\n## 核验、去重和匹配边界\n\n- 原始数据由随附ABBREV.txt按NDB ID、完整英文描述和成分列导入；测试逐项重算比对。详见 food-data/expanded-import.json 的原始文件SHA256、列映射和筛选规则。每个扩展条目保留来源、许可、数据库值类型和脚本核验标识。\n- 中文只作为食材类别提示，2081条扩展样本尚未逐条完成中文品种与加工细名翻译；英文原名及状态完整显示。不同生熟、品牌和加工样本各自保留，不视为重复。\n- 同源NDB ID去重；常见泛称优先返回原有核对过的具体样本，不把香蕉片排成生香蕉。复杂校园菜式无对应配方时保留未知，不借用相似菜数值。\n- 原有配图继续按原映射使用。新增图库是独立实拍参考，未将任意照片批量绑定为全部2300条营养样本的照片；照片不证明品种、克数、配方或食堂有售。每图保留作者、许可链接、原图页、修改说明与审核编号。\n- 搜索候选中存在同名人物、建筑、植物、图表及配方不符内容；只有 review-decisions.json 明确批准的编号进入图库，另做文件校验与保守近似图去重。未批准的下载只在开发工作目录，不在网站图库中。\n- 仍需补充：中国本地授权成分表、真实食堂菜单与价格、明确的菜式配方及食物标签。尚不能称作覆盖全部中国食品，也不保证过敏原与交叉污染安全。\n`;
+await fs.writeFile(new URL('../docs/CAMPUS_FOOD_COVERAGE.md',import.meta.url),report);
+console.log(JSON.stringify({foods:ALL_FOODS.length,sourced:ALL_FOODS.filter(x=>x.source).length,newPhotos:gallery.length,totalPhotoSources:allUrls.size}));

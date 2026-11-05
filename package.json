@@ -1,0 +1,28 @@
+{
+  "name": "vitabalance-web",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/local-start.mjs",
+    "dev": "vite --configLoader native --host 127.0.0.1 --port 5173",
+    "build": "vite build --configLoader native",
+    "test": "node --test tests/*.test.mjs",
+    "typecheck": "vue-tsc --noEmit",
+    "ai:smoke": "node scripts/ai-smoke.mjs",
+    "food:audit": "node scripts/audit-food-data.mjs --write docs/FOOD_DATA_COVERAGE.md"
+  },
+  "dependencies": {
+    "fflate": "0.8.3",
+    "nodemailer": "^10.3.1",
+    "pdfjs-dist": "6.5.438",
+    "vue": "3.5.44"
+  },
+  "devDependencies": {
+    "@napi-rs/canvas": "1.1.0",
+    "@vitejs/plugin-vue": "6.0.10",
+    "typescript": "^6.0.3",
+    "vite": "7.3.7",
+    "vue-tsc": "^3.3.14"
+  }
+}

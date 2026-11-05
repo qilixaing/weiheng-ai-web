@@ -1,0 +1,406 @@
+TAP version 13
+# Subtest: environment proxy failures are classified without exposing request credentials
+ok 1 - environment proxy failures are classified without exposing request credentials
+  ---
+  duration_ms: 58.3198
+  type: 'test'
+  ...
+# Subtest: default AI handler uses the configured environment proxy
+ok 2 - default AI handler uses the configured environment proxy
+  ---
+  duration_ms: 42.7553
+  type: 'test'
+  ...
+# Subtest: unconfigured service and upstream errors return truthful recoverable states
+ok 3 - unconfigured service and upstream errors return truthful recoverable states
+  ---
+  duration_ms: 2.9376
+  type: 'test'
+  ...
+# Subtest: failed API requests expose a retryable state and do not poison a later retry
+ok 4 - failed API requests expose a retryable state and do not poison a later retry
+  ---
+  duration_ms: 35.6454
+  type: 'test'
+  ...
+# Subtest: status does not reveal key; food QA uses actual retrieved values and configured model
+ok 5 - status does not reveal key; food QA uses actual retrieved values and configured model
+  ---
+  duration_ms: 37.7494
+  type: 'test'
+  ...
+# Subtest: vision sends image content in user message and marks unknown weights
+ok 6 - vision sends image content in user message and marks unknown weights
+  ---
+  duration_ms: 30.338
+  type: 'test'
+  ...
+# Subtest: vision retries malformed model output and verifies catalogue IDs against identified names
+ok 7 - vision retries malformed model output and verifies catalogue IDs against identified names
+  ---
+  duration_ms: 25.4898
+  type: 'test'
+  ...
+# Subtest: analysis recomputes totals, discards fake totals/profile extras and deduplicates requests
+ok 8 - analysis recomputes totals, discards fake totals/profile extras and deduplicates requests
+  ---
+  duration_ms: 76.2681
+  type: 'test'
+  ...
+# Subtest: automatic nutrient estimates reject missing, duplicate, extra and implausible estimate output
+ok 9 - automatic nutrient estimates reject missing, duplicate, extra and implausible estimate output
+  ---
+  duration_ms: 33.7927
+  type: 'test'
+  ...
+# Subtest: automatic nutrient estimates retry truncated or malformed model output once
+ok 10 - automatic nutrient estimates retry truncated or malformed model output once
+  ---
+  duration_ms: 9.3302
+  type: 'test'
+  ...
+# Subtest: meal Agent uses the four registered tools, deterministic nutrition and explicit user confirmation boundary
+ok 11 - meal Agent uses the four registered tools, deterministic nutrition and explicit user confirmation boundary
+  ---
+  duration_ms: 11.2078
+  type: 'test'
+  ...
+# Subtest: Agent rejects prompt-injected tool names, nested extra arguments, and an unverified final plan
+ok 12 - Agent rejects prompt-injected tool names, nested extra arguments, and an unverified final plan
+  ---
+  duration_ms: 15.9842
+  type: 'test'
+  ...
+# Subtest: Agent reports models without Function Calling instead of faking a plan
+ok 13 - Agent reports models without Function Calling instead of faking a plan
+  ---
+  duration_ms: 4.5227
+  type: 'test'
+  ...
+# Subtest: diet chat uses bounded multi-turn history and server-calculated record evidence only
+ok 14 - diet chat uses bounded multi-turn history and server-calculated record evidence only
+  ---
+  duration_ms: 4.3328
+  type: 'test'
+  ...
+# Subtest: diet chat preserves missing nutrition as unknown and rejects oversized or malformed history
+ok 15 - diet chat preserves missing nutrition as unknown and rejects oversized or malformed history
+  ---
+  duration_ms: 10.2389
+  type: 'test'
+  ...
+# Subtest: diet chat reports an upstream error and allows a clean retry
+ok 16 - diet chat reports an upstream error and allows a clean retry
+  ---
+  duration_ms: 5.5962
+  type: 'test'
+  ...
+# Subtest: diet chat streams incremental text before the upstream response is complete
+ok 17 - diet chat streams incremental text before the upstream response is complete
+  ---
+  duration_ms: 263.2237
+  type: 'test'
+  ...
+# Subtest: diet chat opens the browser stream and sends keepalive comments while DeepSeek starts
+ok 18 - diet chat opens the browser stream and sends keepalive comments while DeepSeek starts
+  ---
+  duration_ms: 4.687
+  type: 'test'
+  ...
+# Subtest: diet chat completes on finish_reason even if the upstream omits the [DONE] sentinel
+ok 19 - diet chat completes on finish_reason even if the upstream omits the [DONE] sentinel
+  ---
+  duration_ms: 5.7239
+  type: 'test'
+  ...
+# Subtest: assistant completion reactively unlocks chat input and quick prompts
+ok 20 - assistant completion reactively unlocks chat input and quick prompts
+  ---
+  duration_ms: 2.4516
+  type: 'test'
+  ...
+# Subtest: AI chat client incrementally decodes UTF-8 SSE deltas and resolves on done
+ok 21 - AI chat client incrementally decodes UTF-8 SSE deltas and resolves on done
+  ---
+  duration_ms: 44.9912
+  type: 'test'
+  ...
+# Subtest: AI chat client forwards an abort signal so a new prompt can stop the active stream
+ok 22 - AI chat client forwards an abort signal so a new prompt can stop the active stream
+  ---
+  duration_ms: 1.6037
+  type: 'test'
+  ...
+# Subtest: AI limits each visitor behind a trusted reverse proxy and ignores forwarded headers otherwise
+ok 23 - AI limits each visitor behind a trusted reverse proxy and ignores forwarded headers otherwise
+  ---
+  duration_ms: 261.3749
+  type: 'test'
+  ...
+# Subtest: smoke runner calls only local AI routes and reports omitted photo recognition as skipped
+ok 24 - smoke runner calls only local AI routes and reports omitted photo recognition as skipped
+  ---
+  duration_ms: 391.5885
+  type: 'test'
+  ...
+# Subtest: smoke runner accepts an explicitly supplied image and preserves truthful upstream errors without secrets
+ok 25 - smoke runner accepts an explicitly supplied image and preserves truthful upstream errors without secrets
+  ---
+  duration_ms: 148.9288
+  type: 'test'
+  ...
+# Subtest: smoke runner refuses a non-local API base URL
+ok 26 - smoke runner refuses a non-local API base URL
+  ---
+  duration_ms: 50.3128
+  type: 'test'
+  ...
+# Subtest: failure is reported and releases save guards so the user can retry
+ok 27 - failure is reported and releases save guards so the user can retry
+  ---
+  duration_ms: 2.0341
+  type: 'test'
+  ...
+# Subtest: reset clears all app namespaces and binary stores while preserving unrelated data and blocking pagehide saves
+ok 28 - reset clears all app namespaces and binary stores while preserving unrelated data and blocking pagehide saves
+  ---
+  duration_ms: 9.7963
+  type: 'test'
+  ...
+# Subtest: meal costing uses portion prices, preserves unknowns and rejects invalid inputs
+ok 29 - meal costing uses portion prices, preserves unknowns and rejects invalid inputs
+  ---
+  duration_ms: 2.043
+  type: 'test'
+  ...
+# Subtest: explicit avoids and available-only conditions constrain actual catalogue candidates
+ok 30 - explicit avoids and available-only conditions constrain actual catalogue candidates
+  ---
+  duration_ms: 2.5913
+  type: 'test'
+  ...
+# Subtest: confirmation creates a complete draft batch once and does not mutate the prior draft
+ok 31 - confirmation creates a complete draft batch once and does not mutate the prior draft
+  ---
+  duration_ms: 1.9946
+  type: 'test'
+  ...
+# Subtest: whole-profile skip and missing activity never create adult targets
+ok 32 - whole-profile skip and missing activity never create adult targets
+  ---
+  duration_ms: 0.5608
+  type: 'test'
+  ...
+# Subtest: streaming meal trace reports completed real tools and drops private record fields
+ok 33 - streaming meal trace reports completed real tools and drops private record fields
+  ---
+  duration_ms: 164.8458
+  type: 'test'
+  ...
+# Subtest: server rejects over-budget calculations and records from a different date
+ok 34 - server rejects over-budget calculations and records from a different date
+  ---
+  duration_ms: 31.1059
+  type: 'test'
+  ...
+# Subtest: attachment selection rejects unsupported, empty, oversized files and unreadable or long text
+ok 35 - attachment selection rejects unsupported, empty, oversized files and unreadable or long text
+  ---
+  duration_ms: 1.8878
+  type: 'test'
+  ...
+# Subtest: chat sends document text through the existing text model without uploading raw binaries
+ok 36 - chat sends document text through the existing text model without uploading raw binaries
+  ---
+  duration_ms: 112.006
+  type: 'test'
+  ...
+# Subtest: chat forwards validated images and documents using the existing configured vision model
+ok 37 - chat forwards validated images and documents using the existing configured vision model
+  ---
+  duration_ms: 20.0757
+  type: 'test'
+  ...
+# Subtest: invalid or oversized attachments are rejected before calling the upstream model
+ok 38 - invalid or oversized attachments are rejected before calling the upstream model
+  ---
+  duration_ms: 68.9479
+  type: 'test'
+  ...
+# Subtest: image chat preserves incremental streaming and the completion event
+ok 39 - image chat preserves incremental streaming and the completion event
+  ---
+  duration_ms: 12.4232
+  type: 'test'
+  ...
+# Subtest: cross-chat memory includes up to the latest 50 completed text exchanges from other chats
+ok 40 - cross-chat memory includes up to the latest 50 completed text exchanges from other chats
+  ---
+  duration_ms: 5.0104
+  type: 'test'
+  ...
+# Subtest: memory can be disabled and bounds each remembered message
+ok 41 - memory can be disabled and bounds each remembered message
+  ---
+  duration_ms: 0.845
+  type: 'test'
+  ...
+# Subtest: memory is capped at 24,000 characters while keeping the most recent exchange
+ok 42 - memory is capped at 24,000 characters while keeping the most recent exchange
+  ---
+  duration_ms: 3.1433
+  type: 'test'
+  ...
+# Subtest: chat snapshots the current visitor profile after edits without retaining extra private fields
+ok 43 - chat snapshots the current visitor profile after edits without retaining extra private fields
+  ---
+  duration_ms: 3.0793
+  type: 'test'
+  ...
+# Subtest: concurrent chat visitors receive only their own profile and formula targets; edits and absent profiles do not reuse earlier data
+ok 44 - concurrent chat visitors receive only their own profile and formula targets; edits and absent profiles do not reuse earlier data
+  ---
+  duration_ms: 199.1457
+  type: 'test'
+  ...
+# Subtest: streaming chat carries a normalized profile through the same configured model
+ok 45 - streaming chat carries a normalized profile through the same configured model
+  ---
+  duration_ms: 13.4003
+  type: 'test'
+  ...
+# Subtest: minor profiles remain available to chat without reusing client adult targets
+ok 46 - minor profiles remain available to chat without reusing client adult targets
+  ---
+  duration_ms: 6.8094
+  type: 'test'
+  ...
+# Subtest: all expanded nutrients reproduce original SR28 fields exactly, including missing values
+ok 47 - all expanded nutrients reproduce original SR28 fields exactly, including missing values
+  ---
+  duration_ms: 155.6457
+  type: 'test'
+  ...
+# Subtest: expanded processed variants never displace known raw aliases and recipe-only foods stay unknown
+ok 48 - expanded processed variants never displace known raw aliases and recipe-only foods stay unknown
+  ---
+  duration_ms: 20.9712
+  type: 'test'
+  ...
+# Subtest: synthetic feedback is opt-in and cannot be saved or counted as real evidence
+ok 49 - synthetic feedback is opt-in and cannot be saved or counted as real evidence
+  ---
+  duration_ms: 3.8073
+  type: 'test'
+  ...
+# Subtest: voluntary feedback is whitelisted and formula-safe on CSV export
+ok 50 - voluntary feedback is whitelisted and formula-safe on CSV export
+  ---
+  duration_ms: 4.7991
+  type: 'test'
+  ...
+# Subtest: accounts get distinct local namespaces and guest recovery data is preserved
+ok 51 - accounts get distinct local namespaces and guest recovery data is preserved
+  ---
+  duration_ms: 38.5017
+  type: 'test'
+  ...
+# Subtest: food photos match individual foods, are local valid images and keep free licences
+ok 52 - food photos match individual foods, are local valid images and keep free licences
+  ---
+  duration_ms: 183.3438
+  type: 'test'
+  ...
+# Subtest: the reported grain, tuber and cabbage cards do not reuse unrelated photographs
+ok 53 - the reported grain, tuber and cabbage cards do not reuse unrelated photographs
+  ---
+  duration_ms: 0.3709
+  type: 'test'
+  ...
+# Subtest: sourced catalogue spans all 20 categories with unique IDs, aliases and genuine nulls
+ok 54 - sourced catalogue spans all 20 categories with unique IDs, aliases and genuine nulls
+  ---
+  duration_ms: 47.0135
+  type: 'test'
+  ...
+# Subtest: common-food records preserve sample state, source provenance and unknown nutrient values
+ok 55 - common-food records preserve sample state, source provenance and unknown nutrient values
+  ---
+  duration_ms: 0.6794
+  type: 'test'
+  ...
+# Subtest: 白菜 matches Chinese pe-tsai, separately from pak-choi and round cabbage
+ok 56 - 白菜 matches Chinese pe-tsai, separately from pak-choi and round cabbage
+  ---
+  duration_ms: 1.6189
+  type: 'test'
+  ...
+# Subtest: RAG ranking marks exact aliases, broad matches, misspellings, similar foods and empty results
+ok 57 - RAG ranking marks exact aliases, broad matches, misspellings, similar foods and empty results
+  ---
+  duration_ms: 15.5775
+  type: 'test'
+  ...
+# Subtest: edible grams scale source values once; unknowns stay unknown and genuine zero stays zero
+ok 58 - edible grams scale source values once; unknowns stay unknown and genuine zero stays zero
+  ---
+  duration_ms: 10.9815
+  type: 'test'
+  ...
+# Subtest: entries are canonical and legacy ambiguous samples never silently contribute nutrients
+ok 59 - entries are canonical and legacy ambiguous samples never silently contribute nutrients
+  ---
+  duration_ms: 4.0323
+  type: 'test'
+  ...
+# Subtest: reviewed gallery has local readable photographs with unique provenance and open licences
+ok 60 - reviewed gallery has local readable photographs with unique provenance and open licences
+  ---
+  duration_ms: 6301.7243
+  type: 'test'
+  ...
+# Subtest: Mifflin examples use sex constants and unrounded TDEE
+ok 61 - Mifflin examples use sex constants and unrounded TDEE
+  ---
+  duration_ms: 1.4963
+  type: 'test'
+  ...
+# Subtest: DRIs age and sex boundaries match adult 2023 tables
+ok 62 - DRIs age and sex boundaries match adult 2023 tables
+  ---
+  duration_ms: 0.3979
+  type: 'test'
+  ...
+# Subtest: Unsupported or invalid profile inputs do not produce targets
+ok 63 - Unsupported or invalid profile inputs do not produce targets
+  ---
+  duration_ms: 0.38
+  type: 'test'
+  ...
+# Subtest: ages 0–120 can be saved; minors do not receive adult energy or DRI targets
+ok 64 - ages 0–120 can be saved; minors do not receive adult energy or DRI targets
+  ---
+  duration_ms: 1.0683
+  type: 'test'
+  ...
+# Subtest: record is committed before exposing success; failed writes preserve prior records and identical saves are no-ops
+ok 65 - record is committed before exposing success; failed writes preserve prior records and identical saves are no-ops
+  ---
+  duration_ms: 7.6285
+  type: 'test'
+  ...
+# Subtest: older generic 白菜 entries need confirmation; new explicit Napa selections retain their name
+ok 66 - older generic 白菜 entries need confirmation; new explicit Napa selections retain their name
+  ---
+  duration_ms: 14.7714
+  type: 'test'
+  ...
+1..66
+# tests 66
+# suites 0
+# pass 66
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6586.8345
