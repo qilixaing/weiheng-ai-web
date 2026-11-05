@@ -4650,7 +4650,7 @@ function Jc() {
 async function Ec() {
   try {
     await Cc();
-    const { default: e } = await import("./App-CU-csmdi.js");
+    const { default: e } = await import("./App-CU28IzOm.js");
     _c(e).mount("#app");
   } catch {
     const e = document.querySelector("#app");

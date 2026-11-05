@@ -640,3 +640,10 @@
  .vb-sidebar nav.has-liquid-highlight>.vb-nav-button.is-active{background:transparent;border-color:transparent;box-shadow:none}
 }
 @media(prefers-reduced-transparency:reduce){.vb-sidebar nav.has-liquid-highlight>.vb-nav-liquid{background:#507761;-webkit-backdrop-filter:none;backdrop-filter:none}}
+
+/* Keep meal labels beside their dropdowns, aligned with the adjacent controls. */
+.vb-diary-search-row>.vb-meal-select{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.vb-diary-search-row>.vb-meal-select>span{display:inline-block;margin:0;white-space:nowrap}
+.vb-entry-controls>label.vb-entry-meal{display:flex;align-items:center;align-self:flex-end;gap:10px}
+.vb-entry-controls>.vb-entry-meal>span{flex-shrink:0;white-space:nowrap}
+.vb-entry-controls>.vb-entry-meal>select{flex:1;min-width:0;margin-top:0}
