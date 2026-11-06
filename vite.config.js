@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import { copyFile, cp } from 'node:fs/promises';
+import { copyFile, cp, readdir, writeFile } from 'node:fs/promises';
 
 // Build only the Vue content layer. The existing page/canvas/CSS stay in place.
 export default defineConfig(({ command }) => ({
@@ -10,6 +10,9 @@ export default defineConfig(({ command }) => ({
     name: 'local-pdf-worker',
     apply: 'build',
     async closeBundle() {
+      const chunks=await readdir(new URL('./content-dist/chunks/',import.meta.url));
+      const preload=chunks.filter(name=>/^(App-|IntakeAnalysis-|main-|vue-runtime-).*\.js$/.test(name)).map(name=>'/content-dist/chunks/'+name);
+      await writeFile(new URL('./content-dist/app-preload.json',import.meta.url),JSON.stringify(preload));
       await copyFile(new URL('./node_modules/pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url), new URL('./content-dist/pdf.worker.min.js', import.meta.url));
       for (const name of ['cmaps', 'standard_fonts']) await cp(new URL(`./node_modules/pdfjs-dist/${name}/`, import.meta.url), new URL(`./content-dist/pdf-resources/${name}/`, import.meta.url), { recursive: true });
     },

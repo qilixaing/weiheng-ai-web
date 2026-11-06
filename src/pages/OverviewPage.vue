@@ -1,11 +1,11 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 import { ACTIVITIES, getAgeBand } from '../lib/nutrition.js';
 import { overviewNutrition, lifeStageMicronutrients } from '../lib/lifeStageNutrition.js';
 import AppIcon from '../components/AppIcon.vue';
-import IntakeAnalysis from '../components/IntakeAnalysis.vue';
+const IntakeAnalysis = defineAsyncComponent(() => import('../components/IntakeAnalysis.vue'));
 import SourcesNote from '../components/SourcesNote.vue';
-const props = defineProps({ profile: Object, nutrition: Object, recordCount: Number, records: Array });
+const props = defineProps({ profile: Object, nutrition: Object, recordCount: Number, records: Array, deferIntake: Boolean });
 const nutrition = computed(() => overviewNutrition(props.profile));
 const micro = computed(() => lifeStageMicronutrients(props.profile));
 const hasMicro = computed(() => micro.value.vitamins.length > 0);
@@ -32,7 +32,8 @@ const date = new Intl.DateTimeFormat('zh-CN', { month: 'long', day: 'numeric', w
 </script>
 <template>
   <div class="vb-page-title"><div><p class="vb-eyebrow">{{ date }}</p><h1>你的营养工作台</h1><p>记录饮食，计算能量与营养素摄入，理解依据，再安排下一餐。面向全年龄段，按适用条件分析。</p></div><div class="vb-page-actions"><button class="vb-button vb-button-primary" @click="$emit('navigate','diary')"><AppIcon name="plus" :size="17" />记录饮食</button><button class="vb-button vb-button-soft" @click="$emit('navigate','assessment')">查看营养分析</button><button class="vb-button vb-button-quiet" @click="$emit('navigate','mealplan')">安排下一餐</button></div></div>
-  <IntakeAnalysis :records="records" :profile="profile" compact />
+  <IntakeAnalysis v-if="!deferIntake" :records="records" :profile="profile" compact />
+  <section v-else class="vb-glass vb-plan-context"><div><h2>已记录的营养摄入</h2><p>摄入明细按需载入；你的档案和饮食记录会保留。</p></div></section>
   <section class="vb-glass vb-profile-strip" aria-label="基础档案"><span class="vb-profile-symbol">{{ profile.sex === 'male' ? '♂' : profile.sex === 'female' ? '♀' : '○' }}</span><div class="vb-profile-title"><strong>你的身体档案</strong><small>{{ profile.sex === 'male' ? '男性' : profile.sex === 'female' ? '女性' : '性别未填写' }} · {{ getAgeBand(profile.age) }}</small></div><dl><div><dt>年龄</dt><dd>{{ profileValue(profile.age, '岁') }}</dd></div><div><dt>身高</dt><dd>{{ profileValue(profile.height, 'cm') }}</dd></div><div><dt>体重</dt><dd>{{ profileValue(profile.weight, 'kg') }}</dd></div><div><dt>活动水平</dt><dd>{{ activity?.label || '未填写' }}</dd></div></dl><button class="vb-icon-button" aria-label="修改基础档案" @click="$emit('edit')"><AppIcon name="edit" :size="18" /></button></section>
   <div class="vb-energy-grid">
     <section class="vb-glass vb-energy-card"><div class="vb-card-label"><span>基础代谢 <small>BMR</small></span><span class="vb-icon-badge"><AppIcon name="flame" /></span></div><div class="vb-energy-number">{{ nutrition ? round(nutrition.bmr) : '—' }}<span>kcal / 天</span></div><p>{{ nutrition ? '身体静息时维持基本功能的能量估算' : calculationNotice }}</p><div class="vb-card-bottom"><template v-if="nutrition"><span class="vb-status-dot" />{{ nutrition.bmrLabel }}</template><span v-else>身体信息保留；不以 0 代替未知值</span></div></section>

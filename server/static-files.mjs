@@ -1,6 +1,7 @@
 import {readFile, stat} from 'node:fs/promises';
 import {gzip} from 'node:zlib';
 import {promisify} from 'node:util';
+import {basename} from 'node:path';
 const compress = promisify(gzip);
 const cache = new Map();
 function acceptsGzip(header = '') {
@@ -21,6 +22,7 @@ export async function sendStaticFile(req, res, path, contentType) {
     }
     try { body = await item.body; } catch(error) { cache.delete(path); throw error; }
   } else body = await readFile(path);
-  res.writeHead(200, {'Content-Type':contentType, 'Cache-Control':'no-store', 'Vary':'Accept-Encoding', 'Content-Length':body.length, ...(zipped ? {'Content-Encoding':'gzip'} : {})});
+  const immutable=/[\\/]content-dist[\\/]chunks[\\/]/.test(path)&&/-[A-Za-z0-9_-]{8}\.js$/.test(basename(path));
+  res.writeHead(200, {'Content-Type':contentType, 'Cache-Control':immutable?'public, max-age=31536000, immutable':'no-store', 'Vary':'Accept-Encoding', 'Content-Length':body.length, ...(zipped ? {'Content-Encoding':'gzip'} : {})});
   res.end(req.method === 'HEAD' ? undefined : body);
 }

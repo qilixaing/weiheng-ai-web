@@ -24,8 +24,9 @@ import {useThemeTransition} from './composables/useThemeTransition.js';
 const {state,theme,nutrition,records,storageError,updateProfile,saveRecord,addToDraft,addPlanToDraft,toggleHabit}=useLocalNutrition();
 const {toggleTheme}=useThemeTransition(theme);
 const {reports,reportStorageError,loadReports,latestReport,isStale,generateReport}=useAiReports();loadReports();
-const effectiveProfile=computed(()=>state.flags.includes('孕期或哺乳期')?{...state.profile,physiologicalStage:'special'}:state.profile);
-const active=ref('overview'),wizardOpen=ref(!state.profile),accountOpen=ref(false),toast=ref(null),content=ref(null),detailFood=ref(null),diaryDate=ref(todayDate()),saving=ref(false);
+const launch=defineProps({initialPage:{type:String,default:'overview'},initialEditor:Boolean});
+const effectiveProfile=computed(()=>state.flags.includes('孕期或哺乳期')?{...state.profile,physiologicalStage:'special'}:(state.profile||{}));
+const active=ref(launch.initialPage),wizardOpen=ref(launch.initialEditor),accountOpen=ref(false),toast=ref(null),content=ref(null),detailFood=ref(null),diaryDate=ref(todayDate()),saving=ref(false);
 const reportDate=ref(''),reportId=ref(''),analysisError=ref('');
 const report=computed(()=>reports.value.find(item=>item.id===reportId.value)||latestReport(reportDate.value));
 const reportRecord=computed(()=>state.records.find(item=>item.date===reportDate.value));
@@ -35,7 +36,7 @@ let toastTimer;let analysisSequence=0;
 function notify(message,undo=null){clearTimeout(toastTimer);toast.value={message,undo};toastTimer=setTimeout(()=>toast.value=null,7000);}
 function navigate(page){active.value=page;window.scrollTo({top:0,behavior:'auto'});nextTick(()=>content.value?.focus({preventScroll:true}));}
 function openAccount(){wizardOpen.value=false;accountOpen.value=true;}
-function closeAccount(){accountOpen.value=false;if(!state.profile)wizardOpen.value=true;}
+function closeAccount(){accountOpen.value=false;}
 function finishProfile(profile){const error=updateProfile(profile);if(error){notify(error);return;}wizardOpen.value=false;navigate('overview');notify(accountUser.value?'身体档案已保存，账号同步状态可在账号面板查看':'身体档案已保存到当前浏览器');}
 async function analyze(record,force=false){const request=++analysisSequence;analysisError.value='';reportDate.value=record.date;reportId.value='';try{const task=generateReport(record,effectiveProfile.value,{force});await nextTick();const result=await task;if(request===analysisSequence&&reportDate.value===record.date)reportId.value=result?.id||'';}catch(error){if(request===analysisSequence)analysisError.value=error.message||'分析暂时不可用，请重试。';}}
 function saved(draft){if(saving.value)return;saving.value=true;try{const result=saveRecord(draft);if(!result.ok){notify(result.error);return;}notify('饮食记录已保存，正在分析');void analyze(result.record);}finally{saving.value=false;}}
@@ -52,7 +53,7 @@ onBeforeUnmount(()=>clearTimeout(toastTimer));
   <div :inert="wizardOpen||detailFood||reportDate||undefined">
    <AppSidebar :active="active" @navigate="navigate" />
    <div class="vb-main"><header class="vb-topbar"><span class="vb-breadcrumb"><span>营养工作台</span><i>/</i>{{ titles[active] }}</span><div class="vb-topbar-actions"><span class="vb-local-chip"><i class="vb-status-dot" />{{ storageLabel }}</span><button class="vb-account-trigger" @click="openAccount">{{ accountUser ? '账号' : '登录' }}</button><button class="vb-theme-button" :aria-label="theme==='light'?'切换至深色模式':'切换至浅色模式'" @click="toggleTheme"><AppIcon :name="theme==='light'?'moon':'sun'" :size="19" /></button><button class="vb-avatar" aria-label="查看个人档案" @click="navigate('profile')"><AppIcon name="person" :size="18" /></button></div></header>
-    <main ref="content" class="vb-content" tabindex="-1"><p v-if="storageError||reportStorageError" class="vb-storage-error" role="alert">{{ storageError||reportStorageError }}</p><template v-if="state.profile">
+    <main ref="content" class="vb-content" tabindex="-1"><p v-if="storageError||reportStorageError" class="vb-storage-error" role="alert">{{ storageError||reportStorageError }}</p><template v-if="true">
      <!-- Keep the chat page mounted while navigating so an in-flight SSE request survives route changes. -->
      <AiDietAssistantPage v-show="active==='dietAssistant'" :records="state.records" :targets="nutrition" :profile="effectiveProfile" />
      <OverviewPage v-if="active==='overview'" :profile="effectiveProfile" :nutrition="nutrition" :record-count="records.length" :records="records" @edit="wizardOpen=true" @navigate="navigate" />
@@ -62,7 +63,7 @@ onBeforeUnmount(()=>clearTimeout(toastTimer));
      <MealplanPage v-else-if="active==='mealplan'" :nutrition="nutrition" :preferences="state.preferences" :flags="state.flags" :profile="effectiveProfile" :records="state.records" @navigate="navigate" @add-plan="addAgentPlan" />
      <ProfilePage v-else-if="active==='profile'" :profile="effectiveProfile" :nutrition="nutrition" v-model:flags="state.flags" v-model:preferences="state.preferences" @edit="wizardOpen=true" />
      <AboutPage v-else-if="active==='about'" :flags="state.flags" @navigate="navigate" />
-    </template><section v-else class="vb-onboarding-placeholder"><p class="vb-eyebrow">从自己开始，找到饮食的平衡</p><h1>欢迎来到维衡</h1><p>一份简单的身体档案，开启你的营养日常。</p></section><footer class="vb-footer"><AppIcon name="leaf" :size="14" />维衡 AI · 把健康，放进每一餐<span>营养信息仅供一般参考</span></footer></main>
+    </template><footer class="vb-footer"><AppIcon name="leaf" :size="14" />维衡 AI · 把健康，放进每一餐<span>营养信息仅供一般参考</span></footer></main>
    </div>
   </div>
   <ProfileWizard v-if="wizardOpen" :profile="state.profile" @complete="finishProfile" @close="wizardOpen=false" @login="openAccount" />

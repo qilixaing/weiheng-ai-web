@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {timeoutSignal,anySignal} from '../src/lib/browserSignals.js';
 import {sendStaticFile} from '../server/static-files.mjs';
-import {mkdtemp,writeFile,rm} from 'node:fs/promises';
+import {mkdtemp,writeFile,rm,mkdir} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {gunzipSync} from 'node:zlib';
@@ -17,6 +17,18 @@ test('older mobile browsers can time out and combine cancellation without static
   b.abort('cancelled');assert.equal(combined.reason,'cancelled');
   assert.equal(anySignal([b.signal]).aborted,true);
  }finally{AbortSignal.timeout=timeout;AbortSignal.any=any;}
+});
+
+test('only versioned built chunks use immutable caching; entry files keep fresh',async()=>{
+ const dir=await mkdtemp(join(tmpdir(),'weiheng-cache-'));
+ const chunks=join(dir,'content-dist','chunks');await mkdir(chunks,{recursive:true});
+ const hashed=join(chunks,'App-12345678.js'),entry=join(dir,'vitabalance.js');
+ try{
+  for(const path of [hashed,entry])await writeFile(path,'export default 1');
+  const headers=async(path)=>{let result;await sendStaticFile({headers:{},method:'GET'},{writeHead(_,value){result=value;},end(){}},path,'text/javascript');return result;};
+  assert.match((await headers(hashed))['Cache-Control'],/immutable/);
+  assert.equal((await headers(entry))['Cache-Control'],'no-store');
+ }finally{await rm(dir,{recursive:true,force:true});}
 });
 
 test('static compression preserves bytes, HEAD length, q=0, and refreshes changed files',async()=>{
