@@ -14,7 +14,7 @@ if(existsSync('C:/Windows/Fonts/msyh.ttc'))GlobalFonts.registerFromPath('C:/Wind
 test('actual Vue file card automatically prepares a real downloadable PDF for the reported request',async()=>{
  const original={document:globalThis.document,requestAnimationFrame:globalThis.requestAnimationFrame,setTimeout:globalThis.setTimeout};
  const directory=await mkdtemp(join(tmpdir(),'weiheng-card-ui-')),require=createRequire(import.meta.url);
- let app;
+ let app,ordinaryApp;
  try{
   globalThis.document={fonts:{ready:Promise.resolve()},createElement(tag){assert.equal(tag,'canvas');return createCanvas(1,1);}};
   globalThis.requestAnimationFrame=callback=>queueMicrotask(()=>callback(0));
@@ -37,8 +37,10 @@ test('actual Vue file card automatically prepares a real downloadable PDF for th
   let link;for(let i=0;i<100;i++){await new Promise(r=>original.setTimeout(r,20));await nextTick();link=all(root).find(n=>n.tag==='a'&&String(n.props.download||'').endsWith('.pdf'));if(link)break;}
   assert.ok(link,'requested PDF must appear as a direct download link, not a collapsed export menu');assert.match(link.props.href,/^blob:/);assert.ok(all(root).some(n=>n.text==='PDF 文件已生成'));
   const response=await fetch(link.props.href),bytes=new Uint8Array(await response.arrayBuffer());assert.equal(response.headers.get('content-type'),'application/pdf');assert.equal(new TextDecoder().decode(bytes.slice(0,8)),'%PDF-1.4');assert.ok(bytes.length>1000);
+  const ordinaryRoot=node('root');ordinaryApp=renderer.createApp(Card,{question:'你好',content:'你好，需要把上次的计划生成 PDF 吗？',auto:true});ordinaryApp.mount(ordinaryRoot);await nextTick();
+  assert.equal(all(ordinaryRoot).filter(n=>['button','a','details','summary'].includes(n.tag)).length,0,'ordinary chat must not offer export, even when the assistant mentions PDF');
  }finally{
-  app?.unmount();globalThis.document=original.document;globalThis.requestAnimationFrame=original.requestAnimationFrame;globalThis.setTimeout=original.setTimeout;
+  ordinaryApp?.unmount();app?.unmount();globalThis.document=original.document;globalThis.requestAnimationFrame=original.requestAnimationFrame;globalThis.setTimeout=original.setTimeout;
   assert.ok(directory.startsWith(join(tmpdir(),'weiheng-card-ui-')));await rm(directory,{recursive:true,force:true});
  }
 });

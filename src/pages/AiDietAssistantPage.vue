@@ -3,6 +3,7 @@ import { appStorage, accountUser, chatSyncStatus, clearSyncedChat, syncChat } fr
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 import AppIcon from '../components/AppIcon.vue';
 import ChatMessageExport from '../components/ChatMessageExport.vue';
+import {useChatScroll} from '../composables/useChatScroll';
 import ModalShell from '../components/ModalShell.vue';
 import { aiStream } from '../lib/aiClient.js';
 import { appendPendingAssistantMessage } from '../lib/aiChatState.js';
@@ -34,10 +35,12 @@ interface ChatThread {
 }
 
 const props = withDefaults(defineProps<{
+  active?: boolean;
   records: DailyRecord[];
   targets: NutritionTargets | null;
   profile: NutritionProfile | null;
 }>(), {
+  active: true,
   records: () => [],
   targets: null,
   profile: null,
@@ -109,6 +112,7 @@ let attachmentBatchVersion = 0;
 const storageError = ref('');
 const notice = ref('');
 const conversation = ref<HTMLElement | null>(null);
+const conversationContent = ref<HTMLElement | null>(null);
 const sending = computed(() => threads.value.some((thread) => thread.messages.some((message) => message.status === 'sending')));
 const record = computed(() => props.records.find((item) => item.date === date.value));
 const entries = computed(() => record.value?.entries || []);
@@ -120,6 +124,7 @@ const dailyTargets = computed<AiDietChatTargets>(() => ({
 }));
 const currentThread = computed(() => threads.value.find((thread) => thread.id === activeByDate.value[date.value]));
 const currentMessages = computed(() => currentThread.value?.messages || []);
+const {showJump,onScroll,onContentLoad,jumpToLatest}=useChatScroll({viewport:conversation,content:conversationContent,active:computed(()=>props.active),thread:computed(()=>currentThread.value?.id),messages:currentMessages});
 const dateThreads = computed(() => threads.value
   .filter((thread) => thread.date === date.value)
   .sort((left, right) => right.createdAt.localeCompare(left.createdAt)));
@@ -302,10 +307,7 @@ onBeforeUnmount(() => {
   if (typeof window !== 'undefined') {window.removeEventListener('pagehide', handlePageHide);window.removeEventListener('weiheng-chat-flush',handlePageHide);}
 });
 
-watch(currentMessages, async () => {
-  await nextTick();
-  if (conversation.value) conversation.value.scrollTop = conversation.value.scrollHeight;
-}, { deep: true });
+
 
 let activeRequest: { controller: AbortController; assistantMessage: AiDietChatMessage } | undefined;
 
@@ -409,6 +411,7 @@ async function sendQuestion(rawQuestion: string, retryAssistantId?: string, atta
     assistantIndex = thread.messages.length - 1;
   }
 
+  jumpToLatest();
   // Make the pending turn recoverable before the network request starts.
   persistState();
   notice.value = '';
@@ -547,8 +550,8 @@ function clearLocalHistory(): void {
       </div>
     </header>
 
-    <div ref="conversation" class="vb-simple-scroll" :class="{ 'is-empty': !currentMessages.length }" role="log" aria-live="polite" aria-relevant="additions text">
-      <div v-if="!currentMessages.length" class="vb-simple-welcome">
+    <div ref="conversation" class="vb-simple-scroll" @scroll.passive="onScroll" @load.capture="onContentLoad" :class="{ 'is-empty': !currentMessages.length }" role="log" aria-live="polite" aria-relevant="additions text">
+      <div v-if="!currentMessages.length" ref="conversationContent" class="vb-simple-welcome">
         <h2>今天想聊些什么？</h2>
         <p>从一个问题开始，或试试下面的提问。</p>
         <div class="vb-simple-starters">
@@ -558,7 +561,7 @@ function clearLocalHistory(): void {
         </div>
         <small class="vb-simple-context">饮食参考日期：{{ date }}</small>
       </div>
-      <div v-else class="vb-simple-thread">
+      <div v-else ref="conversationContent" class="vb-simple-thread">
         <article v-for="message in currentMessages" :key="message.id" class="vb-simple-message" :class="[`is-${message.role}`, `is-${message.status}`]">
           <span v-if="message.role === 'assistant'" class="vb-simple-avatar" aria-label="维衡 AI"><AppIcon name="sparkles" :size="18" /></span>
           <div class="vb-simple-message-body">
@@ -577,7 +580,7 @@ function clearLocalHistory(): void {
               <button class="vb-text-button vb-simple-retry" type="button" @click="retry(message.id)"><AppIcon name="activity" :size="14" />重试这条问题</button>
             </template>
             <p v-else-if="message.role!=='assistant'||!requestedDocumentFormat(exportQuestion(message.id))" class="vb-simple-text">{{ message.content }}</p>
-            <ChatMessageExport v-if="message.role==='assistant'&&message.status==='complete'&&message.content.trim()" :content="message.content" :question="exportQuestion(message.id)" :auto="currentMessages.at(-1)?.id===message.id" @retry="retry(message.id)" />
+            <ChatMessageExport v-if="message.role==='assistant'&&message.status==='complete'&&message.content.trim()&&requestedDocumentFormat(exportQuestion(message.id))" :content="message.content" :question="exportQuestion(message.id)" :auto="currentMessages.at(-1)?.id===message.id" @retry="retry(message.id)" />
             <small v-if="message.status === 'complete'" class="vb-simple-message-meta">
               {{ formatMessageTime(message.createdAt) }}<template v-if="message.role === 'assistant'"> · {{ message.model || 'DeepSeek' }}</template>
             </small>
@@ -587,6 +590,7 @@ function clearLocalHistory(): void {
     </div>
 
     <footer class="vb-simple-composer">
+      <button v-if="showJump" type="button" class="vb-chat-jump-bottom" aria-label="回到最新消息" title="一键到底" @click="jumpToLatest"><AppIcon name="arrow" :size="20" /></button>
       <div class="vb-simple-composer-inner">
         <div v-if="currentMessages.length" class="vb-simple-tools">
           <details class="vb-simple-quick">
@@ -698,6 +702,10 @@ summary::-webkit-details-marker { display: none; }
 .vb-simple-error { color: var(--vb-danger); font-size: 12px; line-height: 1.8; }
 .vb-simple-retry { margin-top: 8px; font-size: 11px; }
 .vb-simple-composer { position: relative; z-index: 3; flex: none; padding: 16px 36px 14px; border-top: 1px solid var(--vb-line); background: var(--vb-surface); }
+.vb-chat-jump-bottom { position:absolute; left:50%; top:-54px; transform:translateX(-50%); z-index:5; width:42px; height:42px; display:grid; place-items:center; padding:0; border:1px solid var(--vb-line); border-radius:50%; background:var(--vb-surface-strong); color:var(--vb-accent); box-shadow:var(--vb-shadow-hover); cursor:pointer; }
+.vb-chat-jump-bottom svg { transform:rotate(90deg); }
+.vb-chat-jump-bottom:hover { background:var(--vb-accent-soft); }
+.vb-chat-jump-bottom:focus-visible { outline:2px solid var(--vb-accent); outline-offset:3px; }
 .vb-simple-composer-inner { max-width: 820px; margin: 0 auto; }
 .vb-simple-tools { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 3px 10px; }
 .vb-simple-quick summary { font-size: 11px; }

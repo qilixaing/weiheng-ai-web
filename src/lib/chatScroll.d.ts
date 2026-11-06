@@ -1,0 +1,1 @@
+export function createChatScroll(options:{viewport:()=>{clientHeight:number;scrollHeight:number;scrollTop:number}|null;isActive?:()=>boolean;onChange?:(value:boolean)=>void;threshold?:number}):{layout:(force?:boolean)=>void;onScroll:()=>void;jump:()=>void};
