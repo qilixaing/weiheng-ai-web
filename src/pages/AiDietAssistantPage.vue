@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { appStorage, accountUser, chatSyncStatus, clearSyncedChat } from '../lib/storageScope.js';
+import { appStorage, accountUser, chatSyncStatus, clearSyncedChat, syncChat } from '../lib/storageScope.js';
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 import AppIcon from '../components/AppIcon.vue';
+import ChatMessageExport from '../components/ChatMessageExport.vue';
 import ModalShell from '../components/ModalShell.vue';
 import { aiStream } from '../lib/aiClient.js';
 import { appendPendingAssistantMessage } from '../lib/aiChatState.js';
+import {requestedDocumentFormat} from '../lib/chatDocumentIntent.js';
+import {selectChatThreads} from '../lib/chatSelection.js';
 import { buildConversationMemory } from '../lib/chatMemory.js';
 import { snapshotChatProfile } from '../lib/chatProfile.js';
 import { isAppResetting } from '../lib/appDataReset.js';
@@ -87,7 +90,8 @@ function loadStoredState(): { threads: ChatThread[]; activeByDate: Record<string
 
 const stored = loadStoredState();
 const threads = ref<ChatThread[]>(stored.threads);
-const activeByDate = ref<Record<string, string>>(stored.activeByDate);
+const activeByDate = ref<Record<string, string>>(selectChatThreads(stored,stored.activeByDate));
+const explicitEmptyThreads=new Set<string>();
 const memoryEnabled = ref(stored.memoryEnabled);
 const date = ref(todayDate());
 const draft = ref('');
@@ -120,6 +124,9 @@ const dateThreads = computed(() => threads.value
   .filter((thread) => thread.date === date.value)
   .sort((left, right) => right.createdAt.localeCompare(left.createdAt)));
 
+const historyThreads=computed(()=>threads.value.filter(t=>t.messages.length).sort((a,b)=>b.createdAt.localeCompare(a.createdAt)));
+function openHistory(event:Event){const id=(event.target as HTMLSelectElement).value,thread=threads.value.find(t=>t.id===id);if(thread){date.value=thread.date;activeByDate.value[thread.date]=thread.id;}}
+function exportQuestion(messageId:string){const list=currentMessages.value,index=list.findIndex(m=>m.id===messageId);return list.slice(0,index).reverse().find(m=>m.role==='user')?.content||'';}
 function attachmentMeta(value: ChatAttachment): ChatAttachmentMeta {
   const { id, kind, name, size, mimeType } = value;
   return { id, kind, name, size, mimeType };
@@ -251,10 +258,11 @@ watch(date, (value) => {
   notice.value = '';
 });
 
-let applyingRemote=false;
+let applyingRemote=false,pendingRemoteChat=false;
 function applyRemoteChat(){
- if(currentMessages.value.some(m=>m.status==='sending'))return;
- applyingRemote=true;const next=loadStoredState();threads.value=next.threads;activeByDate.value={...next.activeByDate,...activeByDate.value};memoryEnabled.value=next.memoryEnabled;
+ if(sending.value){pendingRemoteChat=true;return;}
+ pendingRemoteChat=false;applyingRemote=true;const next=loadStoredState();threads.value=next.threads;activeByDate.value=selectChatThreads(next,activeByDate.value,[...explicitEmptyThreads]);memoryEnabled.value=next.memoryEnabled;
+ ensureThread(date.value);
  void nextTick(()=>{applyingRemote=false;});
 }
 window.addEventListener('weiheng-chat-synced',applyRemoteChat);
@@ -288,10 +296,10 @@ function handlePageHide(): void {
   persistState();
 }
 
-if (typeof window !== 'undefined') window.addEventListener('pagehide', handlePageHide);
+if (typeof window !== 'undefined') {window.addEventListener('pagehide', handlePageHide);window.addEventListener('weiheng-chat-flush',handlePageHide);}
 onBeforeUnmount(() => {
   persistState();
-  if (typeof window !== 'undefined') window.removeEventListener('pagehide', handlePageHide);
+  if (typeof window !== 'undefined') {window.removeEventListener('pagehide', handlePageHide);window.removeEventListener('weiheng-chat-flush',handlePageHide);}
 });
 
 watch(currentMessages, async () => {
@@ -426,6 +434,7 @@ async function sendQuestion(rawQuestion: string, retryAssistantId?: string, atta
       if (event.type === 'delta') {
         assistantMessage.content += event.text;
       } else if (event.type === 'done') {
+        if(typeof event.content==='string')assistantMessage.content=event.content;
         assistantMessage.model = event.model;
         assistantMessage.context = event.contextSummary;
         assistantMessage.createdAt = event.generatedAt || new Date().toISOString();
@@ -440,6 +449,7 @@ async function sendQuestion(rawQuestion: string, retryAssistantId?: string, atta
     assistantMessage.createdAt = response.generatedAt || new Date().toISOString();
     assistantMessage.status = 'complete';
     persistState();
+    void syncChat();
     return true;
   } catch (error: unknown) {
     if (activeRequest !== request) return false;
@@ -449,6 +459,7 @@ async function sendQuestion(rawQuestion: string, retryAssistantId?: string, atta
     return false;
   } finally {
     if (activeRequest === request) activeRequest = undefined;
+    if(pendingRemoteChat&&!sending.value)applyRemoteChat();
   }
 }
 
@@ -480,7 +491,7 @@ function retry(messageId: string): void {
 
 function startNewConversation(): void {
   attachmentBatchVersion++;
-  createThread(date.value);
+  explicitEmptyThreads.add(createThread(date.value).id);
   for (const item of draftAttachments.value) removeAttachment(item.id);
   notice.value = '';
 }
@@ -518,10 +529,11 @@ function clearLocalHistory(): void {
         <details class="vb-simple-options">
           <summary aria-label="对话选项">更多<AppIcon name="chevron" :size="14" /></summary>
           <div class="vb-simple-options-panel">
-            <label v-if="dateThreads.length > 1" class="vb-simple-history">
-              切换本日对话
-              <select v-model="activeByDate[date]" aria-label="切换本日对话">
-                <option v-for="thread in dateThreads" :key="thread.id" :value="thread.id">{{ formatThreadTime(thread.createdAt) }} · {{ thread.messages.length ? `${thread.messages.length} 条消息` : '空对话' }}</option>
+            <label v-if="historyThreads.length" class="vb-simple-history">
+              历史对话
+              <select :value="currentThread?.id" :disabled="sending" aria-label="切换历史对话" @change="openHistory">
+                <option v-if="!currentMessages.length" :value="currentThread?.id">当前新对话</option>
+                <option v-for="thread in historyThreads" :key="thread.id" :value="thread.id">{{ thread.date }} · {{ formatThreadTime(thread.createdAt) }} · {{ thread.messages.length }} 条消息</option>
               </select>
             </label>
             <label class="vb-memory-toggle">
@@ -564,7 +576,8 @@ function clearLocalHistory(): void {
               <p class="vb-simple-error" role="alert">{{ message.error || 'AI 回复失败。' }}</p>
               <button class="vb-text-button vb-simple-retry" type="button" @click="retry(message.id)"><AppIcon name="activity" :size="14" />重试这条问题</button>
             </template>
-            <p v-else class="vb-simple-text">{{ message.content }}</p>
+            <p v-else-if="message.role!=='assistant'||!requestedDocumentFormat(exportQuestion(message.id))" class="vb-simple-text">{{ message.content }}</p>
+            <ChatMessageExport v-if="message.role==='assistant'&&message.status==='complete'&&message.content.trim()" :content="message.content" :question="exportQuestion(message.id)" :auto="currentMessages.at(-1)?.id===message.id" @retry="retry(message.id)" />
             <small v-if="message.status === 'complete'" class="vb-simple-message-meta">
               {{ formatMessageTime(message.createdAt) }}<template v-if="message.role === 'assistant'"> · {{ message.model || 'DeepSeek' }}</template>
             </small>

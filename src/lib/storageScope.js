@@ -11,7 +11,7 @@ const CHAT_KEY='weiheng.ai-diet-chat.v1';
 let chatBusy=false,chatTimer=0,chatStopped=false;
 export const chatSyncStatus=ref('guest');
 const parseChat=s=>{try{return JSON.parse(s)||{threads:[]};}catch{return {threads:[]};}};
-async function syncChat(){
+export async function syncChat(){
  if(actor==='guest'||chatBusy||chatStopped)return;
  const identity=actor,key=scopedKey(CHAT_KEY),before=globalThis.localStorage.getItem(key);
  chatBusy=true;chatSyncStatus.value='syncing';
@@ -20,7 +20,7 @@ async function syncChat(){
   const result=await response.json();if(!response.ok)throw Error(result.error);
   if(chatStopped||actor!==identity||result.userId!==identity)return;
   const current=globalThis.localStorage.getItem(key),state=mergeChat(result.state,parseChat(current)),serialized=JSON.stringify(state);
-  globalThis.localStorage.setItem(key,serialized);chatSyncStatus.value='synced';lastChatSync.value=new Date().toISOString();
+  globalThis.localStorage.setItem(key,serialized);chatSyncStatus.value=current!==before?'pending':'synced';lastChatSync.value=new Date().toISOString();
   if(current!==serialized)window.dispatchEvent(new CustomEvent('weiheng-chat-synced'));
   if(current!==before){clearTimeout(chatTimer);chatTimer=setTimeout(syncChat,1000);}
  }catch{chatSyncStatus.value='error';}finally{chatBusy=false;}
@@ -96,7 +96,7 @@ function scheduleAccountSync() {
 export const appStorage = {
   getItem: key => globalThis.localStorage.getItem(scopedKey(key)),
   setItem(key, value) {
-    if(key===CHAT_KEY){value=JSON.stringify(stampChat(parseChat(appStorage.getItem(key)),parseChat(value)));}
+    if(key===CHAT_KEY){const previous=parseChat(appStorage.getItem(key));value=JSON.stringify(mergeChat(previous,stampChat(previous,parseChat(value))));}
     globalThis.localStorage.setItem(scopedKey(key), value);
     if(key===CHAT_KEY&&actor!=='guest'){chatSyncStatus.value='pending';clearTimeout(chatTimer);chatTimer=setTimeout(syncChat,900);}
     if (key === MAIN_DATA_KEY) scheduleAccountSync();
@@ -166,13 +166,14 @@ export async function initializeStorageScope() {
   window.addEventListener('focus', ()=>{void check();void syncChat();});
   window.addEventListener('online',()=>void syncChat());
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)void syncChat();});
-  window.addEventListener('pagehide',()=>{if(actor!=='guest'){const body=appStorage.getItem(CHAT_KEY);if(body)void fetch('/api/chat',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({...parseChat(body),expectedUserId:actor}),keepalive:true}).catch(()=>{});}});
+  window.addEventListener('pagehide',()=>{window.dispatchEvent(new CustomEvent('weiheng-chat-flush'));if(actor!=='guest'){const body=appStorage.getItem(CHAT_KEY);if(body)void fetch('/api/chat',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({...parseChat(body),expectedUserId:actor}),keepalive:true}).catch(()=>{});}});
   const polling=setInterval(()=>{if(!document.hidden)void syncChat();},8000);
   polling.unref?.();
   window.addEventListener('weiheng-reset-begin',()=>{chatStopped=true;clearTimeout(chatTimer);});
   window.addEventListener('weiheng-reset-abort',()=>{chatStopped=false;});
   document.addEventListener('visibilitychange', check);
   window.addEventListener('storage', event => {
+    if(event.key===scopedKey(CHAT_KEY)){window.dispatchEvent(new CustomEvent('weiheng-chat-synced'));void syncChat();}
     if (event.key === scopedKey(MAIN_DATA_KEY) && actor !== 'guest') scheduleAccountSync();
   });
 }

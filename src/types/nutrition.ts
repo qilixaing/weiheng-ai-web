@@ -277,6 +277,7 @@ export type AiDietChatStreamEvent =
   | { type: 'error'; code: string; message: string }
   | {
       type: 'done';
+      content?: string;
       model: string;
       generatedAt: string;
       contextSummary: AiDietChatResponse['contextSummary'];

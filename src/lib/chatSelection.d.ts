@@ -1,0 +1,1 @@
+export function selectChatThreads(state:{threads:Array<{id:string;date:string;createdAt:string;messages:unknown[]}>;activeByDate?:Record<string,string>},localActive?:Record<string,string>,protectedEmptyIds?:string[]):Record<string,string>;

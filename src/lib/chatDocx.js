@@ -1,0 +1,19 @@
+import {zipSync,strToU8} from 'fflate';
+import {xmlText} from './chatDocument.js';
+const p=(text,style='Normal')=>`<w:p><w:pPr><w:pStyle w:val="${style}"/></w:pPr><w:r><w:t xml:space="preserve">${xmlText(text)}</w:t></w:r></w:p>`;
+function table(rows){
+ const count=Math.max(...rows.map(r=>r.length)),width=Math.floor(9360/count);
+ return `<w:tbl><w:tblPr><w:tblW w:w="9360" w:type="dxa"/><w:tblLayout w:type="fixed"/><w:tblBorders>${['top','left','bottom','right','insideH','insideV'].map(x=>`<w:${x} w:val="single" w:sz="4" w:color="B9CFC3"/>`).join('')}</w:tblBorders></w:tblPr><w:tblGrid>${Array.from({length:count},()=>`<w:gridCol w:w="${width}"/>`).join('')}</w:tblGrid>${rows.map((row,i)=>`<w:tr>${i===0?'<w:trPr><w:tblHeader/></w:trPr>':''}${Array.from({length:count},(_,j)=>`<w:tc><w:tcPr><w:tcW w:w="${width}" w:type="dxa"/>${i===0?'<w:shd w:fill="E5F0E9"/>':''}</w:tcPr>${p(row[j]||'')}</w:tc>`).join('')}</w:tr>`).join('')}</w:tbl>`;
+}
+export function createChatDocx(doc){
+ const body=p(doc.title,'Title')+p('导出日期：'+doc.generatedAt.slice(0,10),'Subtitle')+(doc.question?p('提问：'+doc.question,'Question'):'')+doc.blocks.map(b=>b.type==='table'?table(b.rows):p(b.text||'',b.type==='heading'?'Heading'+Math.min(b.level,3):b.type==='code'?'Code':'Normal')).join('');
+ const document=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${body}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1080" w:bottom="1080" w:left="1273" w:right="1273"/></w:sectPr></w:body></w:document>`;
+ const styles=`<?xml version="1.0" encoding="UTF-8"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="Microsoft YaHei"/><w:sz w:val="22"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="120" w:line="320" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults>${[['Normal',22,'253D33'],['Title',36,'234A37'],['Subtitle',19,'61766C'],['Question',21,'526A5E'],['Heading1',30,'234A37'],['Heading2',26,'234A37'],['Heading3',23,'234A37'],['Code',20,'35433B']].map(([id,size,color])=>`<w:style w:type="paragraph" w:styleId="${id}"><w:name w:val="${id}"/>${id==='Normal'?'':'<w:basedOn w:val="Normal"/>'}${String(id).startsWith('Heading')?'<w:pPr><w:keepNext/><w:spacing w:before="240" w:after="120"/></w:pPr>':''}<w:rPr><w:sz w:val="${size}"/><w:color w:val="${color}"/>${id==='Title'||String(id).startsWith('Heading')?'<w:b/>':''}</w:rPr></w:style>`).join('')}</w:styles>`;
+ const files={
+  '[Content_Types].xml':'<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>',
+  '_rels/.rels':'<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>',
+  'word/_rels/document.xml.rels':'<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rIdStyles" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>',
+  'word/document.xml':document,'word/styles.xml':styles
+ };
+ return zipSync(Object.fromEntries(Object.entries(files).map(([name,text])=>[name,strToU8(text)])),{level:6});
+}
