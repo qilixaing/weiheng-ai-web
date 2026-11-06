@@ -9,6 +9,7 @@ import {useMealAgent} from '../composables/useMealAgent';
 import {calculateIntake,portion,recordEntries,todayDate} from '../lib/foodNutrition.js';
 import {FOOD_BY_ID,searchFoods,ALL_FOODS,ensureFoodDetails} from '../data/catalogue.js';
 import {normalizeMealConditions,calculateMealCost,foodConflicts,allowedMealFood} from '../lib/mealConditions.js';
+import { aiDisplayName } from '../lib/aiBranding.js';
 const props=defineProps({profile:Object,nutrition:Object,preferences:String,flags:Array,records:Array});
 const emit=defineEmits(['confirm']);
 const {goal,date,meal,response,error,busy,progress,run,clear}=useMealAgent();
@@ -54,7 +55,7 @@ const display=value=>typeof value==='number'&&Number.isFinite(value)?value.toLoc
    </details>
    <label class="vb-agent-context-optin"><input v-model="shareHistory" type="checkbox" :disabled="busy" /><span>使用所选日期的 {{ history.length }} 项已记录食物<small>只发送食物、克数和餐次；备注、照片与聊天不随本次请求发送。</small></span></label>
    <label class="vb-agent-context-optin"><input v-model="shareSafety" type="checkbox" :disabled="busy" /><span>本次附带我已选择的安全提醒<small>用于提示核对，不生成疾病或特殊生理人群的营养处方。</small></span></label>
-   <p class="vb-data-note">点击生成会把本次条件、基础身体档案和勾选的相关记录发送给 DeepSeek。显式回避项会过滤目录，但本地库没有完整配料与交叉污染资料，不能保证过敏安全。</p>
+   <p class="vb-data-note">点击生成会把本次条件、基础身体档案和勾选的相关记录发送给维衡 AI。显式回避项会过滤目录，但本地库没有完整配料与交叉污染资料，不能保证过敏安全。</p>
    <p v-if="inputError" class="vb-field-error" role="alert">{{ inputError }}</p><button class="vb-button vb-button-primary" :disabled="busy||!goal.trim()"><span v-if="busy" class="vb-loading-ring" /><AppIcon v-else name="sparkles" :size="16" />{{ busy?'正在等待真实检索与计算…':ready?'按当前条件重新规划':'生成待确认方案' }}</button>
   </form>
   <div v-if="busy||progress.length" class="vb-agent-progress" role="status" aria-live="polite"><div><strong>{{ busy?'正在执行；仅展示已完成步骤':'本次实际执行记录' }}</strong><p v-if="busy">模型响应需要一些时间，完成的工具步骤会陆续显示。</p><ol><li v-for="(step,index) in progress" :key="index"><strong>{{ step.label }}</strong> · {{ step.resultSummary }}</li></ol></div></div>
@@ -68,7 +69,7 @@ const display=value=>typeof value==='number'&&Number.isFinite(value)?value.toLoc
    <NutrientSummary :entries="entries" :targets="nutrition||{}" compact details />
    <p class="vb-data-note">上方小计按当前编辑的份量重新计算。原始工具记录对应生成时的方案；本餐占每日目标的比例不能证明全天达标。</p>
    <div class="vb-agent-notes" v-if="ready.plan.suggestions.length"><h4>执行建议</h4><ul><li v-for="item in ready.plan.suggestions" :key="item">{{ item }}</li></ul></div><div class="vb-agent-notes is-caution" v-if="ready.plan.cautions.length"><h4>需要核对</h4><ul><li v-for="item in ready.plan.cautions" :key="item">{{ item }}</li></ul></div>
-   <details class="vb-agent-trace"><summary>原始工具调用与版本</summary><ol><li v-for="(step,index) in ready.trace" :key="index"><strong>{{ step.label }}</strong> · {{ step.inputSummary }} · {{ step.resultSummary }}</li></ol><small>{{ ready.model }} · {{ ready.dataVersion }} · {{ new Date(ready.generatedAt).toLocaleString('zh-CN') }}</small></details>
+   <details class="vb-agent-trace"><summary>原始工具调用与版本</summary><ol><li v-for="(step,index) in ready.trace" :key="index"><strong>{{ step.label }}</strong> · {{ step.inputSummary }} · {{ step.resultSummary }}</li></ol><small>{{ aiDisplayName(ready.model) }} · {{ ready.dataVersion }} · {{ new Date(ready.generatedAt).toLocaleString('zh-CN') }}</small></details>
    <SourcesNote /><div class="vb-agent-confirm"><p>仅在确认后加入“本次选择”。实际吃过后，在饮食记录中核对并保存当天记录。</p><button class="vb-button vb-button-primary" :disabled="confirmed||invalidPlan" @click="confirmPlan">{{ confirmed?'已加入草稿':'确认并加入饮食草稿' }}</button></div>
   </section>
  </section>

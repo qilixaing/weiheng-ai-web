@@ -59,7 +59,7 @@ onBeforeUnmount(()=>{disposed=true;attempt++;});
     <p v-if="error" class="vb-inline-note" role="status">{{error}}<button class="vb-text-button" @click="loadFeatures">重试</button></p>
     <OverviewPage v-if="initialPage==='overview'" :profile="preview" :records="[]" :record-count="recordCount" defer-intake @navigate="navigate" @edit="edit" />
     <section v-else class="vb-glass vb-plan-context" aria-busy="true"><div><h1>{{titles[initialPage]}}</h1><p role="status">{{error?'请重试加载此页面。':'正在载入…'}}</p></div></section>
-    <footer class="vb-footer"><AppIcon name="leaf" :size="14" />维衡 AI · 把健康，放进每一餐<span>营养信息仅供一般参考</span></footer>
+    <footer class="vb-footer"><AppIcon name="leaf" :size="14" />维衡 AI · 把健康，放进每一餐<span>营养信息仅供一般参考 · © 2026 维衡 AI 版权所有</span></footer>
    </main>
   </div>
   <AccountDialog v-if="accountOpen" @close="accountOpen=false" />

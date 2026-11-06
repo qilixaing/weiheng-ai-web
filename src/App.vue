@@ -63,7 +63,7 @@ onBeforeUnmount(()=>clearTimeout(toastTimer));
      <MealplanPage v-else-if="active==='mealplan'" :nutrition="nutrition" :preferences="state.preferences" :flags="state.flags" :profile="effectiveProfile" :records="state.records" @navigate="navigate" @add-plan="addAgentPlan" />
      <ProfilePage v-else-if="active==='profile'" :profile="effectiveProfile" :nutrition="nutrition" v-model:flags="state.flags" v-model:preferences="state.preferences" @edit="wizardOpen=true" />
      <AboutPage v-else-if="active==='about'" :flags="state.flags" @navigate="navigate" />
-    </template><footer class="vb-footer"><AppIcon name="leaf" :size="14" />维衡 AI · 把健康，放进每一餐<span>营养信息仅供一般参考</span></footer></main>
+    </template><footer class="vb-footer"><AppIcon name="leaf" :size="14" />维衡 AI · 把健康，放进每一餐<span>营养信息仅供一般参考 · © 2026 维衡 AI 版权所有</span></footer></main>
    </div>
   </div>
   <ProfileWizard v-if="wizardOpen" :profile="state.profile" @complete="finishProfile" @close="wizardOpen=false" @login="openAccount" />

@@ -45,7 +45,7 @@ function label(report: AiNutritionReport): string {
     <label class="vb-date-input"><AppIcon name="calendar" :size="18" /><input v-model="date" type="date" aria-label="筛选报告日期" /></label>
   </div>
   <div v-else class="vb-report-toolbar"><p>按日期筛选已生成的分析报告</p><label class="vb-date-input"><AppIcon name="calendar" :size="18" /><input v-model="date" type="date" aria-label="筛选报告日期" /></label></div>
-  <p class="vb-data-note vb-report-privacy">报告保存在当前浏览器。生成分析时，已确认的食物、克数与基础营养档案会经本地后端发送给 DeepSeek；照片和备注不随每日分析发送。</p>
+  <p class="vb-data-note vb-report-privacy">报告保存在当前浏览器。生成分析时，已确认的食物、克数与基础营养档案会经本地后端发送给维衡 AI；照片和备注不随每日分析发送。</p>
   <div v-if="date" class="vb-report-filter"><span>{{ filtered.length }} 份报告</span><button type="button" class="vb-text-button" @click="date = ''">清除日期筛选</button></div>
   <div v-if="filtered.length" class="vb-report-list">
     <article v-for="report in filtered" :key="report.id" class="vb-glass vb-report-card">

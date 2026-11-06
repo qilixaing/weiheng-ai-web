@@ -1,5 +1,5 @@
-import { u as J, b as U, _ as C, d as q, e as F } from "./useThemeTransition-DCCrVJcv.js";
-import { b as h, a as z, i as L } from "./main-DU1dJnTu.js";
+import { u as J, b as U, _ as C, d as q, e as F } from "./useThemeTransition-CWq8KZel.js";
+import { b as h, a as z, i as L } from "./main-D0WUrqL2.js";
 import { w as M, h as Z, x as G, o as d, l as S, H as K, d as N, i as g, e as t, p as _, t as f, u as T, j as B, r as s, I as Q, J as W, a as X } from "./vue-runtime-wiGxZMXT.js";
 async function Y() {
   try {
@@ -27,7 +27,7 @@ const ee = ["data-theme"], te = { class: "vb-main" }, ae = { class: "vb-topbar" 
 }, ce = { role: "status" }, ve = { class: "vb-footer" }, be = {
   __name: "HomeEntry",
   setup(w) {
-    const i = W(null), n = s(!1), o = s({}), r = s(0), u = s("overview"), $ = s(!1), m = s(!1), c = s("light"), k = { overview: "概览", dietAssistant: "维衡AI助手", diary: "饮食记录", mealplan: "膳食方案", assessment: "营养分析", food: "食物浏览", profile: "个人档案", about: "关于" }, v = s(""), A = s(!1), x = s(!1), E = s(!1), { toggleTheme: j } = J(c);
+    const i = W(null), n = s(!1), o = s({}), r = s(0), u = s("overview"), $ = s(!1), m = s(!1), c = s("light"), k = { overview: "概览", dietAssistant: "维衡AI助手", diary: "饮食记录", mealplan: "膳食方案", assessment: "营养分析", food: "食物浏览", profile: "个人档案", about: "关于" }, v = s(""), A = s(!1), I = s(!1), E = s(!1), { toggleTheme: j } = J(c);
     M(c, (a) => {
       if (n.value)
         try {
@@ -69,7 +69,7 @@ const ee = ["data-theme"], te = { class: "vb-main" }, ae = { class: "vb-topbar" 
           if (await L(), y) return;
           n.value = !0, P(), E.value && (m.value = !0);
         }
-        const e = await V(import("./App-CkNScUK5.js"), 3e4);
+        const e = await V(import("./App-B4OKNtJL.js"), 3e4);
         !y && a === p && (i.value = Q(e.default));
       } catch {
         !y && a === p && (v.value = n.value ? "部分功能暂未载入，首页仍可查看。" : "账号连接暂未完成，首页仍可查看，已有数据会保留。");
@@ -77,14 +77,14 @@ const ee = ["data-theme"], te = { class: "vb-main" }, ae = { class: "vb-topbar" 
         a === p && (A.value = !1);
       }
     }
-    function I(a) {
-      Object.hasOwn(k, a) && (u.value = a, x.value = a !== "overview", b(), window.scrollTo({ top: 0, behavior: "auto" }));
+    function x(a) {
+      Object.hasOwn(k, a) && (u.value = a, I.value = a !== "overview", b(), window.scrollTo({ top: 0, behavior: "auto" }));
     }
     function R() {
-      $.value = !0, x.value = !0, b();
+      $.value = !0, I.value = !0, b();
     }
     function D() {
-      n.value ? m.value = !0 : (E.value = !0, x.value = !0, b());
+      n.value ? m.value = !0 : (E.value = !0, I.value = !0, b());
     }
     return Z(() => {
       Y(), b();
@@ -101,7 +101,7 @@ const ee = ["data-theme"], te = { class: "vb-main" }, ae = { class: "vb-topbar" 
     }, [
       g(U, {
         active: u.value,
-        onNavigate: I
+        onNavigate: x
       }, null, 8, ["active"]),
       t("div", te, [
         t("header", ae, [
@@ -132,7 +132,7 @@ const ee = ["data-theme"], te = { class: "vb-main" }, ae = { class: "vb-topbar" 
             t("button", {
               class: "vb-avatar",
               "aria-label": "查看个人档案",
-              onClick: e[1] || (e[1] = (l) => I("profile"))
+              onClick: e[1] || (e[1] = (l) => x("profile"))
             }, [
               g(C, {
                 name: "person",
@@ -155,7 +155,7 @@ const ee = ["data-theme"], te = { class: "vb-main" }, ae = { class: "vb-topbar" 
             records: [],
             "record-count": r.value,
             "defer-intake": "",
-            onNavigate: I,
+            onNavigate: x,
             onEdit: R
           }, null, 8, ["profile", "record-count"])) : (d(), N("section", ue, [
             t("div", null, [
@@ -169,7 +169,7 @@ const ee = ["data-theme"], te = { class: "vb-main" }, ae = { class: "vb-topbar" 
               size: 14
             }),
             e[6] || (e[6] = _("维衡 AI · 把健康，放进每一餐", -1)),
-            e[7] || (e[7] = t("span", null, "营养信息仅供一般参考", -1))
+            e[7] || (e[7] = t("span", null, "营养信息仅供一般参考 · © 2026 维衡 AI 版权所有", -1))
           ])
         ])
       ]),

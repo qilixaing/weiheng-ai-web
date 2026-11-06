@@ -1,4 +1,4 @@
-import { a as U, l as ee, e as de, j as te, r as X, h as ne, k as se, m as ve, n as me, p as ge } from "./main-DU1dJnTu.js";
+import { a as U, l as ee, e as de, j as te, r as X, h as ne, k as se, m as ve, n as me, p as ge } from "./main-D0WUrqL2.js";
 import { o as u, d as c, F as R, f as V, w as be, s as ie, h as he, x as re, r as N, e, g as Z, i as B, t as i, j as S, u as k, p as b, K as pe, l as ae, n as fe, L as ye, a as F, M as ke, k as le, m as P, N as we, v as W, B as Ae } from "./vue-runtime-wiGxZMXT.js";
 const O = [
   { key: "sedentary", label: "久坐", factor: 1.2, detail: "大部分时间坐着，很少运动", icon: "chair" },
@@ -392,7 +392,7 @@ const ze = { class: "vb-sources" }, He = ["href"], Qe = ["href"], Pe = ["href"],
   props: { profile: Object, nutrition: Object, recordCount: Number, records: Array, deferIntake: Boolean },
   emits: ["edit", "navigate"],
   setup(t) {
-    const l = ye(() => import("./IntakeAnalysis-6Q243Dsz.js").then((p) => p.I)), a = t, n = F(() => Ze(a.profile)), v = F(() => ce(a.profile)), h = F(() => v.value.vitamins.length > 0), g = F(() => O.find((p) => p.key === a.profile.activity)), d = F(() => [
+    const l = ye(() => import("./IntakeAnalysis--YRn2hnC.js").then((p) => p.I)), a = t, n = F(() => Ze(a.profile)), v = F(() => ce(a.profile)), h = F(() => v.value.vitamins.length > 0), g = F(() => O.find((p) => p.key === a.profile.activity)), d = F(() => [
       !a.profile.sex && "性别",
       (a.profile.age == null || a.profile.age === "") && "年龄",
       (a.profile.height == null || a.profile.height === "") && "身高",

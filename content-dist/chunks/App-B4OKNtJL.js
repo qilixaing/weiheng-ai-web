@@ -1,7 +1,7 @@
-import { r as T, a as H, b as et, w as re, o as s, d as o, e, F as B, f as J, n as yn, g as me, h as wt, i as U, j as I, k as Pe, t as a, l as ve, m as te, v as ie, p as N, u as b, q as Ce, s as xe, x as Ve, y as Wn, z as ot, A as He, B as vt, C as Yn, D as hn, E as St, G as Xn } from "./vue-runtime-wiGxZMXT.js";
-import { v as Fe, t as ke, F as le, c as $t, r as tt, n as Qn, m as Zn, a as Rt, e as qe, b as kn, d as gt, M as Ee, f as Vt, g as yt, h as wn, s as $n, i as mt, j as nn, N as es, k as De, _ as qt, l as ts, C as xt, G as _n, o as zt, p as ns, q as Lt, u as sn, P as Et, R as ss, w as Ut, x as os, y as on, A as Je, z as dt, B as ln, D as ls } from "./IntakeAnalysis-6Q243Dsz.js";
-import { s as nt, a as _e, o as as, b as we, t as Cn, c as is, d as $e, e as rs, f as us, g as ds, h as pt } from "./main-DU1dJnTu.js";
-import { v as st, A as Gt, c as An, _ as O, p as cs, a as In, u as vs, b as ms, d as ps, e as bs } from "./useThemeTransition-DCCrVJcv.js";
+import { r as M, a as H, b as tt, w as re, o as s, d as o, e, F as B, f as J, n as hn, g as me, h as $t, i as j, j as I, k as Pe, t as a, l as ve, m as te, v as ie, p as N, u as b, q as Ae, s as xe, x as Ve, y as Yn, z as lt, A as Ke, B as mt, C as Xn, D as kn, E as xt, G as Qn } from "./vue-runtime-wiGxZMXT.js";
+import { v as Fe, t as ke, F as le, c as _t, r as nt, n as Zn, m as es, a as zt, e as qe, b as wn, d as yt, M as Ee, f as qt, g as ht, h as $n, s as _n, i as pt, j as sn, N as ts, k as De, _ as Lt, l as ns, C as Et, G as An, o as Ot, p as ss, q as Gt, u as on, P as jt, R as os, w as Ut, x as ls, y as ln, A as He, z as ct, B as an } from "./IntakeAnalysis--YRn2hnC.js";
+import { s as st, a as _e, o as as, b as we, t as Cn, c as is, d as $e, e as rs, f as us, g as ds, h as bt } from "./main-D0WUrqL2.js";
+import { v as ot, A as Jt, c as In, _ as O, p as cs, a as Sn, u as vs, b as ms, d as ps, e as bs } from "./useThemeTransition-CWq8KZel.js";
 function fs(t, l) {
   if (!l || !Fe(l.date) || l.date > ke() || !["breakfast", "lunch", "dinner", "snack", "unspecified"].includes(l.meal) || !Array.isArray(l.items) || !l.items.length || l.items.length > 8) throw new Error("请核对方案日期、餐次和食物列表。");
   const n = String(l.confirmationId || "").slice(0, 100);
@@ -10,23 +10,23 @@ function fs(t, l) {
   const d = l.items.map((i) => {
     const u = le[i.foodId], r = Number(i.grams);
     if (!u || !Number.isFinite(r) || r < 0.1 || r > 5e3) throw new Error("方案含无效食物或克数，未加入记录。");
-    return { id: n + ":" + u.key, foodId: u.key, name: u.name, grams: r, meal: l.meal, group: u.group, source: "catalogue", estimated: !0, referenceConfirmed: !0, nutritionSnapshot: $t(u) };
+    return { id: n + ":" + u.key, foodId: u.key, name: u.name, grams: r, meal: l.meal, group: u.group, source: "catalogue", estimated: !0, referenceConfirmed: !0, nutritionSnapshot: _t(u) };
   });
   if (new Set(d.map((i) => i.foodId)).size !== d.length) throw new Error("方案含重复食物，未加入记录。");
   return { draft: { ...t, entries: [...t.entries || [], ...d], appliedBatches: [...t.appliedBatches || [], n] }, duplicate: !1 };
 }
-const Ze = nt("weiheng.reset-signal.v1"), Sn = (t) => as(t);
+const et = st("weiheng.reset-signal.v1"), xn = (t) => as(t);
 let Be = !1;
 const Le = () => Be;
 typeof window < "u" && window.addEventListener("storage", (t) => {
-  if (!(t.key !== Ze || !t.newValue))
+  if (!(t.key !== et || !t.newValue))
     try {
       const { phase: l } = JSON.parse(t.newValue);
       l === "begin" && (Be = !0), l === "abort" && (Be = !1), l === "done" && (Be = !0, window.location.reload());
     } catch {
     }
 });
-function an(t, l) {
+function rn(t, l) {
   return new Promise((n, d) => {
     const i = t.open(l);
     i.onerror = i.onblocked = () => d(new Error("本地文件存储暂时无法清理，请关闭其他旧页面后重试。")), i.onsuccess = () => {
@@ -49,9 +49,9 @@ function an(t, l) {
     };
   });
 }
-function rn(t, l = !1) {
+function un(t, l = !1) {
   const n = Array.from({ length: t.length }, (d, i) => t.key(i));
-  for (const d of n) d && Sn(d) && !(l && d === Ze) && t.removeItem(d);
+  for (const d of n) d && xn(d) && !(l && d === et) && t.removeItem(d);
 }
 async function gs({
   local: t = globalThis.localStorage,
@@ -61,73 +61,73 @@ async function gs({
 } = {}) {
   if (Be) throw new Error("正在清理本地数据，请稍候。");
   Be = !0;
-  const i = (u) => t.setItem(Ze, JSON.stringify({ phase: u, time: Date.now() }));
+  const i = (u) => t.setItem(et, JSON.stringify({ phase: u, time: Date.now() }));
   try {
     if (i("begin"), globalThis.window?.dispatchEvent?.(new Event("weiheng-reset-begin")), _e.value && !(await fetch("/api/data", { method: "DELETE", cache: "no-store" })).ok)
       throw new Error("账号数据暂时无法清理，请检查连接后重试。");
     if (!n) throw new Error("浏览器无法访问本地文件存储，暂时不能完成全部重置。");
     if (await Promise.all([
-      an(n, nt("weiheng.media.v1")),
-      an(n, nt("weiheng.chat-attachments.v1"))
-    ]), d) for (const u of await d.keys()) Sn(u) && await d.delete(u);
-    l && rn(l), rn(t, !0), i("done"), t.removeItem(Ze);
+      rn(n, st("weiheng.media.v1")),
+      rn(n, st("weiheng.chat-attachments.v1"))
+    ]), d) for (const u of await d.keys()) xn(u) && await d.delete(u);
+    l && un(l), un(t, !0), i("done"), t.removeItem(et);
   } catch (u) {
     try {
-      i("abort"), t.removeItem(Ze);
+      i("abort"), t.removeItem(et);
     } catch {
     }
     throw Be = !1, globalThis.window?.dispatchEvent?.(new Event("weiheng-reset-abort")), u;
   }
 }
-const ht = "weiheng.local.v2", xn = "weiheng.theme.v1", ze = (t) => t == null || typeof t == "string" && t.trim() === "" ? void 0 : Number.isFinite(Number(t)) ? Number(t) : void 0;
-function un(t) {
+const kt = "weiheng.local.v2", En = "weiheng.theme.v1", ze = (t) => t == null || typeof t == "string" && t.trim() === "" ? void 0 : Number.isFinite(Number(t)) ? Number(t) : void 0;
+function dn(t) {
   if (!t) return null;
   const l = ["male", "男", "男性"].includes(t.sex || t.gender) ? "male" : ["female", "女", "女性"].includes(t.sex || t.gender) ? "female" : "", n = (
     /** @type {Record<string,string>} */
     { low: "sedentary", high: "heavy", active: "heavy" }
-  ), d = Gt.some((u) => u.key === t.activity) ? t.activity : n[String(t.activity)] || "";
-  if (st({ ...t, sex: l, activity: d })) return null;
+  ), d = Jt.some((u) => u.key === t.activity) ? t.activity : n[String(t.activity)] || "";
+  if (ot({ ...t, sex: l, activity: d })) return null;
   const i = { ...t, sex: l, age: ze(t.age), height: ze(t.height), weight: ze(t.weight), activity: d };
-  return st(i) ? null : { ...i, sex: (
+  return ot(i) ? null : { ...i, sex: (
     /** @type {'male'|'female'} */
     l
   ), activity: String(d) };
 }
-function En() {
+function jn() {
   const t = { profile: null, records: [], drafts: {}, plans: [], habits: {}, flags: [], preferences: "" };
   try {
-    const l = JSON.parse(we.getItem(ht) || "null");
+    const l = JSON.parse(we.getItem(kt) || "null");
     if (l && typeof l == "object") {
       for (const i of [...Array.isArray(l.records) ? l.records : [], ...Object.values(l.drafts || {})]) for (const u of Array.isArray(i?.entries) ? i.entries : []) u.foodId === "cabbage" && u.name === "白菜" && (u.referenceConfirmed = !1);
-      return { ...t, ...l, drafts: l.drafts && typeof l.drafts == "object" ? l.drafts : {}, profile: un(l.profile), records: Array.isArray(l.records) ? l.records : [] };
+      return { ...t, ...l, drafts: l.drafts && typeof l.drafts == "object" ? l.drafts : {}, profile: dn(l.profile), records: Array.isArray(l.records) ? l.records : [] };
     }
     const n = JSON.parse(we.getItem("vitabalance.v1") || we.getItem("vitabalance.guest.v1") || "null"), d = [["medication", "正在使用药物"], ["condition", "有需要管理的健康状况"], ["special", "孕期或哺乳期"], ["supplements", "正在使用营养补充剂"]];
-    return n ? { ...t, profile: un(n.profile), records: Array.isArray(n.records) ? n.records : [], plans: Array.isArray(n.plans) ? n.plans : [], flags: d.filter(([i]) => n.profile?.[i]).map(([, i]) => i), preferences: [n.profile?.avoid, n.profile?.allergies ? "需要核对的过敏或不耐受项：" + n.profile.allergies : ""].filter(Boolean).join("；") } : t;
+    return n ? { ...t, profile: dn(n.profile), records: Array.isArray(n.records) ? n.records : [], plans: Array.isArray(n.plans) ? n.plans : [], flags: d.filter(([i]) => n.profile?.[i]).map(([, i]) => i), preferences: [n.profile?.avoid, n.profile?.allergies ? "需要核对的过敏或不耐受项：" + n.profile.allergies : ""].filter(Boolean).join("；") } : t;
   } catch {
     return t;
   }
 }
-const de = et(En()), Oe = T("");
-let Ot = !1;
+const de = tt(jn()), Oe = M("");
+let Ft = !1;
 typeof window < "u" && window.addEventListener("weiheng-account-synced", () => {
-  Ot = !0;
+  Ft = !0;
   try {
-    Object.assign(de, En());
+    Object.assign(de, jn());
   } finally {
-    Ot = !1;
+    Ft = !1;
   }
 });
 const ys = (() => {
   try {
-    return we.getItem(xn);
+    return we.getItem(En);
   } catch {
     return null;
   }
-})(), Un = T(ys === "dark" ? "dark" : "light"), bt = H(() => An(de.flags.includes("孕期或哺乳期") ? null : de.profile));
+})(), Un = M(ys === "dark" ? "dark" : "light"), ft = H(() => In(de.flags.includes("孕期或哺乳期") ? null : de.profile));
 re(de, () => {
-  if (!(Le() || Ot))
+  if (!(Le() || Ft))
     try {
-      we.setItem(ht, JSON.stringify({ ...de, calculated: bt.value })), Oe.value = "";
+      we.setItem(kt, JSON.stringify({ ...de, calculated: ft.value })), Oe.value = "";
     } catch {
       Oe.value = "浏览器未能保存，请检查本地存储空间或隐私设置。";
     }
@@ -135,28 +135,28 @@ re(de, () => {
 re(Un, (t) => {
   if (!Le())
     try {
-      we.setItem(xn, t);
+      we.setItem(En, t);
     } catch {
       Oe.value = "主题偏好暂时无法保存。";
     }
 });
-function Jt() {
+function Ht() {
   const t = H(() => [...de.records].sort((c, v) => v.date.localeCompare(c.date)));
   function l(c) {
-    const v = st(c);
+    const v = ot(c);
     return v || (de.profile = { ...de.profile, sex: c.sex || "", ageMonths: ze(c.ageMonths), physiologicalStage: c.physiologicalStage || "general", age: ze(c.age), height: ze(c.height), weight: ze(c.weight), activity: c.activity, updatedAt: (/* @__PURE__ */ new Date()).toISOString() }, "");
   }
   function n(c) {
     if (Le()) return { ok: !1, error: "正在重置本地数据，已停止保存。" };
     if (!Fe(c.date)) return { ok: !1, error: "请选择有效日期。" };
-    const v = de.records.find((y) => y.date === c.date), g = Array.isArray(c.entries) ? Zn(c, v) : (
+    const v = de.records.find((y) => y.date === c.date), g = Array.isArray(c.entries) ? es(c, v) : (
       /** @type {DailyRecord} */
       { ...c, updatedAt: (/* @__PURE__ */ new Date()).toISOString() }
     );
-    if (v && Rt(v) === Rt(g)) return { ok: !0, record: v, unchanged: !0 };
+    if (v && zt(v) === zt(g)) return { ok: !0, record: v, unchanged: !0 };
     const $ = [...de.records.filter((y) => y.date !== g.date), g];
     try {
-      we.setItem(ht, JSON.stringify({ ...de, records: $, calculated: bt.value }));
+      we.setItem(kt, JSON.stringify({ ...de, records: $, calculated: ft.value }));
     } catch {
       return Oe.value = "保存未完成：浏览器本地空间不足或禁止存储。请保留此页，调整后重试。", { ok: !1, error: Oe.value };
     }
@@ -170,7 +170,7 @@ function Jt() {
     if (!Fe(c)) return null;
     if (!de.drafts[c]) {
       const v = de.records.find((g) => g.date === c);
-      de.drafts[c] = { date: c, entries: tt(v), notes: v?.notes || "", photoId: v?.photoId || null, recognition: null, appliedBatches: [] };
+      de.drafts[c] = { date: c, entries: nt(v), notes: v?.notes || "", photoId: v?.photoId || null, recognition: null, appliedBatches: [] };
     }
     return de.drafts[c];
   }
@@ -178,7 +178,7 @@ function Jt() {
     const v = i(c.date);
     if (!v) return !1;
     const g = le[c.foodId || ""];
-    return v.entries.push({ id: crypto.randomUUID(), foodId: c.foodId || null, name: g?.name || c.name || "", grams: Number(c.grams), meal: c.meal || "unspecified", group: c.group, source: c.source || "catalogue", estimated: !!c.estimated, referenceConfirmed: !0, nutritionSnapshot: Qn(c.nutritionSnapshot, g?.key) || $t(g) }), !Oe.value;
+    return v.entries.push({ id: crypto.randomUUID(), foodId: c.foodId || null, name: g?.name || c.name || "", grams: Number(c.grams), meal: c.meal || "unspecified", group: c.group, source: c.source || "catalogue", estimated: !!c.estimated, referenceConfirmed: !0, nutritionSnapshot: Zn(c.nutritionSnapshot, g?.key) || _t(g) }), !Oe.value;
   }
   function r(c, v) {
     const g = new Set(de.habits[c] || []);
@@ -187,31 +187,31 @@ function Jt() {
   function m(c) {
     if (Le()) return { ok: !1, error: "正在重置数据，暂停添加。" };
     try {
-      const v = de.drafts[c.date] || { date: c.date, entries: tt(de.records.find((y) => y.date === c.date)), appliedBatches: [] }, g = fs(v, c);
+      const v = de.drafts[c.date] || { date: c.date, entries: nt(de.records.find((y) => y.date === c.date)), appliedBatches: [] }, g = fs(v, c);
       if (g.duplicate) return { ok: !0, duplicate: !0 };
       const $ = { ...de.drafts, [c.date]: g.draft };
-      return we.setItem(ht, JSON.stringify({ ...de, drafts: $, calculated: bt.value })), de.drafts = $, { ok: !0, duplicate: !1 };
+      return we.setItem(kt, JSON.stringify({ ...de, drafts: $, calculated: ft.value })), de.drafts = $, { ok: !0, duplicate: !1 };
     } catch (v) {
       return { ok: !1, error: v.message || "方案保存失败，请保留当前页。" };
     }
   }
-  return { state: de, theme: Un, nutrition: bt, records: t, storageError: Oe, updateProfile: l, saveRecord: n, clearDraftAfterSave: d, ensureDraft: i, addToDraft: u, addPlanToDraft: m, toggleHabit: r };
+  return { state: de, theme: Un, nutrition: ft, records: t, storageError: Oe, updateProfile: l, saveRecord: n, clearDraftAfterSave: d, ensureDraft: i, addToDraft: u, addPlanToDraft: m, toggleHabit: r };
 }
-let jt;
+let Dt;
 function hs() {
-  return jt || (jt = new Promise((t, l) => {
+  return Dt || (Dt = new Promise((t, l) => {
     if (!globalThis.indexedDB) {
       l(new Error("此浏览器无法使用本地照片和报告存储。"));
       return;
     }
-    const n = indexedDB.open(nt("weiheng.media.v1"), 1);
+    const n = indexedDB.open(st("weiheng.media.v1"), 1);
     n.onupgradeneeded = () => {
       const d = n.result;
       for (const i of ["photos", "reports"]) d.objectStoreNames.contains(i) || d.createObjectStore(i, { keyPath: "id" });
     }, n.onsuccess = () => t(n.result), n.onerror = () => l(new Error("无法打开本地存储，请检查浏览器隐私设置。")), n.onblocked = () => l(new Error("本地存储被其他页面占用，请关闭旧页面后重试。"));
-  })), jt;
+  })), Dt;
 }
-async function _t(t, l, n) {
+async function At(t, l, n) {
   const d = await hs();
   if (l === "readwrite" && Le()) throw new Error("正在重置本地数据，已停止保存。");
   return new Promise((i, u) => {
@@ -223,7 +223,7 @@ async function _t(t, l, n) {
     }, r.oncomplete = () => i(m), r.onabort = r.onerror = () => u(new Error("本地存储写入失败，可能空间不足；饮食记录与现有报告不会被删除。"));
   });
 }
-const Ft = (t, l) => _t(t, "readwrite", (n) => n.put(JSON.parse(JSON.stringify(l)))), ks = (t, l) => _t(t, "readonly", (n) => n.get(l)), ws = (t) => _t(t, "readonly", (l) => l.getAll()), $s = (t, l) => _t(t, "readwrite", (n) => n.delete(l));
+const Bt = (t, l) => At(t, "readwrite", (n) => n.put(JSON.parse(JSON.stringify(l)))), ks = (t, l) => At(t, "readonly", (n) => n.get(l)), ws = (t) => At(t, "readonly", (l) => l.getAll()), $s = (t, l) => At(t, "readwrite", (n) => n.delete(l));
 async function Ct(t, l) {
   let n;
   try {
@@ -243,7 +243,7 @@ async function Ct(t, l) {
   }
   return d;
 }
-async function jn(t, l, n, d) {
+async function Dn(t, l, n, d) {
   const i = Cn(9e4), u = d ? is([d, i]) : i;
   let r;
   try {
@@ -307,61 +307,61 @@ async function jn(t, l, n, d) {
   }
 }
 async function _s(t, l) {
-  const n = await jn("meal-plan", t, (d) => {
+  const n = await Dn("meal-plan", t, (d) => {
     d.type === "progress" && l(d.step);
   });
   if (!n.result || !["ready", "needs_evidence"].includes(n.result.status)) throw new Error("方案响应不完整，请保留输入并重试。");
   return n.result;
 }
-const Ne = T([]), kt = T(""), Dt = /* @__PURE__ */ new Map();
-let Pt;
-function Ht(t) {
+const Ne = M([]), wt = M(""), Pt = /* @__PURE__ */ new Map();
+let Nt;
+function Kt(t) {
   return t instanceof Error ? t.message : "报告暂时无法保存，请检查浏览器存储权限。";
 }
-function Cs(t) {
+function As(t) {
   return t.filter((l) => {
     const n = l.referenceConfirmed === !1 ? void 0 : le[l.foodId || ""];
     return Ee.some((d) => {
-      const i = Vt(l, n, d.id);
+      const i = qt(l, n, d.id);
       return typeof i.value != "number" && !i.range;
     });
   });
 }
-function dn(t) {
+function cn(t) {
   Ne.value = [t, ...Ne.value.filter((l) => l.id !== t.id)].sort((l, n) => n.requestedAt.localeCompare(l.requestedAt));
 }
-async function ft(t) {
+async function gt(t) {
   try {
-    await Ft("reports", t), kt.value = "", dn(t);
+    await Bt("reports", t), wt.value = "", cn(t);
   } catch (l) {
-    throw kt.value = Ht(l), dn({ ...t, persistenceFailed: !0 }), l;
+    throw wt.value = Kt(l), cn({ ...t, persistenceFailed: !0 }), l;
   }
 }
-function Dn() {
-  return Pt || (Pt = (async () => {
+function Pn() {
+  return Nt || (Nt = (async () => {
     try {
       Ne.value = (await ws("reports")).sort((t, l) => l.requestedAt.localeCompare(t.requestedAt));
       for (const t of [...Ne.value])
-        t.status === "pending" && await ft({
+        t.status === "pending" && await gt({
           ...t,
           status: "interrupted",
           error: "上次分析在完成前中断，请重试。"
         });
     } catch (t) {
-      kt.value = Ht(t);
+      wt.value = Kt(t);
     }
-  })()), Pt;
+  })()), Nt;
 }
-function As(t) {
+function Cs(t) {
   return Ne.value.find((l) => l.date === t);
 }
 function Is(t, l, n) {
-  return !l || t.dataVersion !== kn(l, n);
+  return !l || t.dataVersion !== wn(l, n);
 }
 async function Ss(t, l, { force: n = !1 } = {}) {
   const d = $e();
-  if (await qe(tt(t).filter((y) => y.foodId && !y.nutritionSnapshot).map((y) => String(y.foodId))), $e() !== d || (await Dn(), $e() !== d)) return;
-  const i = kn(t, l), u = `${d}:${t.date}:${i}`, r = Dt.get(u);
+  if (await qe(nt(t).filter((y) => y.foodId && !y.nutritionSnapshot).map((y) => String(y.foodId))), $e() !== d || (await Pn(), $e() !== d)) return;
+  const i = wn(t, l), u = `${d}:${t.date}:${i}`, r = Pt.get(u);
   if (r) return r;
   const m = Ne.value.find(
     (y) => y.date === t.date && y.dataVersion === i && y.status === "complete" && !y.persistenceFailed
@@ -375,23 +375,23 @@ async function Ss(t, l, { force: n = !1 } = {}) {
     activity: l?.activity,
     ageMonths: l?.ageMonths,
     physiologicalStage: l?.physiologicalStage
-  }, v = tt(t), g = {
+  }, v = nt(t), g = {
     id: crypto.randomUUID(),
     date: t.date,
-    recordVersion: Rt(t),
+    recordVersion: zt(t),
     dataVersion: i,
     requestedAt: (/* @__PURE__ */ new Date()).toISOString(),
     generatedAt: null,
     status: "pending",
     snapshot: {
       entries: v,
-      intake: gt(v),
+      intake: yt(v),
       profile: c
     },
     result: null,
     error: ""
   }, $ = (async () => {
-    await ft(g);
+    await gt(g);
     try {
       const y = await Ct("analyze-day", {
         date: t.date,
@@ -400,23 +400,23 @@ async function Ss(t, l, { force: n = !1 } = {}) {
         requestId: g.id
       });
       if ($e() !== d) return;
-      const p = Cs(v);
+      const p = As(v);
       if (p.length) {
-        const _ = y.calculation?.estimation, A = _?.foods || [];
-        if (!(_?.status === "complete" && _.missingFoodCount === p.length && A.length === p.length && p.every((D) => {
-          const M = A.find((z) => z.entryId === String(v.indexOf(D))), V = D.referenceConfirmed === !1 ? void 0 : le[D.foodId || ""], W = Ee.filter((z) => {
-            const G = Vt(D, V, z.id);
+        const _ = y.calculation?.estimation, C = _?.foods || [];
+        if (!(_?.status === "complete" && _.missingFoodCount === p.length && C.length === p.length && p.every((D) => {
+          const T = C.find((z) => z.entryId === String(v.indexOf(D))), V = D.referenceConfirmed === !1 ? void 0 : le[D.foodId || ""], W = Ee.filter((z) => {
+            const G = qt(D, V, z.id);
             return typeof G.value != "number" && !G.range;
           }).map((z) => z.id);
-          return !!(M && W.every((z) => {
-            const G = M.values[z], Y = Ee.find((ue) => ue.id === z);
-            return G && Y && yt(G, Y.unit) !== null;
+          return !!(T && W.every((z) => {
+            const G = T.values[z], Y = Ee.find((ue) => ue.id === z);
+            return G && Y && ht(G, Y.unit) !== null;
           }));
         })))
           throw new Error("AI 服务端没有返回完整的缺失营养估算。请停止并重新启动当前 Node 服务后重试；当天饮食记录已经保存。");
       }
-      const h = wn(v, y.calculation?.estimation?.foods || [], { model: y.model, generatedAt: y.generatedAt }), w = gt(h);
-      await ft({
+      const h = $n(v, y.calculation?.estimation?.foods || [], { model: y.model, generatedAt: y.generatedAt }), w = yt(h);
+      await gt({
         ...g,
         snapshot: { ...g.snapshot, entries: h, intake: w },
         status: "complete",
@@ -427,23 +427,23 @@ async function Ss(t, l, { force: n = !1 } = {}) {
       });
     } catch (y) {
       if ($e() !== d) return;
-      await ft({ ...g, status: "failed", error: Ht(y) });
+      await gt({ ...g, status: "failed", error: Kt(y) });
     }
     return Ne.value.find((y) => y.id === g.id);
   })();
-  Dt.set(u, $);
+  Pt.set(u, $);
   try {
     return await $;
   } finally {
-    Dt.delete(u);
+    Pt.delete(u);
   }
 }
-function Kt() {
+function Wt() {
   return {
     reports: Ne,
-    reportStorageError: kt,
-    loadReports: Dn,
-    latestReport: As,
+    reportStorageError: wt,
+    loadReports: Pn,
+    latestReport: Cs,
     isStale: Is,
     generateReport: Ss
   };
@@ -461,21 +461,21 @@ const xs = ["aria-label", "aria-valuemin", "aria-valuemax", "aria-valuenow", "ar
   },
   emits: ["update:modelValue"],
   setup(t, { emit: l }) {
-    const n = t, d = l, i = T(null), u = T(!1), r = H(() => (n.max - n.min) * 0.16), m = H(() => {
+    const n = t, d = l, i = M(null), u = M(!1), r = H(() => (n.max - n.min) * 0.16), m = H(() => {
       const _ = Number(n.modelValue);
       return String(n.modelValue).trim() && Number.isFinite(_) ? Math.min(n.max, Math.max(n.min, _)) : n.fallback;
     }), c = H(() => {
-      const _ = (m.value - n.min) / r.value, A = _ - Math.round(_);
+      const _ = (m.value - n.min) / r.value, C = _ - Math.round(_);
       return Array.from({ length: 31 }, (R, D) => ({
         key: D,
         major: D % 5 === 0,
-        left: `${50 + (D - 15 - A) / 30 * 100}%`
+        left: `${50 + (D - 15 - C) / 30 * 100}%`
       }));
     });
     let v = null;
     function g(_) {
-      const A = Math.round((_ - n.min) / n.step), R = n.step < 1 ? 1 : 0;
-      return Number(Math.min(n.max, Math.max(n.min, n.min + A * n.step)).toFixed(R));
+      const C = Math.round((_ - n.min) / n.step), R = n.step < 1 ? 1 : 0;
+      return Number(Math.min(n.max, Math.max(n.min, n.min + C * n.step)).toFixed(R));
     }
     function $(_) {
       d("update:modelValue", g(_));
@@ -485,14 +485,14 @@ const xs = ["aria-label", "aria-valuemin", "aria-valuemax", "aria-valuenow", "ar
     }
     function p(_) {
       if (!v || !u.value) return;
-      const A = i.value.getBoundingClientRect().width || 1;
-      $(v.value + (_.clientX - v.x) / A * r.value);
+      const C = i.value.getBoundingClientRect().width || 1;
+      $(v.value + (_.clientX - v.x) / C * r.value);
     }
     function h() {
       u.value = !1, v = null;
     }
     function w(_) {
-      const A = {
+      const C = {
         ArrowRight: n.step,
         ArrowUp: n.step,
         ArrowLeft: -n.step,
@@ -500,9 +500,9 @@ const xs = ["aria-label", "aria-valuemin", "aria-valuemax", "aria-valuenow", "ar
         PageUp: n.step * 10,
         PageDown: -n.step * 10
       };
-      _.key === "Home" ? (_.preventDefault(), $(n.min)) : _.key === "End" ? (_.preventDefault(), $(n.max)) : A[_.key] && (_.preventDefault(), $(m.value + A[_.key]));
+      _.key === "Home" ? (_.preventDefault(), $(n.min)) : _.key === "End" ? (_.preventDefault(), $(n.max)) : C[_.key] && (_.preventDefault(), $(m.value + C[_.key]));
     }
-    return (_, A) => (s(), o("div", {
+    return (_, C) => (s(), o("div", {
       ref_key: "ruler",
       ref: i,
       class: me(["vb-ruler", { "is-dragging": u.value }]),
@@ -521,16 +521,16 @@ const xs = ["aria-label", "aria-valuemin", "aria-valuemax", "aria-valuenow", "ar
       onLostpointercapture: h,
       onKeydown: w
     }, [
-      A[0] || (A[0] = e("span", { class: "vb-ruler-line" }, null, -1)),
+      C[0] || (C[0] = e("span", { class: "vb-ruler-line" }, null, -1)),
       (s(!0), o(B, null, J(c.value, (R) => (s(), o("i", {
         key: R.key,
         class: me({ major: R.major }),
-        style: yn({ left: R.left })
+        style: hn({ left: R.left })
       }, null, 6))), 128)),
-      A[1] || (A[1] = e("span", { class: "vb-ruler-indicator" }, null, -1))
+      C[1] || (C[1] = e("span", { class: "vb-ruler-indicator" }, null, -1))
     ], 42, xs));
   }
-}, Us = { class: "vb-dialog-overlay" }, js = { class: "vb-wizard-top" }, Ds = { class: "vb-icon-badge" }, Ps = ["aria-valuenow", "aria-label"], Ns = { class: "vb-wizard-copy" }, Ts = { class: "vb-small-label" }, Ms = { id: "vb-wizard-title" }, Rs = { id: "vb-step-hint" }, zs = {
+}, js = { class: "vb-dialog-overlay" }, Us = { class: "vb-wizard-top" }, Ds = { class: "vb-icon-badge" }, Ps = ["aria-valuenow", "aria-label"], Ns = { class: "vb-wizard-copy" }, Ms = { class: "vb-small-label" }, Ts = { id: "vb-wizard-title" }, Rs = { id: "vb-step-hint" }, zs = {
   key: 0,
   class: "vb-sex-field"
 }, Os = { class: "vb-sr-only" }, Fs = ["aria-pressed", "onClick"], Bs = { class: "vb-person-symbol" }, Vs = { class: "vb-choice-check" }, qs = {
@@ -560,15 +560,15 @@ const xs = ["aria-label", "aria-valuemin", "aria-valuemax", "aria-valuenow", "ar
   props: { profile: { type: Object, default: null } },
   emits: ["complete", "close", "login"],
   setup(t, { emit: l }) {
-    const n = t, d = l, i = et(n.profile ? { ...n.profile } : { sex: "", age: "", height: "", weight: "", activity: "", physiologicalStage: "general" }), u = T(0), r = T(""), m = T(null), c = [
+    const n = t, d = l, i = tt(n.profile ? { ...n.profile } : { sex: "", age: "", height: "", weight: "", activity: "", physiologicalStage: "general" }), u = M(0), r = M(""), m = M(null), c = [
       { key: "sex", title: "先认识一下你", question: "你的生理性别是？", hint: "用于选择代谢公式与膳食参考值的分组；不方便填写可以跳过。" },
       { key: "age", title: "处于哪个人生阶段？", question: "你的年龄", unit: "岁", placeholder: "26", min: 0, max: 120, hint: "支持 0–120 岁，按年龄阶段展示参考数据。0 岁可补充月龄。" },
       { key: "height", title: "从身体的尺度开始", question: "你的身高", unit: "cm", placeholder: "170", min: 100, max: 250, hint: "脱鞋后的身高，精确到 0.1 cm 即可。" },
       { key: "weight", title: "记录现在的自己", question: "你目前的体重", unit: "kg", placeholder: "65", min: 25, max: 300, hint: "使用近期测量值，不需要填写目标体重。" },
       { key: "activity", title: "最后，看看日常节奏", question: "你的每日活动水平", hint: "综合工作、走动与运动选择最接近的一项。" }
     ], v = H(() => {
-      const _ = c[u.value], A = cs(i.age)[_.key];
-      return A ? { ..._, min: A[0], max: A[1] } : _;
+      const _ = c[u.value], C = cs(i.age)[_.key];
+      return C ? { ..._, min: C[0], max: C[1] } : _;
     });
     function g() {
       if (u.value === 0 || u.value === 4 || !String(i[v.value.key] ?? "").trim()) return "";
@@ -587,7 +587,7 @@ const xs = ["aria-label", "aria-valuemin", "aria-valuemax", "aria-valuenow", "ar
           u.value++;
           return;
         }
-        r.value = st(i), r.value || d("complete", { ...i });
+        r.value = ot(i), r.value || d("complete", { ...i });
       }
     }
     function h() {
@@ -595,17 +595,17 @@ const xs = ["aria-label", "aria-valuemin", "aria-valuemax", "aria-valuenow", "ar
     }
     re(u, () => {
       r.value = "", h();
-    }), wt(h);
+    }), $t(h);
     function w(_) {
       if (_.key === "Escape" && n.profile) {
         d("close");
         return;
       }
       if (_.key !== "Tab") return;
-      const A = [...m.value.querySelectorAll("button:not(:disabled), input:not(:disabled), a[href]")], R = A[0], D = A.at(-1);
+      const C = [...m.value.querySelectorAll("button:not(:disabled), input:not(:disabled), a[href]")], R = C[0], D = C.at(-1);
       _.shiftKey && document.activeElement === R ? (_.preventDefault(), D.focus()) : !_.shiftKey && document.activeElement === D && (_.preventDefault(), R.focus());
     }
-    return (_, A) => (s(), o("div", Us, [
+    return (_, C) => (s(), o("div", js, [
       e("section", {
         ref_key: "dialog",
         ref: m,
@@ -616,18 +616,18 @@ const xs = ["aria-label", "aria-valuemin", "aria-valuemax", "aria-valuenow", "ar
         "aria-describedby": "vb-step-hint",
         onKeydown: w
       }, [
-        e("div", js, [
+        e("div", Us, [
           e("span", Ds, [
-            U(O, { name: "leaf" })
+            j(O, { name: "leaf" })
           ]),
-          A[10] || (A[10] = e("span", null, "建立你的营养档案", -1)),
+          C[10] || (C[10] = e("span", null, "建立你的营养档案", -1)),
           t.profile ? (s(), o("button", {
             key: 0,
             class: "vb-icon-button",
             "aria-label": "关闭档案编辑",
-            onClick: A[0] || (A[0] = (R) => _.$emit("close"))
+            onClick: C[0] || (C[0] = (R) => _.$emit("close"))
           }, [
-            U(O, { name: "close" })
+            j(O, { name: "close" })
           ])) : I("", !0)
         ]),
         e("div", {
@@ -647,8 +647,8 @@ const xs = ["aria-label", "aria-valuemin", "aria-valuemax", "aria-valuenow", "ar
           onSubmit: Pe(p, ["prevent"])
         }, [
           e("div", Ns, [
-            e("span", Ts, "第 " + a(u.value + 1) + " 步 / 共 5 步", 1),
-            e("h2", Ms, a(v.value.title), 1),
+            e("span", Ms, "第 " + a(u.value + 1) + " 步 / 共 5 步", 1),
+            e("h2", Ts, a(v.value.title), 1),
             e("p", Rs, a(v.value.hint), 1)
           ]),
           u.value === 0 ? (s(), o("fieldset", zs, [
@@ -658,7 +658,7 @@ const xs = ["aria-label", "aria-valuemin", "aria-valuemax", "aria-valuenow", "ar
               type: "button",
               class: me(["vb-choice-button", { selected: i.sex === R }]),
               "aria-pressed": i.sex === R,
-              onClick: (M) => $(R)
+              onClick: (T) => $(R)
             }, [
               e("span", Bs, a(R === "male" ? "♂" : "♀"), 1),
               e("strong", null, a(D), 1),
@@ -676,7 +676,7 @@ const xs = ["aria-label", "aria-valuemin", "aria-valuemax", "aria-valuenow", "ar
               te((s(), o("input", {
                 id: "vb-step-number",
                 key: v.value.key,
-                "onUpdate:modelValue": A[1] || (A[1] = (R) => i[v.value.key] = R),
+                "onUpdate:modelValue": C[1] || (C[1] = (R) => i[v.value.key] = R),
                 class: "vb-step-input",
                 type: "number",
                 inputmode: u.value === 1 ? "numeric" : "decimal",
@@ -686,17 +686,17 @@ const xs = ["aria-label", "aria-valuemin", "aria-valuemax", "aria-valuenow", "ar
                 placeholder: v.value.placeholder,
                 "aria-invalid": !!r.value,
                 "aria-describedby": r.value ? "vb-step-error" : "vb-step-hint",
-                onInput: A[2] || (A[2] = (R) => r.value = "")
+                onInput: C[2] || (C[2] = (R) => r.value = "")
               }, null, 40, Js)), [
                 [ie, i[v.value.key]]
               ]),
               e("span", null, a(v.value.unit), 1)
             ]),
-            U(Es, {
+            j(Es, {
               modelValue: i[v.value.key],
               "onUpdate:modelValue": [
-                A[3] || (A[3] = (R) => i[v.value.key] = R),
-                A[4] || (A[4] = (R) => r.value = "")
+                C[3] || (C[3] = (R) => i[v.value.key] = R),
+                C[4] || (C[4] = (R) => r.value = "")
               ],
               min: v.value.min,
               max: v.value.max,
@@ -706,9 +706,9 @@ const xs = ["aria-label", "aria-valuemin", "aria-valuemax", "aria-valuenow", "ar
               unit: v.value.unit
             }, null, 8, ["modelValue", "min", "max", "step", "fallback", "label", "unit"]),
             u.value === 1 && String(i.age) === "0" ? (s(), o("label", Hs, [
-              A[11] || (A[11] = N("月龄（可选，0–11个月）", -1)),
+              C[11] || (C[11] = N("月龄（可选，0–11个月）", -1)),
               te(e("input", {
-                "onUpdate:modelValue": A[5] || (A[5] = (R) => i.ageMonths = R),
+                "onUpdate:modelValue": C[5] || (C[5] = (R) => i.ageMonths = R),
                 type: "number",
                 min: "0",
                 max: "11",
@@ -721,7 +721,7 @@ const xs = ["aria-label", "aria-valuemin", "aria-valuemax", "aria-valuenow", "ar
             e("p", Ks, a(v.value.min) + "–" + a(v.value.max) + " " + a(v.value.unit) + " · 可拖动刻度调节", 1)
           ])) : (s(), o("fieldset", Ws, [
             e("legend", Ys, a(v.value.question), 1),
-            (s(!0), o(B, null, J(b(Gt), (R) => (s(), o("button", {
+            (s(!0), o(B, null, J(b(Jt), (R) => (s(), o("button", {
               key: R.key,
               type: "button",
               class: me(["vb-activity-choice", { selected: i.activity === R.key }]),
@@ -729,7 +729,7 @@ const xs = ["aria-label", "aria-valuemin", "aria-valuemax", "aria-valuenow", "ar
               onClick: (D) => i.activity = R.key
             }, [
               e("span", Qs, [
-                U(O, {
+                j(O, {
                   name: R.icon
                 }, null, 8, ["name"])
               ]),
@@ -743,18 +743,18 @@ const xs = ["aria-label", "aria-valuemin", "aria-valuemax", "aria-valuenow", "ar
             ], 10, Xs))), 128))
           ])),
           u.value === 4 ? (s(), o("label", to, [
-            A[13] || (A[13] = N("生理阶段（可选）", -1)),
+            C[13] || (C[13] = N("生理阶段（可选）", -1)),
             te(e("select", {
-              "onUpdate:modelValue": A[6] || (A[6] = (R) => i.physiologicalStage = R)
-            }, [...A[12] || (A[12] = [
+              "onUpdate:modelValue": C[6] || (C[6] = (R) => i.physiologicalStage = R)
+            }, [...C[12] || (C[12] = [
               e("option", { value: "general" }, "一般情况", -1),
               e("option", { value: "pregnant" }, "孕期", -1),
               e("option", { value: "lactating" }, "哺乳期", -1),
               e("option", { value: "special" }, "其他需专业评估的情况", -1)
             ])], 512), [
-              [Ce, i.physiologicalStage]
+              [Ae, i.physiologicalStage]
             ]),
-            A[14] || (A[14] = e("small", null, "特殊阶段暂停通用营养目标；记录和查询仍可使用。", -1))
+            C[14] || (C[14] = e("small", null, "特殊阶段暂停通用营养目标；记录和查询仍可使用。", -1))
           ])) : I("", !0),
           u.value < 4 ? (s(), o("div", no, [
             e("button", {
@@ -769,9 +769,9 @@ const xs = ["aria-label", "aria-valuemin", "aria-valuemax", "aria-valuenow", "ar
               type: "button",
               class: "vb-button vb-button-quiet",
               disabled: u.value === 0 && !t.profile,
-              onClick: A[7] || (A[7] = (R) => u.value > 0 ? u.value-- : _.$emit("close"))
+              onClick: C[7] || (C[7] = (R) => u.value > 0 ? u.value-- : _.$emit("close"))
             }, [
-              U(O, {
+              j(O, {
                 name: "back",
                 size: 17
               }),
@@ -779,7 +779,7 @@ const xs = ["aria-label", "aria-valuemin", "aria-valuemax", "aria-valuenow", "ar
             ], 8, lo),
             e("button", ao, [
               N(a(u.value === 4 ? "保存我的身体档案" : "下一步"), 1),
-              U(O, {
+              j(O, {
                 name: "arrow",
                 size: 17
               })
@@ -789,34 +789,34 @@ const xs = ["aria-label", "aria-valuemin", "aria-valuemax", "aria-valuenow", "ar
         e("button", {
           type: "button",
           class: "vb-button vb-button-quiet vb-skip-all",
-          onClick: A[8] || (A[8] = (R) => d("complete", { sex: "", age: "", height: "", weight: "", activity: "" }))
+          onClick: C[8] || (C[8] = (R) => d("complete", { sex: "", age: "", height: "", weight: "", activity: "" }))
         }, "跳过整个档案，先体验网站"),
         e("p", io, [
-          A[15] || (A[15] = N("已有邮箱账号？ ", -1)),
+          C[15] || (C[15] = N("已有邮箱账号？ ", -1)),
           e("button", {
             type: "button",
             class: "vb-text-button",
-            onClick: A[9] || (A[9] = (R) => d("login"))
+            onClick: C[9] || (C[9] = (R) => d("login"))
           }, "登录")
         ]),
         e("p", ro, [
-          U(O, {
+          j(O, {
             name: "lock",
             size: 13
           }),
-          A[16] || (A[16] = N("游客档案保存在本机；登录后可同步档案与饮食记录", -1))
+          C[16] || (C[16] = N("游客档案保存在本机；登录后可同步档案与饮食记录", -1))
         ])
       ], 544)
     ]));
   }
-}, At = (t) => String(t?.name || "").split(" · ")[0].replace(/（[^）]*）/g, "").trim();
-function Wt(t) {
+}, It = (t) => String(t?.name || "").split(" · ")[0].replace(/（[^）]*）/g, "").trim();
+function Yt(t) {
   if (t?.__summary) return t.state || "";
   if (!t?.expanded) return t?.state || "";
   const l = String(t.source?.description || ""), n = [];
   return /\bRAW\b/.test(l) ? n.push("生") : /\bRSTD\b|ROASTED/.test(l) ? n.push("烤熟") : /\bBKD\b/.test(l) ? n.push("烘焙") : /FRIED/.test(l) ? n.push("煎炸") : /\bCKD\b|COOKED|\bBLD\b/.test(l) && n.push("熟"), /\bDRY MIX\b/.test(l) ? n.push("干混合料") : /\bDRIED\b|\bDRY\b/.test(l) && n.push("干制"), /\bCND\b/.test(l) && n.push("罐装"), /\bFRZ\b|FROZEN/.test(l) && n.push("冷冻"), /WO\/?\s*SALT|WITHOUT SALT/.test(l) ? n.push("无盐") : /\bW\/SALT\b|\bSALTED\b/.test(l) && n.push("加盐"), n.length ? n.join(" · ") : "具体品种与配方见数据来源";
 }
-const Pn = [
+const Nn = [
   { name: "豆腐", match: /豆腐|tofu/i, items: [["usda-16427", "普通豆腐 · 硫酸钙凝固"], ["sr28-16126", "硬豆腐 · 硫酸钙与卤水凝固"], ["sr28-16127", "嫩豆腐 · 硫酸钙与卤水凝固"], ["sr28-16159", "特硬豆腐 · 卤水凝固"], ["sr28-16129", "油炸豆腐"]] },
   { name: "西兰花", match: /西兰花|broccoli/i, items: [["broccoli", "西兰花 · 生"], ["sr28-11091", "西兰花 · 水煮沥干，无盐"]] },
   { name: "胡萝卜", match: /胡萝卜|carrot/i, items: [["carrot", "胡萝卜 · 生"], ["sr28-11125", "胡萝卜 · 水煮沥干，无盐"]] },
@@ -824,9 +824,9 @@ const Pn = [
   { name: "番茄", match: /番茄|西红柿|tomato/i, items: [["tomato", "红番茄 · 生"], ["sr28-11530", "红番茄 · 熟"]] }
 ];
 function co(t) {
-  return (Pn.find((n) => n.items.some(([d]) => d === t?.key) || [n.name, ...n.name === "番茄" ? ["西红柿"] : []].includes(t?.name))?.items || []).filter(([n]) => le[n]?.source).map(([n, d]) => ({ id: n, label: d }));
+  return (Nn.find((n) => n.items.some(([d]) => d === t?.key) || [n.name, ...n.name === "番茄" ? ["西红柿"] : []].includes(t?.name))?.items || []).filter(([n]) => le[n]?.source).map(([n, d]) => ({ id: n, label: d }));
 }
-const vo = Object.fromEntries(Pn.flatMap((t) => t.items)), Nn = (t) => vo[t] || "";
+const vo = Object.fromEntries(Nn.flatMap((t) => t.items)), Mn = (t) => vo[t] || "";
 function mo(t) {
   return t?.image ? Promise.resolve({
     ...t.imageCredit,
@@ -838,7 +838,7 @@ function mo(t) {
   }) : Promise.resolve(null);
 }
 function Tn(t) {
-  const l = T(null), n = T(!1), d = T(!1);
+  const l = M(null), n = M(!1), d = M(!1);
   let i = 0;
   async function u(r = !1) {
     const m = b(typeof t == "function" ? t() : t), c = ++i;
@@ -859,6 +859,10 @@ function Tn(t) {
     return [r?.key, r?.image];
   }, () => u(), { immediate: !0 }), { photo: l, loading: n, failed: d, retry: () => u(!0) };
 }
+function Ge(t) {
+  const l = typeof t == "string" ? t.trim() : "";
+  return !l || /deepseek/i.test(l) ? "维衡 AI" : l;
+}
 const po = {
   class: "vb-food-estimate vb-glass",
   "aria-live": "polite"
@@ -869,12 +873,12 @@ const po = {
   key: 4,
   class: "vb-feature-error",
   role: "alert"
-}, $o = { class: "vb-estimate-adjust" }, _o = { class: "vb-field" }, Co = ["disabled"], Ao = {
+}, $o = { class: "vb-estimate-adjust" }, _o = { class: "vb-field" }, Ao = ["disabled"], Co = {
   __name: "FoodNutritionEstimate",
   props: { food: Object },
   emits: ["resolved"],
   setup(t, { emit: l }) {
-    const n = t, d = l, i = T(!1), u = T(""), r = T(null), m = T("");
+    const n = t, d = l, i = M(!1), u = M(""), r = M(null), m = M("");
     let c = 0;
     function v(p) {
       try {
@@ -883,7 +887,7 @@ const po = {
           return r.value = { ...w, cached: !0 }, m.value = w.recipe || "", d("resolved", r.value), !0;
       } catch {
       }
-      const h = $n.estimates?.[p?.key];
+      const h = _n.estimates?.[p?.key];
       return h ? (r.value = { foodId: p.key, status: "complete", basisGrams: 100, valueType: "ai-estimate", cached: !0, model: h.model, generatedAt: h.generatedAt, estimate: { entryId: p.key, name: p.name, grams: 100, values: h.values, assumption: h.assumption } }, d("resolved", r.value), !0) : !1;
     }
     async function g() {
@@ -910,7 +914,7 @@ const po = {
     }, { immediate: !0 }), Ve(() => {
       c++;
     });
-    const $ = (p, h) => yt(p, h), y = () => Object.values(r.value?.estimate?.values || {}).some((p) => p && typeof p.value != "number" && typeof p.low == "number" && typeof p.high == "number");
+    const $ = (p, h) => ht(p, h), y = () => Object.values(r.value?.estimate?.values || {}).some((p) => p && typeof p.value != "number" && typeof p.low == "number" && typeof p.high == "number");
     return (p, h) => (s(), o("section", po, [
       e("h3", null, a(r.value ? "AI 估算参考" : "AI 营养估算"), 1),
       r.value?.estimate ? (s(), o("p", bo, [...h[1] || (h[1] = [
@@ -930,7 +934,7 @@ const po = {
           ]))), 128))
         ]),
         e("p", null, a(y() ? "旧估算范围按上下限中点换为单值参考；" : "") + a(r.value.estimate.assumption), 1),
-        r.value.cached ? (s(), o("small", ko, "已保存的预估 · " + a(r.value.model || r.value.requestedModel) + " · " + a(r.value.generatedAt) + " · 基准100克；不在查询时重新调用AI。", 1)) : I("", !0),
+        r.value.cached ? (s(), o("small", ko, "已保存的预估 · " + a(b(Ge)(r.value.model || r.value.requestedModel)) + " · " + a(r.value.generatedAt) + " · 基准100克；不在查询时重新调用AI。", 1)) : I("", !0),
         h[2] || (h[2] = e("small", null, "按常见品种与做法给出单一参考值。实际配方、用油和份量会造成误差；维生素和矿物质仍显示未知。", -1))
       ])) : I("", !0),
       u.value ? (s(), o("p", wo, a(u.value), 1)) : I("", !0),
@@ -952,7 +956,7 @@ const po = {
           class: "vb-button vb-button-soft",
           disabled: i.value,
           onClick: g
-        }, a(i.value ? "估算中…" : u.value ? "重试估算" : r.value ? "按补充内容重新估算" : "生成估算"), 9, Co)
+        }, a(i.value ? "估算中…" : u.value ? "重试估算" : r.value ? "按补充内容重新估算" : "生成估算"), 9, Ao)
       ])
     ]));
   }
@@ -964,7 +968,7 @@ function Io(t) {
 const So = {
   key: 0,
   class: "vb-portion-presets"
-}, xo = ["onClick"], Mn = {
+}, xo = ["onClick"], Rn = {
   __name: "PortionPicker",
   props: { food: Object },
   emits: ["choose"],
@@ -981,15 +985,15 @@ const So = {
       r[1] || (r[1] = e("small", null, "界面估重示例，非标准量具；请按实际大小修改克数。杯按重量估计，不将毫升直接换算为克。", -1))
     ])) : I("", !0);
   }
-}, Eo = ["src", "alt", "loading"], Uo = {
+}, Eo = ["src", "alt", "loading"], jo = {
   key: 1,
   class: "vb-food-photo-placeholder"
-}, Yt = /* @__PURE__ */ Object.assign({ inheritAttrs: !0 }, {
+}, Xt = /* @__PURE__ */ Object.assign({ inheritAttrs: !0 }, {
   __name: "FoodImage",
   props: { food: Object, photo: Object, loading: Boolean, failed: Boolean, label: { type: Boolean, default: !0 }, lazy: { type: Boolean, default: !0 } },
   emits: ["image-error"],
   setup(t, { emit: l }) {
-    const n = t, d = l, i = T(!1);
+    const n = t, d = l, i = M(!1);
     return re(() => n.photo?.image, () => i.value = !1), (u, r) => (s(), o("div", {
       class: me(["vb-food-visual", { "is-unavailable": !t.photo?.image || i.value, "is-loading": t.loading }])
     }, [
@@ -1002,12 +1006,12 @@ const So = {
         onError: r[0] || (r[0] = (m) => {
           i.value = !0, d("image-error");
         })
-      }, null, 40, Eo)) : (s(), o("div", Uo, [
-        U(O, {
+      }, null, 40, Eo)) : (s(), o("div", jo, [
+        j(O, {
           name: "bowl",
           size: 35
         }),
-        e("strong", null, a(b(Nn)(t.food?.key) || String(t.food?.name || "").split(" · ")[0]), 1),
+        e("strong", null, a(b(Mn)(t.food?.key) || String(t.food?.name || "").split(" · ")[0]), 1),
         e("small", null, a(t.loading ? "正在加载照片…" : "该营养样本暂无单独照片"), 1)
       ])),
       t.label && t.photo?.image && !i.value ? (s(), o("span", {
@@ -1016,13 +1020,13 @@ const So = {
       }, a(t.photo.imageLabel || "食物照片"), 3)) : I("", !0)
     ], 2));
   }
-}), jo = ["aria-label"], Do = ["aria-label"], Po = { class: "vb-feature-dialog-body" }, lt = {
+}), Uo = ["aria-label"], Do = ["aria-label"], Po = { class: "vb-feature-dialog-body" }, at = {
   __name: "ModalShell",
   props: { title: String, wide: Boolean },
   emits: ["close"],
   setup(t, { emit: l }) {
-    const n = l, d = T(null), i = document.activeElement;
-    wt(() => xe(() => d.value?.focus())), Ve(() => queueMicrotask(() => i?.isConnected && i?.focus({ preventScroll: !0 })));
+    const n = l, d = M(null), i = document.activeElement;
+    $t(() => xe(() => d.value?.focus())), Ve(() => queueMicrotask(() => i?.isConnected && i?.focus({ preventScroll: !0 })));
     function u(r) {
       if (r.key === "Escape" && (r.preventDefault(), n("close")), r.key !== "Tab") return;
       const m = [...d.value.querySelectorAll('button:not(:disabled),input:not(:disabled),textarea,select,a[href],[tabindex="0"]')].filter((g) => g.getClientRects().length);
@@ -1055,16 +1059,16 @@ const So = {
             "aria-label": "关闭" + t.title,
             onClick: m[0] || (m[0] = (c) => r.$emit("close"))
           }, [
-            U(O, { name: "close" })
+            j(O, { name: "close" })
           ], 8, Do)
         ]),
         e("div", Po, [
-          Wn(r.$slots, "default")
+          Yn(r.$slots, "default")
         ])
-      ], 42, jo)
+      ], 42, Uo)
     ]));
   }
-}, No = { class: "vb-food-detail-top" }, To = { class: "vb-eyebrow" }, Mo = { class: "vb-food-state" }, Ro = { class: "vb-pill" }, zo = {
+}, No = { class: "vb-food-detail-top" }, Mo = { class: "vb-eyebrow" }, To = { class: "vb-food-state" }, Ro = { class: "vb-pill" }, zo = {
   key: 0,
   class: "vb-field"
 }, Oo = ["value"], Fo = ["value"], Bo = {
@@ -1078,13 +1082,13 @@ const So = {
   props: { foodId: String },
   emits: ["close", "add"],
   setup(t, { emit: l }) {
-    const n = t, d = l, i = T(n.foodId), u = T(100), r = T(ke()), m = T("unspecified"), c = T(null);
+    const n = t, d = l, i = M(n.foodId), u = M(100), r = M(ke()), m = M("unspecified"), c = M(null);
     re(() => n.foodId, (W) => {
       i.value = W;
     }), re(i, () => {
       c.value = null;
     });
-    const v = H(() => le[i.value]), g = T("");
+    const v = H(() => le[i.value]), g = M("");
     async function $() {
       const W = i.value;
       g.value = "";
@@ -1095,22 +1099,22 @@ const So = {
       }
     }
     re(i, $, { immediate: !0 });
-    const y = H(() => co(le[n.foodId])), p = H(() => Ee.some((W) => typeof v.value?.nutrients?.[W.id] != "number")), h = H(() => v.value?.__summary ? null : $t(v.value, p.value ? c.value : null)), w = H(() => gt([{ foodId: v.value.key, grams: Number(u.value), nutritionSnapshot: h.value }]).totals), _ = H(() => !v.value?.__summary && Number(u.value) >= 0.1 && Number(u.value) <= 5e3 && r.value && r.value <= ke()), { photo: A, loading: R, failed: D } = Tn(() => v.value), M = H(() => v.value?.imageCredit || A.value?.imageCredit || A.value);
+    const y = H(() => co(le[n.foodId])), p = H(() => Ee.some((W) => typeof v.value?.nutrients?.[W.id] != "number")), h = H(() => v.value?.__summary ? null : _t(v.value, p.value ? c.value : null)), w = H(() => yt([{ foodId: v.value.key, grams: Number(u.value), nutritionSnapshot: h.value }]).totals), _ = H(() => !v.value?.__summary && Number(u.value) >= 0.1 && Number(u.value) <= 5e3 && r.value && r.value <= ke()), { photo: C, loading: R, failed: D } = Tn(() => v.value), T = H(() => v.value?.imageCredit || C.value?.imageCredit || C.value);
     function V() {
       _.value && d("add", { foodId: v.value.key, grams: Number(u.value), date: r.value, meal: m.value, nutritionSnapshot: h.value });
     }
-    return (W, z) => v.value ? (s(), ve(lt, {
+    return (W, z) => v.value ? (s(), ve(at, {
       key: 0,
       title: "食物详情",
       wide: "",
       onClose: z[6] || (z[6] = (G) => W.$emit("close"))
     }, {
-      default: ot(() => [
+      default: lt(() => [
         e("div", No, [
           e("figure", null, [
-            U(Yt, {
+            j(Xt, {
               food: v.value,
-              photo: b(A),
+              photo: b(C),
               loading: b(R),
               failed: b(D),
               label: !1,
@@ -1119,9 +1123,9 @@ const So = {
             }, null, 8, ["food", "photo", "loading", "failed"])
           ]),
           e("div", null, [
-            e("p", To, a(v.value.categoryName), 1),
-            e("h1", null, a(b(Nn)(v.value.key) || b(At)(v.value)), 1),
-            e("p", Mo, a(b(Wt)(v.value)), 1),
+            e("p", Mo, a(v.value.categoryName), 1),
+            e("h1", null, a(b(Mn)(v.value.key) || b(It)(v.value)), 1),
+            e("p", To, a(b(Yt)(v.value)), 1),
             e("span", Ro, a(v.value.source ? "数据库" : c.value ? "AI估算" : "数据不完整"), 1),
             y.value.length ? (s(), o("label", zo, [
               z[7] || (z[7] = N("选择营养样本", -1)),
@@ -1138,7 +1142,7 @@ const So = {
                   value: G.id
                 }, a(G.label), 9, Fo))), 128))
               ], 512), [
-                [Ce, i.value]
+                [Ae, i.value]
               ]),
               z[8] || (z[8] = e("small", null, "按实际品种和做法选择，不同样本分别计算。", -1))
             ])) : I("", !0)
@@ -1146,7 +1150,7 @@ const So = {
         ]),
         p.value && !v.value.__summary ? (s(), o("details", Bo, [
           z[9] || (z[9] = e("summary", null, "查看估算依据与调整", -1)),
-          U(Ao, {
+          j(Co, {
             food: v.value,
             onResolved: z[1] || (z[1] = (G) => c.value = G)
           }, null, 8, ["food"])
@@ -1163,7 +1167,7 @@ const So = {
           class: "vb-food-portion-form",
           onSubmit: Pe(V, ["prevent"])
         }, [
-          U(Mn, {
+          j(Rn, {
             food: v.value,
             onChoose: z[2] || (z[2] = (G) => u.value = G)
           }, null, 8, ["food"]),
@@ -1198,12 +1202,12 @@ const So = {
               te(e("select", {
                 "onUpdate:modelValue": z[5] || (z[5] = (G) => m.value = G)
               }, [
-                (s(!0), o(B, null, J(b(mt), ([G, Y]) => (s(), o("option", {
+                (s(!0), o(B, null, J(b(pt), ([G, Y]) => (s(), o("option", {
                   key: G,
                   value: G
                 }, a(Y), 9, Go))), 128))
               ], 512), [
-                [Ce, m.value]
+                [Ae, m.value]
               ])
             ])
           ]),
@@ -1213,7 +1217,7 @@ const So = {
             }, [
               e("span", null, a(G.id === "carbs" ? "碳水" : G.name), 1),
               e("strong", null, [
-                N(a(b(nn)(w.value[G.id])) + " ", 1),
+                N(a(b(sn)(w.value[G.id])) + " ", 1),
                 w.value[G.id].value != null || w.value[G.id].range ? (s(), o("small", Ho, a(G.unit), 1)) : I("", !0)
               ]),
               w.value[G.id].range ? (s(), o("small", Ko, "AI估算")) : I("", !0)
@@ -1224,7 +1228,7 @@ const So = {
             type: "submit",
             disabled: !_.value
           }, [
-            U(O, {
+            j(O, {
               name: "plus",
               size: 16
             }),
@@ -1241,12 +1245,12 @@ const So = {
               z[17] || (z[17] = e("span", null, "每100克数据库值", -1)),
               e("span", null, "本份 " + a(u.value) + " 克", 1)
             ]),
-            (s(!0), o(B, null, J(b(es), (G) => (s(), o("div", {
+            (s(!0), o(B, null, J(b(ts), (G) => (s(), o("div", {
               key: G.id
             }, [
               e("span", null, a(G.name), 1),
               e("span", null, a(b(De)(v.value.nutrients[G.id])) + " " + a(v.value.nutrients[G.id] != null ? G.unit : ""), 1),
-              e("span", null, a(b(nn)(w.value[G.id])) + " " + a(w.value[G.id].value != null || w.value[G.id].range ? G.unit : "") + a(w.value[G.id].range ? " · AI估算" : ""), 1)
+              e("span", null, a(b(sn)(w.value[G.id])) + " " + a(w.value[G.id].value != null || w.value[G.id].range ? G.unit : "") + a(w.value[G.id].range ? " · AI估算" : ""), 1)
             ]))), 128))
           ]),
           e("p", null, "完整样本：" + a(v.value.name), 1),
@@ -1261,20 +1265,20 @@ const So = {
             N(a(v.value.source.description), 1)
           ])) : (s(), o("p", tl, "当前食物无可靠配方成分表；仅显示已保存的AI宏量营养估算，其余未知。")),
           z[22] || (z[22] = e("p", null, "碳水为差减法，维A采用RAE，叶酸采用DFE；不同口径不直接换算。", -1)),
-          M.value ? (s(), o("p", nl, [
+          T.value ? (s(), o("p", nl, [
             z[19] || (z[19] = N("图片：", -1)),
             e("a", {
-              href: M.value.sourceUrl,
+              href: T.value.sourceUrl,
               target: "_blank",
               rel: "noopener"
-            }, a(M.value.title), 9, sl),
-            N(" / " + a(M.value.author) + " · ", 1),
+            }, a(T.value.title), 9, sl),
+            N(" / " + a(T.value.author) + " · ", 1),
             e("a", {
-              href: M.value.licenseUrl,
+              href: T.value.licenseUrl,
               target: "_blank",
               rel: "noopener"
-            }, a(M.value.license), 9, ol),
-            N(" · " + a(M.value.modifications), 1)
+            }, a(T.value.license), 9, ol),
+            N(" · " + a(T.value.modifications), 1)
           ])) : I("", !0)
         ])
       ]),
@@ -1308,22 +1312,22 @@ const So = {
 }, wl = { class: "vb-report-estimation-values" }, $l = {
   key: 1,
   class: "vb-intake-more"
-}, _l = { class: "vb-report-comparison" }, Cl = { key: 0 }, Al = { key: 1 }, Il = { key: 2 }, Sl = { key: 3 }, xl = { key: 4 }, El = { key: 5 }, Ul = { key: 6 }, jl = { key: 7 }, Dl = {
+}, _l = { class: "vb-report-comparison" }, Al = { key: 0 }, Cl = { key: 1 }, Il = { key: 2 }, Sl = { key: 3 }, xl = { key: 4 }, El = { key: 5 }, jl = { key: 6 }, Ul = { key: 7 }, Dl = {
   key: 7,
   class: "vb-report-content"
-}, Pl = { class: "vb-report-summary" }, Nl = { class: "vb-inline-warning" }, Tl = {
+}, Pl = { class: "vb-report-summary" }, Nl = { class: "vb-inline-warning" }, Ml = {
   key: 8,
   class: "vb-intake-more"
-}, Ml = { class: "vb-report-meta" }, Rl = { key: 0 }, zl = {
+}, Tl = { class: "vb-report-meta" }, Rl = { key: 0 }, zl = {
   __name: "AiReportModal",
   props: { report: Object, record: Object, stale: Boolean, error: String },
   emits: ["close", "retry"],
   setup(t) {
-    const l = t, n = H(() => l.report?.calculation?.targets || An(l.report?.snapshot?.profile)), d = H(() => {
+    const l = t, n = H(() => l.report?.calculation?.targets || In(l.report?.snapshot?.profile)), d = H(() => {
       const y = l.report?.snapshot, p = l.report?.calculation?.estimation?.foods || [];
       if (!y || !p.length) return y?.intake;
-      const h = wn(y.entries || [], p, { model: l.report?.model, generatedAt: l.report?.generatedAt });
-      return gt(h);
+      const h = $n(y.entries || [], p, { model: l.report?.model, generatedAt: l.report?.generatedAt });
+      return yt(h);
     }), i = [
       ["overview", "摄入概况"],
       ["targetComparison", "与目标的关系"],
@@ -1332,17 +1336,17 @@ const So = {
       ["suggestions", "下一餐可以这样调整"]
     ], u = (y) => y ? new Date(y).toLocaleString("zh-CN", { hour12: !1 }) : "", r = H(() => (l.report?.snapshot?.entries || []).flatMap((y) => {
       const p = y.referenceConfirmed === !1 ? null : le[y.foodId], h = Ee.filter((w) => {
-        const _ = Vt(y, p, w.id);
+        const _ = qt(y, p, w.id);
         return typeof _.value != "number" && !_.range;
       }).map((w) => w.id);
       return h.length ? [{ name: y.name, grams: y.grams, missing: h }] : [];
-    })), m = H(() => l.report?.calculation?.estimation?.missingFoodCount ?? r.value.length), c = H(() => l.report?.calculation?.estimation?.foods || []), v = (y) => (y > 0 ? "+" : y < 0 ? "−" : "") + De(Math.abs(y)), g = (y) => v(ts(y)), $ = (y) => `${Object.values(y?.values || {}).some((h) => h && typeof h.value != "number" && typeof h.low == "number" && typeof h.high == "number") ? "旧估算范围按上下限中点换为单值参考；" : ""}${y?.assumption || ""}`;
-    return (y, p) => (s(), ve(lt, {
+    })), m = H(() => l.report?.calculation?.estimation?.missingFoodCount ?? r.value.length), c = H(() => l.report?.calculation?.estimation?.foods || []), v = (y) => (y > 0 ? "+" : y < 0 ? "−" : "") + De(Math.abs(y)), g = (y) => v(ns(y)), $ = (y) => `${Object.values(y?.values || {}).some((h) => h && typeof h.value != "number" && typeof h.low == "number" && typeof h.high == "number") ? "旧估算范围按上下限中点换为单值参考；" : ""}${y?.assumption || ""}`;
+    return (y, p) => (s(), ve(at, {
       title: "AI 营养分析",
       wide: "",
       onClose: p[4] || (p[4] = (h) => y.$emit("close"))
     }, {
-      default: ot(() => [
+      default: lt(() => [
         e("div", al, [
           e("div", null, [
             e("span", il, a(t.report?.date || t.record?.date), 1),
@@ -1352,7 +1356,7 @@ const So = {
         ]),
         p[18] || (p[18] = e("p", { class: "vb-data-note" }, "饮食记录已保存；AI分析单独进行，不影响继续记账。", -1)),
         !t.report && !t.error ? (s(), o("section", ul, [
-          p[6] || (p[6] = e("p", null, "分析时向DeepSeek发送当天食物、份量、营养汇总和必要的身体档案，不发送备注和照片。", -1)),
+          p[6] || (p[6] = e("p", null, "分析时向维衡 AI发送当天食物、份量、营养汇总和必要的身体档案，不发送备注和照片。", -1)),
           e("button", {
             type: "button",
             class: "vb-button vb-button-primary",
@@ -1373,7 +1377,7 @@ const So = {
           p[9] || (p[9] = e("span", { class: "vb-loading-ring" }, null, -1)),
           e("div", null, [
             p[8] || (p[8] = e("strong", null, "正在分析饮食搭配与营养目标…", -1)),
-            e("small", null, a(m.value ? "同时自动估算 " + m.value + " 项食物的缺失指标。" : "程序已计算营养汇总，DeepSeek 正在生成解释与建议。"), 1)
+            e("small", null, a(m.value ? "同时自动估算 " + m.value + " 项食物的缺失指标。" : "程序已计算营养汇总，维衡 AI 正在生成解释与建议。"), 1)
           ])
         ])) : I("", !0),
         t.error || ["failed", "interrupted"].includes(t.report?.status) ? (s(), o("div", pl, [
@@ -1389,7 +1393,7 @@ const So = {
         t.report?.persistenceFailed ? (s(), o("p", fl, "报告暂时未写入浏览器数据库，请保留此页并检查存储权限。")) : I("", !0),
         t.report?.snapshot ? (s(), o(B, { key: 6 }, [
           p[14] || (p[14] = e("h3", { class: "vb-report-section-title" }, "本次摄入汇总", -1)),
-          U(qt, {
+          j(Lt, {
             summary: d.value || t.report.snapshot.intake,
             targets: n.value,
             estimating: t.report.status === "pending",
@@ -1413,9 +1417,9 @@ const So = {
                   e("small", null, a($(h)), 1)
                 ]),
                 e("div", wl, [
-                  (s(!0), o(B, null, J(b(Ee).filter((w) => b(yt)(h.values[w.id], w.unit) !== null), (w) => (s(), o("span", {
+                  (s(!0), o(B, null, J(b(Ee).filter((w) => b(ht)(h.values[w.id], w.unit) !== null), (w) => (s(), o("span", {
                     key: w.id
-                  }, a(w.id === "carbs" ? "碳水" : w.name) + " " + a(b(De)(b(yt)(h.values[w.id], w.unit))) + " " + a(w.unit), 1))), 128))
+                  }, a(w.id === "carbs" ? "碳水" : w.name) + " " + a(b(De)(b(ht)(h.values[w.id], w.unit))) + " " + a(w.unit), 1))), 128))
                 ])
               ]))), 128))
             ])) : I("", !0)
@@ -1427,8 +1431,8 @@ const So = {
                 key: h.id
               }, [
                 e("span", null, a(h.id === "carbs" ? "碳水" : h.name), 1),
-                h.estimatedRange?.delta ? (s(), o("strong", Cl, " AI 估算参考差值：" + a(g(h.estimatedRange.delta)) + " " + a(h.unit), 1)) : h.delta !== null ? (s(), o("strong", Al, a(h.delta > 0 ? "+" : "") + a(b(De)(h.delta)) + " " + a(h.unit), 1)) : (s(), o("strong", Il, a(h.estimatedRange || h.complete && h.target === null ? "缺少个人目标，无法计算差值" : "AI 估算尚未完成"), 1)),
-                h.estimatedRange?.delta ? (s(), o("small", Sl, "按数据库已知值与 AI 单值估算计算；旧范围按中点换算。记录未必覆盖全天，不代表达标或不足。")) : h.estimatedRange && !h.estimatedRange.delta ? (s(), o("small", xl, "含AI单值估算，暂无适用个人目标。")) : h.delta !== null ? (s(), o("small", El, "记录合计减去全天目标，记录未必覆盖全天。")) : h.complete && h.target === null ? (s(), o("small", Ul, "请完善个人营养档案后再查看与目标的差值。")) : (s(), o("small", jl, "数据不完整，暂不比较。"))
+                h.estimatedRange?.delta ? (s(), o("strong", Al, " AI 估算参考差值：" + a(g(h.estimatedRange.delta)) + " " + a(h.unit), 1)) : h.delta !== null ? (s(), o("strong", Cl, a(h.delta > 0 ? "+" : "") + a(b(De)(h.delta)) + " " + a(h.unit), 1)) : (s(), o("strong", Il, a(h.estimatedRange || h.complete && h.target === null ? "缺少个人目标，无法计算差值" : "AI 估算尚未完成"), 1)),
+                h.estimatedRange?.delta ? (s(), o("small", Sl, "按数据库已知值与 AI 单值估算计算；旧范围按中点换算。记录未必覆盖全天，不代表达标或不足。")) : h.estimatedRange && !h.estimatedRange.delta ? (s(), o("small", xl, "含AI单值估算，暂无适用个人目标。")) : h.delta !== null ? (s(), o("small", El, "记录合计减去全天目标，记录未必覆盖全天。")) : h.complete && h.target === null ? (s(), o("small", jl, "请完善个人营养档案后再查看与目标的差值。")) : (s(), o("small", Ul, "数据不完整，暂不比较。"))
               ]))), 128))
             ])
           ])) : I("", !0)
@@ -1440,17 +1444,17 @@ const So = {
             t.report.result[h]?.length ? (s(), o(B, { key: 0 }, [
               e("h3", null, a(w), 1),
               e("ul", null, [
-                (s(!0), o(B, null, J(t.report.result[h], (_, A) => (s(), o("li", { key: A }, a(_), 1))), 128))
+                (s(!0), o(B, null, J(t.report.result[h], (_, C) => (s(), o("li", { key: C }, a(_), 1))), 128))
               ])
             ], 64)) : I("", !0)
           ])), 64)),
           e("p", Nl, "分析范围：" + a(t.report.result.scope || "仅针对已记录的食物，不能代替身体检测或专业诊疗。"), 1)
         ])) : I("", !0),
-        t.report ? (s(), o("details", Tl, [
+        t.report ? (s(), o("details", Ml, [
           p[17] || (p[17] = e("summary", null, "查看分析信息", -1)),
-          e("div", Ml, [
+          e("div", Tl, [
             e("span", null, "生成时间：" + a(u(t.report.generatedAt) || "尚未生成"), 1),
-            t.report.model ? (s(), o("span", Rl, "模型：" + a(t.report.model), 1)) : I("", !0),
+            t.report.model ? (s(), o("span", Rl, "由 " + a(b(Ge)(t.report.model)) + " 生成", 1)) : I("", !0),
             e("span", null, "数据版本：" + a(t.report.dataVersion), 1),
             e("span", null, "食物库：" + a(t.report.snapshot?.intake?.dataVersion), 1),
             p[16] || (p[16] = e("small", null, "报告、照片保存在本机浏览器。清理站点数据后无法恢复。", -1))
@@ -1467,7 +1471,7 @@ const So = {
     }));
   }
 };
-function Bt(t) {
+function Vt(t) {
   const l = String(t || "");
   return /^(?:好的[，,\s]*)?pdf(?:格式)?[。.!！]?$/i.test(l.trim()) ? "pdf" : /^(?:好的[，,\s]*)?(?:word|docx)(?:格式)?[。.!！]?$/i.test(l.trim()) ? "docx" : !/(生成|导出|下载|保存|制作|整理|做成|转换|转成|给我|发我|用|格式|create|generate|export|download|save|make|convert)/i.test(l) || /^(什么是|如何|怎么|为什么|what\b|how\b|why\b)/i.test(l.trim()) ? null : [["pdf", /pdf/i], ["docx", /word|docx|\.doc\b/i], ["png", /png|长图|图片文档|图片格式|(?:导出|保存).{0,8}图片/i]].map(([d, i]) => ({ format: d, index: l.search(i) })).filter((d) => d.index >= 0).sort((d, i) => d.index - i.index)[0]?.format || null;
 }
@@ -1478,11 +1482,11 @@ function Ol(t) {
 `).map((m) => m.trim()).filter((m) => m && !/^[-*_]{3,}$/.test(m)), u = /(?:无法|不能|没法|不支持).{0,35}(?:PDF|Word|文件|附件)/i, r = /(身高|体重|年龄|孕期|哺乳|过敏|疾病|营养|能量|热量|kcal|蛋白|用药)/i;
   return u.test(d) && i.every((m) => /(PDF|Word|文件|附件|导出|下载|复制|格式)/i.test(m) && !r.test(m)) ? l.slice(n.index).trim() : l;
 }
-function Nt(t) {
+function Mt(t) {
   const l = String(t || "").trim();
   return l.length < 400 && !/^\s*(?:#{1,6}\s|\|)/m.test(l) && /(?:无法|不能|没法|不支持).{0,35}(?:PDF|Word|文件|附件)/i.test(l);
 }
-const Rn = (t, l) => {
+const zn = (t, l) => {
   const n = t.__vccOpts || t;
   for (const [d, i] of l)
     n[d] = i;
@@ -1501,45 +1505,45 @@ const Rn = (t, l) => {
   props: { content: { type: String, required: !0 }, question: { type: String, default: "" }, auto: Boolean },
   emits: ["retry"],
   setup(t, { emit: l }) {
-    const n = t, d = l, i = T({}), u = T(""), r = T(""), m = T("");
+    const n = t, d = l, i = M({}), u = M(""), r = M(""), m = M("");
     let c = 0, v = !1, g = !1;
-    const $ = H(() => Bt(n.question)), y = H(() => u.value || $.value || "pdf"), p = H(() => ({ pdf: "PDF", docx: "Word", png: "图片" })[y.value]), h = H(() => i.value[y.value]), w = H(() => Ol(n.content));
+    const $ = H(() => Vt(n.question)), y = H(() => u.value || $.value || "pdf"), p = H(() => ({ pdf: "PDF", docx: "Word", png: "图片" })[y.value]), h = H(() => i.value[y.value]), w = H(() => Ol(n.content));
     function _() {
       for (const D of Object.values(i.value)) setTimeout(() => URL.revokeObjectURL(D.url), 3e4);
       i.value = {};
     }
-    async function A(D = y.value) {
+    async function C(D = y.value) {
       if (r.value || i.value[D]) {
         i.value[D] && (u.value = D);
         return;
       }
-      const M = c, V = w.value, W = n.question;
+      const T = c, V = w.value, W = n.question;
       u.value = D, r.value = D, m.value = "";
       try {
-        if ($.value && Nt(V)) throw new Error("尚未生成文档正文，请重新生成。");
+        if ($.value && Mt(V)) throw new Error("尚未生成文档正文，请重新生成。");
         const { createChatExport: z, preparedChatDownload: G } = await import("./chatExport-BCM5BWUu.js");
-        if (M !== c) return;
+        if (T !== c) return;
         const Y = await z(D, V, { question: W });
-        if (M !== c) return;
+        if (T !== c) return;
         i.value = { ...i.value, [D]: G(Y) };
       } catch (z) {
-        M === c && (m.value = z instanceof Error ? z.message : "文件生成失败，请重试。");
+        T === c && (m.value = z instanceof Error ? z.message : "文件生成失败，请重试。");
       } finally {
-        M === c && (r.value = "");
+        T === c && (r.value = "");
       }
     }
     function R() {
       !v || !n.auto || !$.value || g || r.value || i.value[$.value] || m.value || (g = !0, requestAnimationFrame(() => setTimeout(() => {
-        g = !1, v && n.auto && $.value && A($.value);
+        g = !1, v && n.auto && $.value && C($.value);
       }, 0)));
     }
     return re(() => [n.content, n.question], () => {
       c++, _(), u.value = "", r.value = "", m.value = "", R();
-    }), re(() => n.auto, R), wt(() => {
+    }), re(() => n.auto, R), $t(() => {
       v = !0, R();
     }), Ve(() => {
       v = !1, c++, _();
-    }), (D, M) => $.value ? (s(), o("div", {
+    }), (D, T) => $.value ? (s(), o("div", {
       key: 0,
       class: "vb-chat-document",
       "aria-label": "计划正文与下载",
@@ -1557,7 +1561,7 @@ const Rn = (t, l) => {
             key: 1,
             type: "button",
             disabled: !!r.value,
-            onClick: (z) => A(V)
+            onClick: (z) => C(V)
           }, a(r.value === V ? "正在生成…" : "生成 " + W), 9, Ll))
         ], 64))), 64))
       ]),
@@ -1567,13 +1571,13 @@ const Rn = (t, l) => {
         e("button", {
           type: "button",
           class: "vb-text-button",
-          onClick: M[0] || (M[0] = (V) => b(Nt)(w.value) ? d("retry") : A())
-        }, a(b(Nt)(w.value) ? "重新生成正文" : "重试生成文件"), 1)
+          onClick: T[0] || (T[0] = (V) => b(Mt)(w.value) ? d("retry") : C())
+        }, a(b(Mt)(w.value) ? "重新生成正文" : "重试生成文件"), 1)
       ])) : I("", !0),
       h.value?.pageCount ? (s(), o("small", Hl, "内容较长，" + a(h.value.pageCount) + " 张图片已打包为 ZIP。", 1)) : I("", !0)
     ], 8, Fl)) : I("", !0);
   }
-}, Wl = /* @__PURE__ */ Rn(Kl, [["__scopeId", "data-v-447caabb"]]);
+}, Wl = /* @__PURE__ */ zn(Kl, [["__scopeId", "data-v-447caabb"]]);
 function Yl({ viewport: t, isActive: l = () => !0, onChange: n = () => {
 }, threshold: d = 64 }) {
   let i = !0;
@@ -1596,7 +1600,7 @@ function Yl({ viewport: t, isActive: l = () => !0, onChange: n = () => {
   return { layout: c, onScroll: v, jump: () => c(!0) };
 }
 function Xl({ viewport: t, content: l, active: n, thread: d, messages: i }) {
-  const u = T(!1), r = Yl({ viewport: () => t.value, isActive: () => n.value, onChange: (w) => u.value = w });
+  const u = M(!1), r = Yl({ viewport: () => t.value, isActive: () => n.value, onChange: (w) => u.value = w });
   let m = !1, c = !1, v = !1, g, $;
   function y(w = !1) {
     v = v || w, !(!m || c) && (c = !0, xe(() => {
@@ -1615,7 +1619,7 @@ function Xl({ viewport: t, content: l, active: n, thread: d, messages: i }) {
     $?.disconnect(), t.value && $?.observe(t.value), l.value && $?.observe(l.value), y();
   }
   const h = () => y();
-  return re(i, () => y(), { deep: !0, flush: "post" }), re([d, n], () => y(!0), { flush: "post" }), re([t, l], p, { flush: "post" }), wt(() => {
+  return re(i, () => y(), { deep: !0, flush: "post" }), re([d, n], () => y(!0), { flush: "post" }), re([t, l], p, { flush: "post" }), $t(() => {
     m = !0, typeof ResizeObserver < "u" && ($ = new ResizeObserver(h)), p(), window.addEventListener("resize", h), y(!0);
   }), Ve(() => {
     m = !1, $?.disconnect(), g !== void 0 && cancelAnimationFrame(g), window.removeEventListener("resize", h);
@@ -1624,7 +1628,7 @@ function Xl({ viewport: t, content: l, active: n, thread: d, messages: i }) {
 function Ql(t, l, n) {
   return t.push({ id: l, role: "assistant", content: "", status: "sending", createdAt: n }), t[t.length - 1];
 }
-function cn(t, l = {}, n = []) {
+function vn(t, l = {}, n = []) {
   const d = new Set(n), i = {};
   for (const u of new Set((t.threads || []).map((r) => r.date))) {
     const r = (t.threads || []).filter((g) => g.date === u).sort((g, $) => String($.createdAt || "").localeCompare(String(g.createdAt || ""))), m = r.find((g) => g.id === l[u]), c = r.find((g) => g.id === t.activeByDate?.[u]), v = m && (m.messages?.length || d.has(m.id)) ? m : c?.messages?.length ? c : r.find((g) => g.messages?.length) || m || c || r[0];
@@ -1632,14 +1636,14 @@ function cn(t, l = {}, n = []) {
   }
   return i;
 }
-const Zl = 24e3, vn = 220;
+const Zl = 24e3, mn = 220;
 function ea(t, l) {
   const n = Date.parse(t || l || "");
   return Number.isFinite(n) ? n : 0;
 }
-function mn(t) {
+function pn(t) {
   const l = String(t || "").trim();
-  return l.length > vn ? `${l.slice(0, vn)}…` : l;
+  return l.length > mn ? `${l.slice(0, mn)}…` : l;
 }
 function ta(t, l, n = !0) {
   if (!n || !Array.isArray(t)) return "";
@@ -1650,7 +1654,7 @@ function ta(t, l, n = !0) {
     for (let c = 0; c < m.length - 1; c++) {
       const v = m[c], g = m[c + 1];
       if (v?.role !== "user" || g?.role !== "assistant" || v.status !== "complete" || g.status !== "complete" || v.attachments?.length || g.attachments?.length) continue;
-      const $ = mn(v.content), y = mn(g.content);
+      const $ = pn(v.content), y = pn(g.content);
       !$ || !y || (d.push({
         date: typeof r.date == "string" ? r.date : "",
         time: ea(v.createdAt, r.createdAt),
@@ -1672,7 +1676,7 @@ function ta(t, l, n = !0) {
   return u;
 }
 function na(t) {
-  if (!t || typeof t != "object" || Array.isArray(t) || st(t)) return null;
+  if (!t || typeof t != "object" || Array.isArray(t) || ot(t)) return null;
   const l = (u) => u == null || u === "" ? void 0 : Number(u), n = l(t.age), d = l(t.height), i = l(t.weight);
   return {
     sex: t.sex || "",
@@ -1684,8 +1688,8 @@ function na(t) {
     ...t.physiologicalStage ? { physiologicalStage: t.physiologicalStage } : {}
   };
 }
-const sa = 3, oa = 24e3, pn = 6e4, la = 8e5, aa = 6, ia = ".jpg,.jpeg,.png,.webp,.pdf,.docx,.txt,.md,.csv,.json,.log";
-function zn(t) {
+const sa = 3, oa = 24e3, bn = 6e4, la = 8e5, aa = 6, ia = ".jpg,.jpeg,.png,.webp,.pdf,.docx,.txt,.md,.csv,.json,.log";
+function On(t) {
   const l = String(t.name || "").split(".").pop().toLowerCase(), n = ["jpg", "jpeg", "png", "webp"].includes(l) ? "image" : ["pdf", "docx", "txt", "md", "csv", "json", "log"].includes(l) ? "document" : null;
   if (!n) throw new Error("支持 JPG、PNG、WebP、PDF、DOCX、TXT、MD、CSV 和 JSON 文件。");
   if (!t.size) throw new Error("这个文件是空的，请重新选择。");
@@ -1699,25 +1703,25 @@ function ra(t) {
   if (l.length > oa) throw new Error("文件文字超过 24,000 字，请截取需要讨论的部分后上传。");
   return l;
 }
-let Qe;
+let Ze;
 function ua() {
-  return Qe || (Qe = new Promise((t, l) => {
+  return Ze || (Ze = new Promise((t, l) => {
     if (!globalThis.indexedDB) {
       l(new Error("浏览器无法保存聊天附件，请检查隐私设置。"));
       return;
     }
-    const n = indexedDB.open(nt("weiheng.chat-attachments.v1"), 1);
+    const n = indexedDB.open(st("weiheng.chat-attachments.v1"), 1);
     n.onupgradeneeded = () => n.result.createObjectStore("attachments", { keyPath: "id" }), n.onsuccess = () => {
       const d = n.result;
       d.onversionchange = () => {
-        d.close(), Qe = void 0;
+        d.close(), Ze = void 0;
       }, t(d);
     }, n.onerror = n.onblocked = () => l(new Error("无法打开聊天附件存储，请检查浏览器隐私设置。"));
   }).catch((t) => {
-    throw Qe = void 0, t;
-  })), Qe;
+    throw Ze = void 0, t;
+  })), Ze;
 }
-async function Xt(t, l) {
+async function Qt(t, l) {
   const n = await ua();
   if (t === "readwrite" && Le()) throw new Error("正在重置本地数据，已停止保存附件。");
   return new Promise((d, i) => {
@@ -1725,7 +1729,7 @@ async function Xt(t, l) {
     u.oncomplete = () => d(r.result), u.onerror = u.onabort = () => i(new Error("聊天附件保存失败，可能本地存储空间不足。"));
   });
 }
-const da = (t) => Xt("readwrite", (l) => l.put(t)), Tt = (t) => Xt("readonly", (l) => l.get(t)), ct = (t) => Xt("readwrite", (l) => l.delete(t));
+const da = (t) => Qt("readwrite", (l) => l.put(t)), Tt = (t) => Qt("readonly", (l) => l.get(t)), vt = (t) => Qt("readwrite", (l) => l.delete(t));
 function ca(t) {
   return new Promise((l, n) => {
     const d = new FileReader();
@@ -1794,7 +1798,7 @@ async function pa(t) {
 `);
 }
 async function ba(t, l) {
-  const n = zn(t), d = { id: l, kind: n, name: t.name.slice(0, 180), size: t.size, mimeType: t.type };
+  const n = On(t), d = { id: l, kind: n, name: t.name.slice(0, 180), size: t.size, mimeType: t.type };
   if (n === "image") return { ...d, mimeType: "image/jpeg", dataUrl: await va(t) };
   const i = t.name.split(".").pop()?.toLowerCase();
   let u;
@@ -1813,17 +1817,17 @@ async function ba(t, l) {
 const fa = {
   class: "vb-chat-page vb-simple-chat",
   "aria-label": "维衡AI助手对话"
-}, ga = { class: "vb-simple-header" }, ya = { class: "vb-simple-actions" }, ha = { class: "vb-simple-date" }, ka = ["max", "disabled"], wa = { class: "vb-simple-options" }, $a = { "aria-label": "对话选项" }, _a = { class: "vb-simple-options-panel" }, Ca = {
+}, ga = { class: "vb-simple-header" }, ya = { class: "vb-simple-actions" }, ha = { class: "vb-simple-date" }, ka = ["max", "disabled"], wa = { class: "vb-simple-options" }, $a = { "aria-label": "对话选项" }, _a = { class: "vb-simple-options-panel" }, Aa = {
   key: 0,
   class: "vb-simple-history"
-}, Aa = ["value", "disabled"], Ia = ["value"], Sa = ["value"], xa = { class: "vb-memory-toggle" }, Ea = ["disabled"], Ua = { class: "vb-simple-starters" }, ja = ["onClick"], Da = { class: "vb-simple-context" }, Pa = {
+}, Ca = ["value", "disabled"], Ia = ["value"], Sa = ["value"], xa = { class: "vb-memory-toggle" }, Ea = ["disabled"], ja = { class: "vb-simple-starters" }, Ua = ["onClick"], Da = { class: "vb-simple-context" }, Pa = {
   key: 0,
   class: "vb-simple-avatar",
   "aria-label": "维衡 AI"
-}, Na = { class: "vb-simple-message-body" }, Ta = {
+}, Na = { class: "vb-simple-message-body" }, Ma = {
   key: 0,
   class: "vb-chat-sent-attachments"
-}, Ma = ["aria-label", "onClick"], Ra = ["src", "alt"], za = {
+}, Ta = ["aria-label", "onClick"], Ra = ["src", "alt"], za = {
   key: 1,
   class: "vb-simple-loading"
 }, Oa = {
@@ -1865,7 +1869,7 @@ const fa = {
 }, di = ["role"], ci = { class: "vb-simple-footnote" }, vi = { class: "vb-simple-privacy" }, mi = ["src", "alt"], pi = {
   key: 1,
   class: "vb-chat-text-preview"
-}, bi = { class: "vb-data-note" }, bn = "weiheng.ai-diet-chat.v1", fi = /* @__PURE__ */ He({
+}, bi = { class: "vb-data-note" }, fn = "weiheng.ai-diet-chat.v1", fi = /* @__PURE__ */ Ke({
   __name: "AiDietAssistantPage",
   props: {
     active: { type: Boolean, default: !0 },
@@ -1885,7 +1889,7 @@ const fa = {
     }
     function i() {
       try {
-        const E = JSON.parse(we.getItem(bn) || "null");
+        const E = JSON.parse(we.getItem(fn) || "null");
         if (!E || typeof E != "object") return { threads: [], activeByDate: {}, memoryEnabled: !0 };
         const S = E, x = Array.isArray(S.threads) ? S.threads.flatMap((ne) => {
           if (!ne || typeof ne != "object") return [];
@@ -1902,14 +1906,14 @@ const fa = {
         return { threads: [], activeByDate: {}, memoryEnabled: !0 };
       }
     }
-    const u = i(), r = T(u.threads), m = T(cn(u, u.activeByDate)), c = /* @__PURE__ */ new Set(), v = T(u.memoryEnabled), g = T(ke()), $ = T(""), y = T(null), p = T([]), h = T({}), w = T(null), _ = H(() => p.value.some((E) => E.status === "ready"));
-    let A = 0;
-    const R = T(""), D = T(""), M = T(null), V = T(null), W = H(() => r.value.some((E) => E.messages.some((S) => S.status === "sending"))), z = H(() => l.records.find((E) => E.date === g.value)), G = H(() => z.value?.entries || []), Y = H(() => ({
+    const u = i(), r = M(u.threads), m = M(vn(u, u.activeByDate)), c = /* @__PURE__ */ new Set(), v = M(u.memoryEnabled), g = M(ke()), $ = M(""), y = M(null), p = M([]), h = M({}), w = M(null), _ = H(() => p.value.some((E) => E.status === "ready"));
+    let C = 0;
+    const R = M(""), D = M(""), T = M(null), V = M(null), W = H(() => r.value.some((E) => E.messages.some((S) => S.status === "sending"))), z = H(() => l.records.find((E) => E.date === g.value)), G = H(() => z.value?.entries || []), Y = H(() => ({
       energy: typeof l.targets?.tdee == "number" ? l.targets.tdee : null,
       protein: l.targets?.macros?.find((E) => E.id === "protein")?.grams ?? null,
       carbs: l.targets?.macros?.find((E) => E.id === "carbs")?.grams ?? null,
       fat: l.targets?.macros?.find((E) => E.id === "fat")?.grams ?? null
-    })), ue = H(() => r.value.find((E) => E.id === m.value[g.value])), se = H(() => ue.value?.messages || []), { showJump: ye, onScroll: be, onContentLoad: ge, jumpToLatest: K } = Xl({ viewport: M, content: V, active: H(() => l.active), thread: H(() => ue.value?.id), messages: se }), F = H(() => r.value.filter((E) => E.messages.length).sort((E, S) => S.createdAt.localeCompare(E.createdAt)));
+    })), ue = H(() => r.value.find((E) => E.id === m.value[g.value])), se = H(() => ue.value?.messages || []), { showJump: ye, onScroll: be, onContentLoad: ge, jumpToLatest: K } = Xl({ viewport: T, content: V, active: H(() => l.active), thread: H(() => ue.value?.id), messages: se }), F = H(() => r.value.filter((E) => E.messages.length).sort((E, S) => S.createdAt.localeCompare(E.createdAt)));
     function P(E) {
       const S = E.target.value, x = r.value.find((X) => X.id === S);
       x && (g.value = x.date, m.value[x.date] = x.id);
@@ -1918,7 +1922,7 @@ const fa = {
       const S = se.value, x = S.findIndex((X) => X.id === E);
       return S.slice(0, x).reverse().find((X) => X.role === "user")?.content || "";
     }
-    function C(E) {
+    function A(E) {
       const { id: S, kind: x, name: X, size: ne, mimeType: Q } = E;
       return { id: S, kind: x, name: X, size: ne, mimeType: Q };
     }
@@ -1926,17 +1930,17 @@ const fa = {
       return E >= 1024 * 1024 ? `${(E / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(E / 1024))} KB`;
     }
     async function k(E) {
-      const S = A;
+      const S = C;
       D.value = "";
       for (const x of E) {
-        if (S !== A) break;
+        if (S !== C) break;
         if (p.value.length >= sa) {
           D.value = "每条消息最多添加 3 个附件。";
           break;
         }
         let X;
         try {
-          X = zn(x);
+          X = On(x);
         } catch (Q) {
           D.value = Q instanceof Error ? Q.message : "这个文件暂不支持。";
           continue;
@@ -1946,11 +1950,11 @@ const fa = {
         try {
           const Q = await ba(x, ne);
           if (!p.value.some((pe) => pe.id === ne)) continue;
-          if (p.value.reduce((pe, Ie) => pe + (Ie.value?.text?.length || 0), Q.text?.length || 0) > pn) throw new Error("本条消息的附件文字总量不能超过 60,000 字。");
+          if (p.value.reduce((pe, Ie) => pe + (Ie.value?.text?.length || 0), Q.text?.length || 0) > bn) throw new Error("本条消息的附件文字总量不能超过 60,000 字。");
           await da(Q);
           const fe = p.value.find((pe) => pe.id === ne);
           if (!fe) {
-            await ct(ne);
+            await vt(ne);
             continue;
           }
           h.value[ne] = Q, fe.value = Q, fe.status = "ready";
@@ -1960,7 +1964,7 @@ const fa = {
         }
       }
     }
-    function j(E) {
+    function U(E) {
       const S = E.target, x = Array.from(S.files || []);
       S.value = "", k(x);
     }
@@ -1971,20 +1975,20 @@ const fa = {
     function ae(E) {
       E.dataTransfer?.types.includes("Files") && E.preventDefault();
     }
-    function It(E) {
+    function St(E) {
       const S = Array.from(E.dataTransfer?.files || []);
       S.length && (E.preventDefault(), k(S));
     }
-    function at(E) {
-      p.value = p.value.filter((S) => S.id !== E), delete h.value[E], ct(E).catch(() => {
+    function it(E) {
+      p.value = p.value.filter((S) => S.id !== E), delete h.value[E], vt(E).catch(() => {
         D.value = "本地附件未能移除，请检查存储设置。";
       });
     }
-    function it() {
+    function rt() {
       const E = p.value.flatMap((x) => x.status === "ready" && x.value ? [x.value] : []), S = new Set(E.map((x) => x.id));
       return p.value = p.value.filter((x) => !S.has(x.id)), E;
     }
-    async function rt(E) {
+    async function ut(E) {
       try {
         const S = h.value[E.id] || await Tt(E.id);
         if (!S) throw new Error("附件已不在本地存储中，请重新添加。");
@@ -2002,43 +2006,43 @@ const fa = {
           } catch {
           }
     }, { immediate: !0 });
-    function Ke(E) {
+    function We(E) {
       const S = { id: d(), date: E, createdAt: (/* @__PURE__ */ new Date()).toISOString(), messages: [] };
       if (r.value.push(S), r.value.length > 60) {
         const x = r.value.splice(0, r.value.length - 60);
-        We(x.flatMap((X) => X.messages));
+        Ye(x.flatMap((X) => X.messages));
       }
       return m.value[E] = S.id, S;
     }
-    function We(E) {
+    function Ye(E) {
       for (const S of E.flatMap((x) => x.attachments || []))
-        delete h.value[S.id], ct(S.id).catch(() => {
+        delete h.value[S.id], vt(S.id).catch(() => {
           R.value = "部分旧附件未能清理，请检查浏览器存储设置。";
         });
     }
-    function Te(E) {
+    function Me(E) {
       const S = m.value[E];
       if (S && r.value.some((X) => X.id === S)) return;
       const x = r.value.filter((X) => X.date === E).sort((X, ne) => ne.createdAt.localeCompare(X.createdAt))[0];
-      x ? m.value[E] = x.id : Ke(E);
+      x ? m.value[E] = x.id : We(E);
     }
-    Te(g.value), re(g, (E) => {
+    Me(g.value), re(g, (E) => {
       if (!Fe(E) || E > ke()) {
         g.value = ke();
         return;
       }
-      Te(E), D.value = "";
+      Me(E), D.value = "";
     });
-    let Ye = !1, Xe = !1;
+    let Xe = !1, Qe = !1;
     function ee() {
       if (W.value) {
-        Xe = !0;
+        Qe = !0;
         return;
       }
-      Xe = !1, Ye = !0;
+      Qe = !1, Xe = !0;
       const E = i();
-      r.value = E.threads, m.value = cn(E, m.value, [...c]), v.value = E.memoryEnabled, Te(g.value), xe(() => {
-        Ye = !1;
+      r.value = E.threads, m.value = vn(E, m.value, [...c]), v.value = E.memoryEnabled, Me(g.value), xe(() => {
+        Xe = !1;
       });
     }
     window.addEventListener("weiheng-chat-synced", ee), Ve(() => window.removeEventListener("weiheng-chat-synced", ee));
@@ -2046,35 +2050,35 @@ const fa = {
     function Z() {
       if (L && clearTimeout(L), L = void 0, !Le())
         try {
-          we.setItem(bn, JSON.stringify({ threads: r.value, activeByDate: m.value, memoryEnabled: v.value })), R.value = "";
+          we.setItem(fn, JSON.stringify({ threads: r.value, activeByDate: m.value, memoryEnabled: v.value })), R.value = "";
         } catch {
           R.value = "浏览器未能保存对话记录；请检查本地存储空间或隐私设置。";
         }
     }
     function he() {
-      Ye || (L && clearTimeout(L), L = setTimeout(Z, 160));
+      Xe || (L && clearTimeout(L), L = setTimeout(Z, 160));
     }
     re([r, m, v], he, { deep: !0 });
-    function Ge() {
+    function Je() {
       Z();
     }
-    typeof window < "u" && (window.addEventListener("pagehide", Ge), window.addEventListener("weiheng-chat-flush", Ge)), Ve(() => {
-      Z(), typeof window < "u" && (window.removeEventListener("pagehide", Ge), window.removeEventListener("weiheng-chat-flush", Ge));
+    typeof window < "u" && (window.addEventListener("pagehide", Je), window.addEventListener("weiheng-chat-flush", Je)), Ve(() => {
+      Z(), typeof window < "u" && (window.removeEventListener("pagehide", Je), window.removeEventListener("weiheng-chat-flush", Je));
     });
-    let Ae;
-    function Fn() {
-      const E = Ae;
-      E && (Ae = void 0, E.controller.abort(), E.assistantMessage.status === "sending" && (E.assistantMessage.status = "failed", E.assistantMessage.error = "这条回复已被新消息打断。你可以继续聊天，也可以重试这条问题。"), Z());
-    }
-    function Bn(E) {
-      const S = new Date(E);
-      return Number.isNaN(S.getTime()) ? "新对话" : S.toLocaleString("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+    let Ce;
+    function Bn() {
+      const E = Ce;
+      E && (Ce = void 0, E.controller.abort(), E.assistantMessage.status === "sending" && (E.assistantMessage.status = "failed", E.assistantMessage.error = "这条回复已被新消息打断。你可以继续聊天，也可以重试这条问题。"), Z());
     }
     function Vn(E) {
       const S = new Date(E);
+      return Number.isNaN(S.getTime()) ? "新对话" : S.toLocaleString("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+    }
+    function qn(E) {
+      const S = new Date(E);
       return Number.isNaN(S.getTime()) ? "" : S.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" });
     }
-    function qn() {
+    function Ln() {
       return G.value.map((E) => ({
         foodId: E.foodId,
         name: E.name,
@@ -2083,7 +2087,7 @@ const fa = {
         referenceConfirmed: E.referenceConfirmed
       }));
     }
-    async function Ln(E, S) {
+    async function Gn(E, S) {
       const x = E.slice(0, S).filter((fe) => fe.status === "complete"), X = [];
       for (const { role: fe, content: pe, attachments: Ie } of x) {
         const Se = { role: fe, content: pe.slice(0, 1200), attachments: Ie };
@@ -2096,96 +2100,96 @@ const fa = {
       for (let fe = ne.length - 1; fe >= 0; fe--) {
         const pe = ne[fe], Ie = [];
         let Se = !1;
-        for (const ut of pe.attachments || []) {
-          const Ue = h.value[ut.id] || await Tt(ut.id);
-          if (!Ue) {
+        for (const dt of pe.attachments || []) {
+          const je = h.value[dt.id] || await Tt(dt.id);
+          if (!je) {
             if (fe === ne.length - 1) throw new Error("找不到这条问题的本地附件，请重新添加后发送。");
             Se = !0;
             continue;
           }
-          if (Q + (Ue.text?.length || 0) > pn || Ue.kind === "image" && ce >= aa) {
+          if (Q + (je.text?.length || 0) > bn || je.kind === "image" && ce >= aa) {
             Se = !0;
             continue;
           }
-          Q += Ue.text?.length || 0, Ue.kind === "image" && ce++, Ie.push(Ue);
+          Q += je.text?.length || 0, je.kind === "image" && ce++, Ie.push(je);
         }
         pe.attachments = Ie.length ? Ie : void 0, Se && (pe.content = pe.content.slice(0, 1100) + `
 （这条较早消息的附件未带入本次请求，请勿推测其内容。）`);
       }
       return ne;
     }
-    async function Qt(E, S, x = []) {
+    async function Zt(E, S, x = []) {
       const X = E.trim() || (x.length ? "请帮我分析这些附件。" : "");
       if (!X || X.length > 1200) return !1;
-      Fn(), Te(g.value);
+      Bn(), Me(g.value);
       const ne = ue.value;
       if (!ne) return !1;
       let Q, ce;
       if (S) {
         ce = ne.messages.findIndex((Re) => Re.id === S && Re.role === "assistant");
-        const Me = ne.messages[ce - 1];
-        if (ce < 1 || Me?.role !== "user")
+        const Te = ne.messages[ce - 1];
+        if (ce < 1 || Te?.role !== "user")
           return D.value = "找不到这条问题对应的对话，请开始新对话后重试。", !1;
         Q = ne.messages[ce], Q.status = "sending", Q.error = void 0, Q.content = "";
       } else
-        ne.messages.push({ id: d(), role: "user", content: X, attachments: x.length ? x.map(C) : void 0, status: "complete", createdAt: (/* @__PURE__ */ new Date()).toISOString() }), Q = Ql(ne.messages, d(), (/* @__PURE__ */ new Date()).toISOString()), ne.messages.length > 120 && We(ne.messages.splice(0, ne.messages.length - 120)), ce = ne.messages.length - 1;
+        ne.messages.push({ id: d(), role: "user", content: X, attachments: x.length ? x.map(A) : void 0, status: "complete", createdAt: (/* @__PURE__ */ new Date()).toISOString() }), Q = Ql(ne.messages, d(), (/* @__PURE__ */ new Date()).toISOString()), ne.messages.length > 120 && Ye(ne.messages.splice(0, ne.messages.length - 120)), ce = ne.messages.length - 1;
       K(), Z(), D.value = "";
       const fe = new AbortController(), pe = { controller: fe, assistantMessage: Q };
-      Ae = pe;
-      const Ie = g.value, Se = qn(), ut = Y.value, Ue = na(l.profile), Kn = ta(r.value, ne.id, v.value);
+      Ce = pe;
+      const Ie = g.value, Se = Ln(), dt = Y.value, je = na(l.profile), Wn = ta(r.value, ne.id, v.value);
       try {
-        const Me = await Ln(ne.messages, ce);
-        if (Ae !== pe) return !1;
-        if (Me.at(-1)?.role !== "user") throw new Error("对话状态不完整，请点击重试或开始新对话。");
-        const Re = await jn("chat", {
+        const Te = await Gn(ne.messages, ce);
+        if (Ce !== pe) return !1;
+        if (Te.at(-1)?.role !== "user") throw new Error("对话状态不完整，请点击重试或开始新对话。");
+        const Re = await Dn("chat", {
           date: Ie,
-          messages: Me,
+          messages: Te,
           entries: Se,
-          targets: ut,
-          profile: Ue,
-          memory: Kn
-        }, (je) => {
-          Ae === pe && (je.type === "delta" ? Q.content += je.text : je.type === "done" && (typeof je.content == "string" && (Q.content = je.content), Q.model = je.model, Q.context = je.contextSummary, Q.createdAt = je.generatedAt || (/* @__PURE__ */ new Date()).toISOString()));
+          targets: dt,
+          profile: je,
+          memory: Wn
+        }, (Ue) => {
+          Ce === pe && (Ue.type === "delta" ? Q.content += Ue.text : Ue.type === "done" && (typeof Ue.content == "string" && (Q.content = Ue.content), Q.model = Ue.model, Q.context = Ue.contextSummary, Q.createdAt = Ue.generatedAt || (/* @__PURE__ */ new Date()).toISOString()));
         }, fe.signal);
-        if (Ae !== pe) return !1;
+        if (Ce !== pe) return !1;
         if (!Q.content.trim() || typeof Re.model != "string")
           throw new Error("AI 返回的数据格式不正确，请重试。");
         return Q.model = Re.model, Q.context = Re.contextSummary, Q.createdAt = Re.generatedAt || (/* @__PURE__ */ new Date()).toISOString(), Q.status = "complete", Z(), ds(), !0;
-      } catch (Me) {
-        return Ae !== pe || (Q.status = "failed", Q.error = Me instanceof Error ? Me.message : "AI 暂时无法回复，请重试。", Z()), !1;
+      } catch (Te) {
+        return Ce !== pe || (Q.status = "failed", Q.error = Te instanceof Error ? Te.message : "AI 暂时无法回复，请重试。", Z()), !1;
       } finally {
-        Ae === pe && (Ae = void 0), Xe && !W.value && ee();
+        Ce === pe && (Ce = void 0), Qe && !W.value && ee();
       }
     }
-    function Zt() {
+    function en() {
       const E = $.value.trim();
       if (!E && !_.value || E.length > 1200) return;
-      const S = it();
-      $.value = "", Qt(E, void 0, S);
-    }
-    function en(E) {
-      $.value = E, xe(() => document.getElementById("vb-diet-chat-input")?.focus());
-    }
-    function Gn(E) {
-      E.key === "Enter" && !E.shiftKey && !E.isComposing && (E.preventDefault(), Zt());
+      const S = rt();
+      $.value = "", Zt(E, void 0, S);
     }
     function tn(E) {
-      const S = se.value.findIndex((X) => X.id === E), x = se.value[S - 1];
-      S > 0 && x?.role === "user" && Qt(x.content, E);
+      $.value = E, xe(() => document.getElementById("vb-diet-chat-input")?.focus());
     }
-    function Jn() {
-      A++, c.add(Ke(g.value).id);
-      for (const E of p.value) at(E.id);
-      D.value = "";
+    function Jn(E) {
+      E.key === "Enter" && !E.shiftKey && !E.isComposing && (E.preventDefault(), en());
+    }
+    function nn(E) {
+      const S = se.value.findIndex((X) => X.id === E), x = se.value[S - 1];
+      S > 0 && x?.role === "user" && Zt(x.content, E);
     }
     function Hn() {
+      C++, c.add(We(g.value).id);
+      for (const E of p.value) it(E.id);
+      D.value = "";
+    }
+    function Kn() {
       if (!window.confirm("清除当前使用空间的全部 AI 对话？登录账号的删除会同步到其他设备，此操作无法撤销。")) return;
       const E = r.value.flatMap((S) => S.messages.flatMap((x) => x.attachments || []));
       for (const S of E)
-        delete h.value[S.id], ct(S.id).catch(() => {
+        delete h.value[S.id], vt(S.id).catch(() => {
           R.value = "部分本地附件未能清除，请检查浏览器存储设置。";
         });
-      us(), r.value = [], m.value = {}, R.value = "", Te(g.value), D.value = "当前空间的聊天记录已清除。";
+      us(), r.value = [], m.value = {}, R.value = "", Me(g.value), D.value = "当前空间的聊天记录已清除。";
     }
     return (E, S) => (s(), o("section", fa, [
       e("header", ga, [
@@ -2195,7 +2199,7 @@ const fa = {
         ], -1)),
         e("div", ya, [
           e("label", ha, [
-            U(O, {
+            j(O, {
               name: "calendar",
               size: 16
             }),
@@ -2213,9 +2217,9 @@ const fa = {
           e("button", {
             type: "button",
             class: "vb-simple-new",
-            onClick: Jn
+            onClick: Hn
           }, [
-            U(O, {
+            j(O, {
               name: "plus",
               size: 16
             }),
@@ -2224,13 +2228,13 @@ const fa = {
           e("details", wa, [
             e("summary", $a, [
               S[11] || (S[11] = N("更多", -1)),
-              U(O, {
+              j(O, {
                 name: "chevron",
                 size: 14
               })
             ]),
             e("div", _a, [
-              F.value.length ? (s(), o("label", Ca, [
+              F.value.length ? (s(), o("label", Aa, [
                 S[12] || (S[12] = N(" 历史对话 ", -1)),
                 e("select", {
                   value: ue.value?.id,
@@ -2245,15 +2249,15 @@ const fa = {
                   (s(!0), o(B, null, J(F.value, (x) => (s(), o("option", {
                     key: x.id,
                     value: x.id
-                  }, a(x.date) + " · " + a(Bn(x.createdAt)) + " · " + a(x.messages.length) + " 条消息", 9, Sa))), 128))
-                ], 40, Aa)
+                  }, a(x.date) + " · " + a(Vn(x.createdAt)) + " · " + a(x.messages.length) + " 条消息", 9, Sa))), 128))
+                ], 40, Ca)
               ])) : I("", !0),
               e("label", xa, [
                 te(e("input", {
                   "onUpdate:modelValue": S[1] || (S[1] = (x) => v.value = x),
                   type: "checkbox"
                 }, null, 512), [
-                  [vt, v.value]
+                  [mt, v.value]
                 ]),
                 S[13] || (S[13] = e("span", null, [
                   e("strong", null, "跨对话记忆"),
@@ -2264,7 +2268,7 @@ const fa = {
               e("button", {
                 type: "button",
                 disabled: W.value,
-                onClick: Hn
+                onClick: Kn
               }, "清除本地记录", 8, Ea)
             ])
           ])
@@ -2272,7 +2276,7 @@ const fa = {
       ]),
       e("div", {
         ref_key: "conversation",
-        ref: M,
+        ref: T,
         class: me(["vb-simple-scroll", { "is-empty": !se.value.length }]),
         onScrollPassive: S[2] || (S[2] = //@ts-ignore
         (...x) => b(be) && b(be)(...x)),
@@ -2293,19 +2297,19 @@ const fa = {
             class: me(["vb-simple-message", [`is-${x.role}`, `is-${x.status}`]])
           }, [
             x.role === "assistant" ? (s(), o("span", Pa, [
-              U(O, {
+              j(O, {
                 name: "sparkles",
                 size: 18
               })
             ])) : I("", !0),
             e("div", Na, [
-              x.attachments?.length ? (s(), o("div", Ta, [
+              x.attachments?.length ? (s(), o("div", Ma, [
                 (s(!0), o(B, null, J(x.attachments, (X) => (s(), o("button", {
                   key: X.id,
                   type: "button",
                   class: "vb-chat-file",
                   "aria-label": "查看附件：" + X.name,
-                  onClick: (ne) => rt(X)
+                  onClick: (ne) => ut(X)
                 }, [
                   X.kind === "image" && h.value[X.id]?.dataUrl ? (s(), o("img", {
                     key: 0,
@@ -2320,7 +2324,7 @@ const fa = {
                     e("strong", null, a(X.name), 1),
                     e("small", null, a(X.kind === "image" ? "照片" : "文件文字") + " · " + a(f(X.size)), 1)
                   ])
-                ], 8, Ma))), 128))
+                ], 8, Ta))), 128))
               ])) : I("", !0),
               x.status === "sending" && !x.content ? (s(), o("div", za, [...S[18] || (S[18] = [
                 e("span", { class: "vb-loading-ring" }, null, -1),
@@ -2337,26 +2341,26 @@ const fa = {
                 e("button", {
                   class: "vb-text-button vb-simple-retry",
                   type: "button",
-                  onClick: (X) => tn(x.id)
+                  onClick: (X) => nn(x.id)
                 }, [
-                  U(O, {
+                  j(O, {
                     name: "activity",
                     size: 14
                   }),
                   S[20] || (S[20] = N("重试这条问题", -1))
                 ], 8, Va)
-              ], 64)) : x.role !== "assistant" || !b(Bt)(q(x.id)) ? (s(), o("p", qa, a(x.content), 1)) : I("", !0),
-              x.role === "assistant" && x.status === "complete" && x.content.trim() && b(Bt)(q(x.id)) ? (s(), ve(Wl, {
+              ], 64)) : x.role !== "assistant" || !b(Vt)(q(x.id)) ? (s(), o("p", qa, a(x.content), 1)) : I("", !0),
+              x.role === "assistant" && x.status === "complete" && x.content.trim() && b(Vt)(q(x.id)) ? (s(), ve(Wl, {
                 key: 5,
                 content: x.content,
                 question: q(x.id),
                 auto: se.value.at(-1)?.id === x.id,
-                onRetry: (X) => tn(x.id)
+                onRetry: (X) => nn(x.id)
               }, null, 8, ["content", "question", "auto", "onRetry"])) : I("", !0),
               x.status === "complete" ? (s(), o("small", La, [
-                N(a(Vn(x.createdAt)), 1),
+                N(a(qn(x.createdAt)), 1),
                 x.role === "assistant" ? (s(), o(B, { key: 0 }, [
-                  N(" · " + a(x.model || "DeepSeek"), 1)
+                  N(" · " + a(b(Ge)(x.model)), 1)
                 ], 64)) : I("", !0)
               ])) : I("", !0)
             ])
@@ -2369,18 +2373,18 @@ const fa = {
         }, [
           S[16] || (S[16] = e("h2", null, "今天想聊些什么？", -1)),
           S[17] || (S[17] = e("p", null, "从一个问题开始，或试试下面的提问。", -1)),
-          e("div", Ua, [
+          e("div", ja, [
             (s(), o(B, null, J(n, (x) => e("button", {
               key: x,
               type: "button",
-              onClick: (X) => en(x)
+              onClick: (X) => tn(x)
             }, [
               e("span", null, a(x), 1),
-              U(O, {
+              j(O, {
                 name: "arrow",
                 size: 16
               })
-            ], 8, ja)), 64))
+            ], 8, Ua)), 64))
           ]),
           e("small", Da, "饮食参考日期：" + a(g.value), 1)
         ], 512))
@@ -2395,7 +2399,7 @@ const fa = {
           onClick: S[4] || (S[4] = //@ts-ignore
           (...x) => b(K) && b(K)(...x))
         }, [
-          U(O, {
+          j(O, {
             name: "arrow",
             size: 20
           })
@@ -2405,7 +2409,7 @@ const fa = {
             e("details", Ka, [
               e("summary", null, [
                 S[21] || (S[21] = N("快捷提问", -1)),
-                U(O, {
+                j(O, {
                   name: "chevron",
                   size: 12
                 })
@@ -2414,10 +2418,10 @@ const fa = {
                 (s(), o(B, null, J(n, (x) => e("button", {
                   key: x,
                   type: "button",
-                  onClick: (X) => en(x)
+                  onClick: (X) => tn(x)
                 }, [
                   N(a(x), 1),
-                  U(O, {
+                  j(O, {
                     name: "arrow",
                     size: 14
                   })
@@ -2429,7 +2433,7 @@ const fa = {
           e("div", {
             class: "vb-simple-editor",
             onDragover: ae,
-            onDrop: It
+            onDrop: St
           }, [
             e("input", {
               ref_key: "fileInput",
@@ -2439,7 +2443,7 @@ const fa = {
               multiple: "",
               accept: b(ia),
               "aria-label": "选择照片或文件",
-              onChange: j
+              onChange: U
             }, null, 40, Qa),
             p.value.length ? (s(), o("div", Za, [
               (s(!0), o(B, null, J(p.value, (x) => (s(), o("div", {
@@ -2451,7 +2455,7 @@ const fa = {
                   class: "vb-chat-file-preview",
                   disabled: x.status !== "ready",
                   "aria-label": "预览附件：" + x.name,
-                  onClick: (X) => rt(x)
+                  onClick: (X) => ut(x)
                 }, [
                   x.value?.dataUrl ? (s(), o("img", {
                     key: 0,
@@ -2471,9 +2475,9 @@ const fa = {
                   type: "button",
                   class: "vb-chat-file-remove",
                   "aria-label": "移除附件：" + x.name,
-                  onClick: (X) => at(x.id)
+                  onClick: (X) => it(x.id)
                 }, [
-                  U(O, {
+                  j(O, {
                     name: "close",
                     size: 13
                   })
@@ -2490,7 +2494,7 @@ const fa = {
               rows: "2",
               maxlength: "1200",
               placeholder: "问一个问题，或添加照片、文件…",
-              onKeydown: Gn,
+              onKeydown: Jn,
               onPaste: oe
             }, null, 544), [
               [ie, $.value]
@@ -2504,7 +2508,7 @@ const fa = {
                   title: "添加照片或文件：最多 3 个；照片 8 MB，文件 10 MB",
                   onClick: S[6] || (S[6] = (x) => y.value?.click())
                 }, [
-                  U(O, {
+                  j(O, {
                     name: "paperclip",
                     size: 18
                   }),
@@ -2516,9 +2520,9 @@ const fa = {
                 type: "button",
                 class: "vb-button vb-button-primary vb-simple-send",
                 disabled: !$.value.trim() && !_.value,
-                onClick: S[7] || (S[7] = (x) => Zt())
+                onClick: S[7] || (S[7] = (x) => en())
               }, [
-                U(O, {
+                j(O, {
                   name: "arrow",
                   size: 16
                 }),
@@ -2535,7 +2539,7 @@ const fa = {
           e("div", ci, [
             e("details", vi, [
               e("summary", null, [
-                U(O, {
+                j(O, {
                   name: "lock",
                   size: 12
                 }),
@@ -2543,8 +2547,8 @@ const fa = {
               ]),
               S[26] || (S[26] = e("div", { class: "vb-simple-privacy-panel" }, [
                 e("p", null, "附件支持 JPG、PNG、WebP、PDF、DOCX 和常见文本文件，每条消息最多 3 个。照片每张最多 8 MB，文件每个最多 10 MB、24,000 字；PDF 最多 40 页，仅提取可读文字，扫描件请改发截图。"),
-                e("p", null, "选择附件时仅在本地读取；点击发送后，所选照片的压缩图、文件提取的文字及问题会发送给 DeepSeek，并在后续相关对话中作为上下文。PDF、Word 的排版与内嵌图片不发送。登录后的文字对话同步至网站服务器，游客对话和附件文件保存在当前浏览器。"),
-                e("p", null, "点击发送时，会携带你当前浏览器中最新保存的身体档案（性别、年龄、身高、体重、活动水平），以及所选日期的食物名称、克数、餐次、程序计算的营养汇总与每日目标，供 DeepSeek 回答相关问题。修改档案后，下次提问会使用新数据；未填写的档案不会被猜测或补全。饮食记录中的照片、备注、健康标记和偏好备注不会自动发送。"),
+                e("p", null, "选择附件时仅在本地读取；点击发送后，所选照片的压缩图、文件提取的文字及问题会发送给维衡 AI，并在后续相关对话中作为上下文。PDF、Word 的排版与内嵌图片不发送。登录后的文字对话同步至网站服务器，游客对话和附件文件保存在当前浏览器。"),
+                e("p", null, "点击发送时，会携带你当前浏览器中最新保存的身体档案（性别、年龄、身高、体重、活动水平），以及所选日期的食物名称、克数、餐次、程序计算的营养汇总与每日目标，供 维衡 AI 回答相关问题。修改档案后，下次提问会使用新数据；未填写的档案不会被猜测或补全。饮食记录中的照片、备注、健康标记和偏好备注不会自动发送。"),
                 e("p", null, "跨对话记忆开启时，发送新问题会额外携带最多最近 50 轮完整的纯文字对话作为背景（不含附件）。为控制请求长度，每条记忆最多保留 220 字。可在“更多”中关闭；多人共用此浏览器时建议关闭。当前问题和最新身体档案优先于旧对话。"),
                 e("p", null, "饮食相关回复仅供一般参考；引用营养数据时会区分程序计算值与未知项，不把缺失数据当作 0。")
               ], -1))
@@ -2553,13 +2557,13 @@ const fa = {
           ])
         ])
       ]),
-      w.value ? (s(), ve(lt, {
+      w.value ? (s(), ve(at, {
         key: 0,
         title: w.value.name,
         wide: "",
         onClose: S[8] || (S[8] = (x) => w.value = null)
       }, {
-        default: ot(() => [
+        default: lt(() => [
           w.value.kind === "image" ? (s(), o("img", {
             key: 0,
             class: "vb-chat-image-preview",
@@ -2572,17 +2576,17 @@ const fa = {
       }, 8, ["title"])) : I("", !0)
     ]));
   }
-}), gi = /* @__PURE__ */ Rn(fi, [["__scopeId", "data-v-bc1d03ec"]]), yi = {
+}), gi = /* @__PURE__ */ zn(fi, [["__scopeId", "data-v-389e4f87"]]), yi = {
   key: 0,
   class: "vb-page-title"
 }, hi = {
   key: 1,
   class: "vb-date-tabs",
   "aria-label": "选择评估日期"
-}, ki = ["aria-pressed", "onClick"], wi = { class: "vb-glass vb-review-hero" }, $i = { class: "vb-icon-badge vb-large-badge" }, _i = { class: "vb-small-label" }, Ci = { class: "vb-coverage-score" }, Ai = { class: "vb-assessment-grid" }, Ii = { class: "vb-glass vb-coverage-card" }, Si = { class: "vb-section-heading" }, xi = { class: "vb-coverage-list" }, Ei = { class: "vb-food-category-icon" }, Ui = { class: "vb-coverage-name" }, ji = { key: 0 }, Di = {
+}, ki = ["aria-pressed", "onClick"], wi = { class: "vb-glass vb-review-hero" }, $i = { class: "vb-icon-badge vb-large-badge" }, _i = { class: "vb-small-label" }, Ai = { class: "vb-coverage-score" }, Ci = { class: "vb-assessment-grid" }, Ii = { class: "vb-glass vb-coverage-card" }, Si = { class: "vb-section-heading" }, xi = { class: "vb-coverage-list" }, Ei = { class: "vb-food-category-icon" }, ji = { class: "vb-coverage-name" }, Ui = { key: 0 }, Di = {
   class: "vb-coverage-track",
   "aria-hidden": "true"
-}, Pi = { class: "vb-inline-note" }, Ni = { class: "vb-glass vb-suggestion-card" }, Ti = ["checked", "onChange"], Mi = {
+}, Pi = { class: "vb-inline-note" }, Ni = { class: "vb-glass vb-suggestion-card" }, Mi = ["checked", "onChange"], Ti = {
   key: 3,
   class: "vb-glass vb-empty-review"
 }, Ri = { class: "vb-empty-icon" }, zi = { class: "vb-glass vb-supplement-card" }, Oi = { class: "vb-icon-badge" }, Fi = {
@@ -2590,11 +2594,11 @@ const fa = {
   props: { records: Array, habits: Object, flags: Array, embedded: Boolean },
   emits: ["navigate", "toggle-habit"],
   setup(t) {
-    const l = t, n = T(l.records[0]?.date || "");
+    const l = t, n = M(l.records[0]?.date || "");
     re(() => l.records, ($) => {
       $.some((y) => y.date === n.value) || (n.value = $[0]?.date || "");
     });
-    const d = H(() => l.records.find(($) => $.date === n.value)), i = ($) => Number(d.value?.foods?.[$]) || 0, u = H(() => xt.filter(($) => i($.key) <= 0)), r = H(() => xt.length - u.value.length), m = H(() => Math.max(1, ...zt.map(($) => i($.key)))), c = {
+    const d = H(() => l.records.find(($) => $.date === n.value)), i = ($) => Number(d.value?.foods?.[$]) || 0, u = H(() => Et.filter(($) => i($.key) <= 0)), r = H(() => Et.length - u.value.length), m = H(() => Math.max(1, ...Ot.map(($) => i($.key)))), c = {
       vegetables: ["下一餐，多一种蔬菜", "按季节与口味，换一种颜色或种类。"],
       fruit: ["给日常留一份水果", "方便的时候，选择一种完整水果。"],
       staples: ["把主食也记下来", "完整记录，才能更清楚地回顾一天。"],
@@ -2614,7 +2618,7 @@ const fa = {
           class: "vb-button vb-button-primary",
           onClick: y[0] || (y[0] = (p) => $.$emit("navigate", "diary"))
         }, [
-          U(O, {
+          j(O, {
             name: "plus",
             size: 17
           }),
@@ -2632,7 +2636,7 @@ const fa = {
       d.value ? (s(), o(B, { key: 2 }, [
         e("section", wi, [
           e("span", $i, [
-            U(O, {
+            j(O, {
               name: "leaf",
               size: 25
             })
@@ -2642,41 +2646,41 @@ const fa = {
             e("h2", null, a(u.value.length ? "这些类别，这次还没有记到" : "这次记录覆盖了多类食物"), 1),
             e("p", null, a(u.value.length ? u.value.map((p) => p.name).join("、") : "保持多样性，也继续留意食物的份量与搭配。"), 1)
           ]),
-          e("div", Ci, [
+          e("div", Ai, [
             e("strong", null, [
               N(a(r.value), 1),
-              e("small", null, " / " + a(b(xt).length), 1)
+              e("small", null, " / " + a(b(Et).length), 1)
             ]),
             y[5] || (y[5] = e("span", null, "主要类别已记录", -1))
           ])
         ]),
-        e("div", Ai, [
+        e("div", Ci, [
           e("section", Ii, [
             e("div", Si, [
               y[6] || (y[6] = e("div", null, [
                 e("h2", null, "食物类别覆盖"),
                 e("p", null, "按这一日保存的食用克数汇总")
               ], -1)),
-              U(O, { name: "chart" })
+              j(O, { name: "chart" })
             ]),
             e("div", xi, [
-              (s(!0), o(B, null, J(b(zt), (p) => (s(), o("div", {
+              (s(!0), o(B, null, J(b(Ot), (p) => (s(), o("div", {
                 key: p.key,
                 class: "vb-coverage-row"
               }, [
                 e("span", Ei, [
-                  U(O, {
-                    name: b(_n)[p.key],
+                  j(O, {
+                    name: b(An)[p.key],
                     size: 17
                   }, null, 8, ["name"])
                 ]),
-                e("span", Ui, [
+                e("span", ji, [
                   N(a(p.name), 1),
-                  p.key === "snacks" ? (s(), o("small", ji, "可选记录")) : I("", !0)
+                  p.key === "snacks" ? (s(), o("small", Ui, "可选记录")) : I("", !0)
                 ]),
                 e("span", Di, [
                   e("i", {
-                    style: yn({ width: i(p.key) / m.value * 100 + "%" })
+                    style: hn({ width: i(p.key) / m.value * 100 + "%" })
                   }, null, 4)
                 ]),
                 e("span", {
@@ -2685,7 +2689,7 @@ const fa = {
               ]))), 128))
             ]),
             e("p", Pi, [
-              U(O, {
+              j(O, {
                 name: "info",
                 size: 15
               }),
@@ -2708,7 +2712,7 @@ const fa = {
                 type: "checkbox",
                 checked: g(p.key),
                 onChange: (h) => $.$emit("toggle-habit", n.value, p.key)
-              }, null, 40, Ti),
+              }, null, 40, Mi),
               e("span", null, [
                 e("strong", null, a(p.title), 1),
                 e("small", null, a(p.detail), 1)
@@ -2717,9 +2721,9 @@ const fa = {
             y[9] || (y[9] = e("p", { class: "vb-section-note" }, "勾选仅记录行动，不会改变上面的食物统计。", -1))
           ])
         ])
-      ], 64)) : (s(), o("section", Mi, [
+      ], 64)) : (s(), o("section", Ti, [
         e("span", Ri, [
-          U(O, {
+          j(O, {
             name: "bowl",
             size: 36
           })
@@ -2731,7 +2735,7 @@ const fa = {
           onClick: y[1] || (y[1] = (p) => $.$emit("navigate", "diary"))
         }, [
           y[10] || (y[10] = N("记录今天的饮食", -1)),
-          U(O, {
+          j(O, {
             name: "arrow",
             size: 17
           })
@@ -2739,7 +2743,7 @@ const fa = {
       ])),
       e("section", zi, [
         e("span", Oi, [
-          U(O, {
+          j(O, {
             name: "shield",
             size: 23
           })
@@ -2754,7 +2758,7 @@ const fa = {
           onClick: y[2] || (y[2] = (p) => $.$emit("navigate", "about"))
         }, [
           y[14] || (y[14] = N("查看注意事项", -1)),
-          U(O, {
+          j(O, {
             name: "arrow",
             size: 17
           })
@@ -2783,7 +2787,7 @@ const fa = {
 }, Xi = { class: "vb-report-card-actions" }, Qi = ["onClick"], Zi = ["disabled", "onClick"], er = {
   key: 4,
   class: "vb-glass vb-report-empty"
-}, tr = { class: "vb-icon-badge" }, nr = /* @__PURE__ */ He({
+}, tr = { class: "vb-icon-badge" }, nr = /* @__PURE__ */ Ke({
   __name: "ReportsPage",
   props: {
     reports: {},
@@ -2793,7 +2797,7 @@ const fa = {
   },
   emits: ["open", "retry", "navigate"],
   setup(t, { emit: l }) {
-    const n = t, d = l, i = T(""), { isStale: u } = Kt(), r = H(() => n.reports.filter((v) => !i.value || v.date === i.value));
+    const n = t, d = l, i = M(""), { isStale: u } = Wt(), r = H(() => n.reports.filter((v) => !i.value || v.date === i.value));
     function m(v) {
       return n.records.find((g) => g.date === v.date);
     }
@@ -2809,7 +2813,7 @@ const fa = {
       t.embedded ? (s(), o("div", qi, [
         g[5] || (g[5] = e("p", null, "按日期筛选已生成的分析报告", -1)),
         e("label", Li, [
-          U(O, {
+          j(O, {
             name: "calendar",
             size: 18
           }),
@@ -2828,7 +2832,7 @@ const fa = {
           e("p", null, "按日期查看饮食分析，记录改变后可随时更新。")
         ], -1)),
         e("label", Vi, [
-          U(O, {
+          j(O, {
             name: "calendar",
             size: 18
           }),
@@ -2841,7 +2845,7 @@ const fa = {
           ])
         ])
       ])),
-      g[9] || (g[9] = e("p", { class: "vb-data-note vb-report-privacy" }, "报告保存在当前浏览器。生成分析时，已确认的食物、克数与基础营养档案会经本地后端发送给 DeepSeek；照片和备注不随每日分析发送。", -1)),
+      g[9] || (g[9] = e("p", { class: "vb-data-note vb-report-privacy" }, "报告保存在当前浏览器。生成分析时，已确认的食物、克数与基础营养档案会经本地后端发送给维衡 AI；照片和备注不随每日分析发送。", -1)),
       i.value ? (s(), o("div", Gi, [
         e("span", null, a(r.value.length) + " 份报告", 1),
         e("button", {
@@ -2857,7 +2861,7 @@ const fa = {
         }, [
           e("div", Hi, [
             e("span", Ki, [
-              U(O, { name: "report" })
+              j(O, { name: "report" })
             ]),
             e("div", null, [
               e("h2", null, a($.date), 1),
@@ -2876,7 +2880,7 @@ const fa = {
               onClick: (y) => d("open", $.date, $.id)
             }, [
               g[6] || (g[6] = N("打开报告", -1)),
-              U(O, {
+              j(O, {
                 name: "arrow",
                 size: 15
               })
@@ -2891,7 +2895,7 @@ const fa = {
         ]))), 128))
       ])) : (s(), o("section", er, [
         e("span", tr, [
-          U(O, {
+          j(O, {
             name: "report",
             size: 25
           })
@@ -2903,7 +2907,7 @@ const fa = {
           onClick: g[3] || (g[3] = ($) => d("navigate", "diary"))
         }, [
           g[7] || (g[7] = N("去记录饮食", -1)),
-          U(O, {
+          j(O, {
             name: "arrow",
             size: 17
           })
@@ -2917,7 +2921,7 @@ const fa = {
 }, lr = {
   class: "vb-assessment-block vb-assessment-reports",
   "aria-labelledby": "ai-report-heading"
-}, ar = /* @__PURE__ */ He({
+}, ar = /* @__PURE__ */ Ke({
   __name: "AiNutritionAssessmentPage",
   props: {
     records: {},
@@ -2943,14 +2947,14 @@ const fa = {
           class: "vb-button vb-button-primary",
           onClick: u[0] || (u[0] = (r) => n("navigate", "diary"))
         }, [
-          U(O, {
+          j(O, {
             name: "plus",
             size: 17
           }),
           u[5] || (u[5] = N("添加饮食记录 ", -1))
         ])
       ]),
-      U(ns, {
+      j(ss, {
         records: t.records,
         profile: t.profile || void 0
       }, null, 8, ["records", "profile"]),
@@ -2962,7 +2966,7 @@ const fa = {
           ]),
           e("span", { class: "vb-subtle-label" }, "按已保存记录统计")
         ], -1)),
-        U(Fi, {
+        j(Fi, {
           records: t.records,
           habits: t.habits,
           flags: t.flags,
@@ -2979,7 +2983,7 @@ const fa = {
           ]),
           e("span", { class: "vb-subtle-label" }, "可按日期筛选、查看和重试")
         ], -1)),
-        U(nr, {
+        j(nr, {
           reports: t.reports,
           records: t.records,
           profile: t.profile,
@@ -3007,22 +3011,22 @@ const fa = {
   props: { modelValue: { type: Object, default: null } },
   emits: ["update:modelValue", "selected"],
   setup(t, { emit: l }) {
-    const n = l, d = T(!1), i = T(null), u = T(null), r = T(""), m = T(!1);
+    const n = l, d = M(!1), i = M(null), u = M(null), r = M(""), m = M(!1);
     function c(h) {
       return new Promise((w, _) => {
-        const A = URL.createObjectURL(h), R = new Image();
-        R.onload = () => w({ image: R, url: A }), R.onerror = () => {
-          URL.revokeObjectURL(A), _(new Error("这张图片无法预览，请尝试 JPG、PNG 或 WebP 图片。"));
-        }, R.src = A;
+        const C = URL.createObjectURL(h), R = new Image();
+        R.onload = () => w({ image: R, url: C }), R.onerror = () => {
+          URL.revokeObjectURL(C), _(new Error("这张图片无法预览，请尝试 JPG、PNG 或 WebP 图片。"));
+        }, R.src = C;
       });
     }
     function v(h, w) {
-      return new Promise((_, A) => h.toBlob((R) => R ? _(R) : A(new Error("图片处理失败，请重新选择。")), "image/jpeg", w));
+      return new Promise((_, C) => h.toBlob((R) => R ? _(R) : C(new Error("图片处理失败，请重新选择。")), "image/jpeg", w));
     }
     function g(h) {
       return new Promise((w, _) => {
-        const A = new FileReader();
-        A.onload = () => w(A.result), A.onerror = () => _(new Error("图片读取失败，请重新选择。")), A.readAsDataURL(h);
+        const C = new FileReader();
+        C.onload = () => w(C.result), C.onerror = () => _(new Error("图片读取失败，请重新选择。")), C.readAsDataURL(h);
       });
     }
     async function $(h) {
@@ -3035,15 +3039,15 @@ const fa = {
         w = { image: _.image, width: _.image.naturalWidth, height: _.image.naturalHeight, cleanup: () => URL.revokeObjectURL(_.url) };
       }
       try {
-        const _ = Math.min(1, 1200 / Math.max(w.width, w.height)), A = document.createElement("canvas");
-        A.width = Math.max(1, Math.round(w.width * _)), A.height = Math.max(1, Math.round(w.height * _));
-        const R = A.getContext("2d");
+        const _ = Math.min(1, 1200 / Math.max(w.width, w.height)), C = document.createElement("canvas");
+        C.width = Math.max(1, Math.round(w.width * _)), C.height = Math.max(1, Math.round(w.height * _));
+        const R = C.getContext("2d");
         if (!R) throw new Error("浏览器暂不支持图片预览。");
-        R.drawImage(w.image, 0, 0, A.width, A.height);
-        let D = await v(A, 0.76);
-        if (D.size > 32e4 && (D = await v(A, 0.58)), D.size > 32e4) {
-          const M = document.createElement("canvas");
-          M.width = Math.round(A.width * 0.75), M.height = Math.round(A.height * 0.75), M.getContext("2d")?.drawImage(A, 0, 0, M.width, M.height), D = await v(M, 0.58);
+        R.drawImage(w.image, 0, 0, C.width, C.height);
+        let D = await v(C, 0.76);
+        if (D.size > 32e4 && (D = await v(C, 0.58)), D.size > 32e4) {
+          const T = document.createElement("canvas");
+          T.width = Math.round(C.width * 0.75), T.height = Math.round(C.height * 0.75), T.getContext("2d")?.drawImage(C, 0, 0, T.width, T.height), D = await v(T, 0.58);
         }
         return await g(D);
       } finally {
@@ -3051,19 +3055,19 @@ const fa = {
       }
     }
     async function y(h, w) {
-      const _ = h.target, A = _.files?.[0];
-      if (_.value = "", !!A) {
-        if (r.value = "", !A.type.startsWith("image/") || A.type === "image/svg+xml") {
+      const _ = h.target, C = _.files?.[0];
+      if (_.value = "", !!C) {
+        if (r.value = "", !C.type.startsWith("image/") || C.type === "image/svg+xml") {
           r.value = "请选择 JPG、PNG 或其他常见照片格式。";
           return;
         }
-        if (A.size > 12 * 1024 * 1024) {
+        if (C.size > 12 * 1024 * 1024) {
           r.value = "图片需小于 12 MB，请先选择较小的图片。";
           return;
         }
         m.value = !0;
         try {
-          const R = await $(A), D = { name: A.name.slice(0, 100), dataUrl: R, source: w, mime: "image/jpeg" };
+          const R = await $(C), D = { name: C.name.slice(0, 100), dataUrl: R, source: w, mime: "image/jpeg" };
           n("update:modelValue", D), n("selected", D);
         } catch (R) {
           r.value = R instanceof Error ? R.message : "无法处理这张图片，请重新选择。";
@@ -3119,7 +3123,7 @@ const fa = {
           "aria-label": "移除照片",
           onClick: p
         }, [
-          U(O, {
+          j(O, {
             name: "close",
             size: 15
           })
@@ -3132,7 +3136,7 @@ const fa = {
           disabled: m.value,
           onClick: w[3] || (w[3] = (_) => i.value?.click())
         }, [
-          U(O, {
+          j(O, {
             name: "camera",
             size: 17
           }),
@@ -3144,7 +3148,7 @@ const fa = {
           disabled: m.value,
           onClick: w[4] || (w[4] = (_) => u.value?.click())
         }, [
-          U(O, {
+          j(O, {
             name: "upload",
             size: 17
           }),
@@ -3152,13 +3156,13 @@ const fa = {
         ], 8, vr)
       ]),
       m.value ? (s(), o("p", mr, "正在准备图片…")) : r.value ? (s(), o("p", pr, a(r.value), 1)) : I("", !0),
-      d.value && t.modelValue ? (s(), ve(lt, {
+      d.value && t.modelValue ? (s(), ve(at, {
         key: 3,
         title: "饮食照片预览",
         wide: "",
         onClose: w[5] || (w[5] = (_) => d.value = !1)
       }, {
-        default: ot(() => [
+        default: lt(() => [
           e("img", {
             class: "vb-photo-large",
             src: t.modelValue.dataUrl,
@@ -3183,40 +3187,40 @@ const fa = {
 }, _r = {
   class: "vb-feature-error",
   role: "alert"
-}, Cr = {
+}, Ar = {
   key: 4,
   class: "vb-recognition-results"
-}, Ar = { class: "vb-data-note" }, Ir = {
+}, Cr = { class: "vb-data-note" }, Ir = {
   key: 0,
   class: "vb-recognition-meta"
-}, Sr = { key: 0 }, xr = { class: "vb-recognized-list" }, Er = ["value", "disabled", "aria-label", "onInput"], Ur = ["aria-label", "onClick"], jr = {
+}, Sr = { key: 0 }, xr = { class: "vb-recognized-list" }, Er = ["value", "disabled", "aria-label", "onInput"], jr = ["aria-label", "onClick"], Ur = {
   key: 0,
   class: "vb-recognition-matches"
-}, Dr = ["onClick"], Pr = { class: "vb-recognition-weight" }, Nr = ["onUpdate:modelValue", "disabled", "aria-label"], Tr = {
+}, Dr = ["onClick"], Pr = { class: "vb-recognition-weight" }, Nr = ["onUpdate:modelValue", "disabled", "aria-label"], Mr = {
   key: 1,
   class: "vb-data-note"
-}, Mr = { class: "vb-recognition-actions" }, Rr = ["disabled"], zr = {
+}, Tr = { class: "vb-recognition-actions" }, Rr = ["disabled"], zr = {
   __name: "PhotoRecognitionPanel",
   props: { draft: Object, legacyPhoto: Object },
   emits: ["confirm"],
   setup(t, { emit: l }) {
-    const n = t, d = l, { state: i } = Jt(), u = T(null), r = T("");
+    const n = t, d = l, { state: i } = Ht(), u = M(null), r = M("");
     let m = "";
     const c = H(() => n.draft.recognition), v = H(() => {
       const D = c.value?.generatedAt;
       if (!D) return "";
-      const M = new Date(D);
-      return Number.isNaN(M.getTime()) ? "" : new Intl.DateTimeFormat("zh-CN", { dateStyle: "short", timeStyle: "short" }).format(M);
+      const T = new Date(D);
+      return Number.isNaN(T.getTime()) ? "" : new Intl.DateTimeFormat("zh-CN", { dateStyle: "short", timeStyle: "short" }).format(T);
     }), g = H(() => c.value?.items?.length && !c.value.confirmed && c.value.items.every((D) => D.name?.trim() && Number.isFinite(Number(D.grams)) && Number(D.grams) >= 0.1 && Number(D.grams) <= 5e3));
-    re(() => [n.draft.date, n.draft.photoId], async ([D, M]) => {
+    re(() => [n.draft.date, n.draft.photoId], async ([D, T]) => {
       r.value = "", u.value = null, n.draft.recognition?.status === "pending" && m !== n.draft.recognition.requestId && (n.draft.recognition = { ...n.draft.recognition, status: "failed", error: "上次识别未完成，请重新识别。" });
       try {
-        if (M) {
-          const V = await ks("photos", M);
-          n.draft.date === D && n.draft.photoId === M && (u.value = V || null);
+        if (T) {
+          const V = await ks("photos", T);
+          n.draft.date === D && n.draft.photoId === T && (u.value = V || null);
         } else if (n.legacyPhoto?.dataUrl) {
           const V = { ...n.legacyPhoto, id: crypto.randomUUID(), date: D };
-          await Ft("photos", V), n.draft.date === D && (n.draft.photoId = V.id, u.value = V);
+          await Bt("photos", V), n.draft.date === D && (n.draft.photoId = V.id, u.value = V);
         }
       } catch (V) {
         r.value = V.message, u.value = n.legacyPhoto || null;
@@ -3227,18 +3231,18 @@ const fa = {
     }
     async function y() {
       const D = n.draft.photoId;
-      if (n.draft.photoId = null, n.draft.recognition = null, m = "", D && !i.records.some((M) => M.photoId === D) && !Object.values(i.drafts).some((M) => M.photoId === D)) try {
+      if (n.draft.photoId = null, n.draft.recognition = null, m = "", D && !i.records.some((T) => T.photoId === D) && !Object.values(i.drafts).some((T) => T.photoId === D)) try {
         await $s("photos", D);
-      } catch (M) {
-        r.value = M.message;
+      } catch (T) {
+        r.value = T.message;
       }
     }
     async function p(D) {
-      const M = n.draft.date, V = crypto.randomUUID();
+      const T = n.draft.date, V = crypto.randomUUID();
       r.value = "";
       try {
-        const W = { ...D, id: V, date: M, createdAt: (/* @__PURE__ */ new Date()).toISOString() };
-        if (await Ft("photos", W), n.draft.date !== M) return;
+        const W = { ...D, id: V, date: T, createdAt: (/* @__PURE__ */ new Date()).toISOString() };
+        if (await Bt("photos", W), n.draft.date !== T) return;
         u.value = W, n.draft.photoId = V, n.draft.recognition = null, await h(W);
       } catch (W) {
         r.value = W.message;
@@ -3246,51 +3250,51 @@ const fa = {
     }
     async function h(D = u.value) {
       if (!D?.dataUrl || c.value?.status === "pending") return;
-      const M = n.draft, V = M.photoId, W = crypto.randomUUID();
-      m = W, M.recognition = { requestId: W, photoId: V, status: "pending", items: [], error: "", confirmed: !1 };
+      const T = n.draft, V = T.photoId, W = crypto.randomUUID();
+      m = W, T.recognition = { requestId: W, photoId: V, status: "pending", items: [], error: "", confirmed: !1 };
       try {
         const z = await Ct("recognize", { image: D.dataUrl, requestId: V || W });
-        if (M.photoId !== V || M.recognition?.requestId !== W) return;
-        M.recognition = { ...z, requestId: W, photoId: V, status: "complete", error: "", confirmed: !1 };
+        if (T.photoId !== V || T.recognition?.requestId !== W) return;
+        T.recognition = { ...z, requestId: W, photoId: V, status: "complete", error: "", confirmed: !1 };
       } catch (z) {
-        M.photoId === V && M.recognition?.requestId === W && (M.recognition = { ...M.recognition, status: "failed", error: z.message });
+        T.photoId === V && T.recognition?.requestId === W && (T.recognition = { ...T.recognition, status: "failed", error: z.message });
       } finally {
         m === W && (m = "");
       }
     }
-    function w(D, M) {
-      D.name = M.target.value, D.foodId = null;
+    function w(D, T) {
+      D.name = T.target.value, D.foodId = null;
     }
-    function _(D, M) {
-      D.foodId = M.key, D.name = M.name;
+    function _(D, T) {
+      D.foodId = T.key, D.name = T.name;
     }
-    function A() {
+    function C() {
       n.draft.recognition = { ...n.draft.recognition, status: "complete", recognitionId: n.draft.recognition?.recognitionId || crypto.randomUUID(), items: n.draft.recognition?.items || [], confirmed: !1, error: "", note: n.draft.recognition?.note || "手动补充，请核对名称与份量。" }, n.draft.recognition.items.push({ id: crypto.randomUUID(), name: "", foodId: null, grams: null, uncertainty: "手动补充，请填写实际可食部重量。" });
     }
     function R() {
       g.value && d("confirm", { batchId: c.value.recognitionId, items: c.value.items.map((D) => ({ ...D, estimated: !0, source: "photo" })) });
     }
-    return (D, M) => (s(), o("section", gr, [
+    return (D, T) => (s(), o("section", gr, [
       e("div", yr, [
-        M[2] || (M[2] = e("div", null, [
+        T[2] || (T[2] = e("div", null, [
           e("h2", null, "这一餐的照片"),
           e("p", null, "拍一餐，核对后再记入。")
         ], -1)),
         e("span", hr, [
-          U(O, {
+          j(O, {
             name: "camera",
             size: 16
           })
         ])
       ]),
-      M[6] || (M[6] = e("p", { class: "vb-photo-disclosure" }, "选择照片后自动识别：压缩照片会经本地后端发送给 DeepSeek。照片与识别结果保存在当前浏览器。", -1)),
-      U(fr, {
+      T[6] || (T[6] = e("p", { class: "vb-photo-disclosure" }, "选择照片后自动识别：压缩照片会经本地后端发送给维衡 AI。照片与识别结果保存在当前浏览器。", -1)),
+      j(fr, {
         "model-value": u.value,
         "onUpdate:modelValue": $,
         onSelected: p
       }, null, 8, ["model-value"]),
       r.value ? (s(), o("p", kr, a(r.value), 1)) : I("", !0),
-      c.value?.status === "pending" ? (s(), o("div", wr, [...M[3] || (M[3] = [
+      c.value?.status === "pending" ? (s(), o("div", wr, [...T[3] || (T[3] = [
         e("span", { class: "vb-loading-ring" }, null, -1),
         e("div", null, [
           e("strong", null, "正在识别这一餐…"),
@@ -3303,12 +3307,12 @@ const fa = {
           e("button", {
             type: "button",
             class: "vb-text-button",
-            onClick: M[0] || (M[0] = (V) => h())
+            onClick: T[0] || (T[0] = (V) => h())
           }, "重新识别"),
           e("button", {
             type: "button",
             class: "vb-text-button",
-            onClick: A
+            onClick: C
           }, "手动录入")
         ])
       ])) : I("", !0),
@@ -3316,12 +3320,12 @@ const fa = {
         key: 3,
         type: "button",
         class: "vb-button vb-button-quiet",
-        onClick: M[1] || (M[1] = (V) => h())
+        onClick: T[1] || (T[1] = (V) => h())
       }, "开始 AI 识别")) : I("", !0),
-      c.value?.status === "complete" ? (s(), o("div", Cr, [
-        e("p", Ar, a(c.value.note || "请核对食物名称与份量。") + " 照片重量为估算，营养数值只按确认的数据库条目计算。", 1),
+      c.value?.status === "complete" ? (s(), o("div", Ar, [
+        e("p", Cr, a(c.value.note || "请核对食物名称与份量。") + " 照片重量为估算，营养数值只按确认的数据库条目计算。", 1),
         c.value.model ? (s(), o("small", Ir, [
-          N("由 " + a(c.value.model) + " 识别", 1),
+          N("由 " + a(b(Ge)(c.value.model)) + " 识别", 1),
           v.value ? (s(), o("span", Sr, " · " + a(v.value), 1)) : I("", !0)
         ])) : I("", !0),
         e("div", xr, [
@@ -3344,21 +3348,21 @@ const fa = {
                 "aria-label": "删除识别项" + (W + 1),
                 onClick: (z) => c.value.items.splice(W, 1)
               }, [
-                U(O, {
+                j(O, {
                   name: "close",
                   size: 14
                 })
-              ], 8, Ur))
+              ], 8, jr))
             ]),
-            !V.foodId && !c.value.confirmed ? (s(), o("div", jr, [
-              (s(!0), o(B, null, J(b(Lt)(V.name, 3), (z) => (s(), o("button", {
+            !V.foodId && !c.value.confirmed ? (s(), o("div", Ur, [
+              (s(!0), o(B, null, J(b(Gt)(V.name, 3), (z) => (s(), o("button", {
                 key: z.key,
                 type: "button",
                 onClick: (G) => _(V, z)
               }, a(z.name), 9, Dr))), 128))
             ])) : I("", !0),
             e("label", Pr, [
-              M[4] || (M[4] = N("估算可食部", -1)),
+              T[4] || (T[4] = N("估算可食部", -1)),
               te(e("input", {
                 "onUpdate:modelValue": (z) => V.grams = z,
                 type: "number",
@@ -3371,7 +3375,7 @@ const fa = {
               }, null, 8, Nr), [
                 [ie, V.grams]
               ]),
-              M[5] || (M[5] = N("克", -1))
+              T[5] || (T[5] = N("克", -1))
             ]),
             e("small", {
               class: me({ "vb-unmatched": !V.foodId })
@@ -3379,13 +3383,13 @@ const fa = {
             e("small", null, a(V.uncertainty), 1)
           ]))), 128))
         ]),
-        c.value.items.length ? I("", !0) : (s(), o("p", Tr, "没有识别到可靠的食物项目。可更换照片、重试或手动添加。")),
-        e("div", Mr, [
+        c.value.items.length ? I("", !0) : (s(), o("p", Mr, "没有识别到可靠的食物项目。可更换照片、重试或手动添加。")),
+        e("div", Tr, [
           c.value.confirmed ? I("", !0) : (s(), o("button", {
             key: 0,
             type: "button",
             class: "vb-text-button",
-            onClick: A
+            onClick: C
           }, "＋补充遗漏食物")),
           e("button", {
             type: "button",
@@ -3431,70 +3435,70 @@ const fa = {
 }, pu = { class: "vb-diary-entry-title" }, bu = ["onClick"], fu = ["onUpdate:modelValue", "aria-label"], gu = ["aria-label", "onClick"], yu = { class: "vb-data-note" }, hu = {
   key: 0,
   class: "vb-pill"
-}, ku = { class: "vb-entry-controls" }, wu = ["onUpdate:modelValue", "aria-label"], $u = { class: "vb-entry-meal" }, _u = ["onUpdate:modelValue"], Cu = ["value"], Au = {
+}, ku = { class: "vb-entry-controls" }, wu = ["onUpdate:modelValue", "aria-label"], $u = { class: "vb-entry-meal" }, _u = ["onUpdate:modelValue"], Au = ["value"], Cu = {
   key: 0,
   class: "vb-inline-warning"
 }, Iu = ["onClick"], Su = {
   key: 2,
   class: "vb-muted-empty"
-}, xu = ["onToggle"], Eu = { key: 0 }, Uu = ["onClick"], ju = ["onClick"], Du = { class: "vb-field vb-notes-field" }, Pu = { class: "vb-intake-more" }, Nu = { key: 0 }, Tu = {
+}, xu = ["onToggle"], Eu = { key: 0 }, ju = ["onClick"], Uu = ["onClick"], Du = { class: "vb-field vb-notes-field" }, Pu = { class: "vb-intake-more" }, Nu = { key: 0 }, Mu = {
   __name: "DiaryPage",
   props: { records: Array, reports: { type: Array, default: () => [] }, profile: Object, nutrition: Object, initialDate: String, saving: Boolean },
   emits: ["save", "remove", "analysis", "browse", "detail"],
   setup(t, { emit: l }) {
-    const n = t, d = l, { state: i, ensureDraft: u, addToDraft: r } = Jt(), { isStale: m } = Kt(), c = et({}), v = et({});
+    const n = t, d = l, { state: i, ensureDraft: u, addToDraft: r } = Ht(), { isStale: m } = Wt(), c = tt({}), v = tt({});
     function g(K = /* @__PURE__ */ new Date()) {
       const F = K.getHours() * 60 + K.getMinutes();
       return F >= 300 && F < 600 ? "breakfast" : F >= 600 && F <= 840 ? "lunch" : F >= 960 && F <= 1260 ? "dinner" : "snack";
     }
-    const $ = T(n.initialDate || ke()), y = T(""), p = T(g()), h = T("selected"), w = T(null), _ = T("");
+    const $ = M(n.initialDate || ke()), y = M(""), p = M(g()), h = M("selected"), w = M(null), _ = M("");
     re(() => n.initialDate, (K) => {
       K && ($.value = K);
     }), re($, (K) => {
       u(K), _.value = "", y.value = "";
     }, { immediate: !0 });
-    const A = H(() => i.drafts[$.value]), R = H(() => sn(A.value?.entries)), D = H(() => Lt(y.value, 8)), M = H(() => n.records.find((K) => K.date === $.value)), V = H(() => R.value.length > 0 || !!(M.value && !Array.isArray(A.value?.savedEntries))), W = (K) => n.reports.find((F) => F.date === K), z = /* @__PURE__ */ new Set();
+    const C = H(() => i.drafts[$.value]), R = H(() => on(C.value?.entries)), D = H(() => Gt(y.value, 8)), T = H(() => n.records.find((K) => K.date === $.value)), V = H(() => R.value.length > 0 || !!(T.value && !Array.isArray(C.value?.savedEntries))), W = (K) => n.reports.find((F) => F.date === K), z = /* @__PURE__ */ new Set();
     async function G(K) {
-      const F = $.value, P = $e(), q = p.value, C = F + ":" + K.key;
-      if (!z.has(C)) {
-        z.add(C);
+      const F = $.value, P = $e(), q = p.value, A = F + ":" + K.key;
+      if (!z.has(A)) {
+        z.add(A);
         try {
           if (await qe(K.key), $.value !== F || $e() !== P) return;
           r({ date: F, foodId: K.key, grams: K.grams || 100, meal: q }), y.value = "", h.value = "selected";
         } catch (f) {
           _.value = f.message;
         } finally {
-          z.delete(C);
+          z.delete(A);
         }
       }
     }
     function Y() {
-      A.value.entries.push({ id: crypto.randomUUID(), foodId: null, name: y.value.trim(), grams: 100, meal: p.value, group: "unclassified", source: "manual", referenceConfirmed: !0 }), y.value = "";
+      C.value.entries.push({ id: crypto.randomUUID(), foodId: null, name: y.value.trim(), grams: 100, meal: p.value, group: "unclassified", source: "manual", referenceConfirmed: !0 }), y.value = "";
     }
     async function ue({ items: K, batchId: F }) {
       const P = $.value, q = $e();
-      if (A.value.appliedBatches.includes(F)) return;
+      if (C.value.appliedBatches.includes(F)) return;
       try {
         await qe(K.map((f) => f.foodId));
       } catch (f) {
         _.value = f.message;
         return;
       }
-      if ($.value !== P || $e() !== q || A.value.appliedBatches.includes(F)) return;
-      const C = sn(K.map((f) => ({ ...f, id: crypto.randomUUID(), meal: p.value, source: "photo", estimated: !0, referenceConfirmed: !0, nutritionSnapshot: $t(le[f.foodId]) })));
-      if (C.length !== K.length) {
+      if ($.value !== P || $e() !== q || C.value.appliedBatches.includes(F)) return;
+      const A = on(K.map((f) => ({ ...f, id: crypto.randomUUID(), meal: p.value, source: "photo", estimated: !0, referenceConfirmed: !0, nutritionSnapshot: _t(le[f.foodId]) })));
+      if (A.length !== K.length) {
         _.value = "请核对每项食物名称与克数。";
         return;
       }
-      A.value.entries.push(...C), A.value.appliedBatches.push(F), A.value.recognition.confirmed = !0, h.value = "selected";
+      C.value.entries.push(...A), C.value.appliedBatches.push(F), C.value.recognition.confirmed = !0, h.value = "selected";
     }
     function se() {
       if (n.saving || !V.value) return;
-      if (_.value = "", R.value.length !== A.value.entries.length) {
+      if (_.value = "", R.value.length !== C.value.entries.length) {
         _.value = "请填写每项食物名称，并将克数设为 0.1–5000 克；不需要的项目可删除。";
         return;
       }
-      const K = JSON.parse(JSON.stringify(A.value));
+      const K = JSON.parse(JSON.stringify(C.value));
       Array.isArray(K.savedEntries) && (K.entries = [...K.savedEntries, ...K.entries], delete K.savedEntries), d("save", K);
     }
     function ye(K) {
@@ -3516,7 +3520,7 @@ const fa = {
           e("p", null, "填写可食部克数，核对食物，再保存这一天。")
         ], -1)),
         e("label", Br, [
-          U(O, {
+          j(O, {
             name: "calendar",
             size: 18
           }),
@@ -3530,16 +3534,16 @@ const fa = {
           ])
         ])
       ]),
-      A.value ? (s(), o("div", qr, [
+      C.value ? (s(), o("div", qr, [
         e("aside", Lr, [
           (s(), ve(zr, {
             key: $.value,
-            draft: A.value,
-            "legacy-photo": M.value?.photo,
+            draft: C.value,
+            "legacy-photo": T.value?.photo,
             onConfirm: ue
           }, null, 8, ["draft", "legacy-photo"])),
           e("div", {
-            class: me(["vb-diary-actions", { "has-analysis": M.value }])
+            class: me(["vb-diary-actions", { "has-analysis": T.value }])
           }, [
             e("button", {
               type: "submit",
@@ -3548,12 +3552,12 @@ const fa = {
               disabled: t.saving || !V.value
             }, [
               N(a(t.saving ? "正在保存…" : "保存记录"), 1),
-              U(O, {
+              j(O, {
                 name: "arrow",
                 size: 17
               })
             ], 8, Gr),
-            M.value ? (s(), o("button", {
+            T.value ? (s(), o("button", {
               key: 0,
               type: "button",
               class: "vb-button vb-button-soft",
@@ -3567,7 +3571,7 @@ const fa = {
             "aria-label": "饮食记录摘要",
             onKeydown: be
           }, [
-            (s(!0), o(B, null, J([["selected", "本次选择", R.value.length], ["history", "最近记录", t.records.length]], ([P, q, C]) => (s(), o("button", {
+            (s(!0), o(B, null, J([["selected", "本次选择", R.value.length], ["history", "最近记录", t.records.length]], ([P, q, A]) => (s(), o("button", {
               id: "vb-tab-" + P,
               key: P,
               type: "button",
@@ -3579,7 +3583,7 @@ const fa = {
               onClick: (f) => ye(P)
             }, [
               N(a(q), 1),
-              e("span", null, a(C), 1)
+              e("span", null, a(A), 1)
             ], 10, Hr))), 128))
           ], 32),
           h.value === "selected" ? (s(), o("section", {
@@ -3599,7 +3603,7 @@ const fa = {
               ]),
               e("span", Wr, a(R.value.length) + " 项", 1)
             ]),
-            U(qt, {
+            j(Lt, {
               entries: R.value,
               compact: ""
             }, null, 8, ["entries"]),
@@ -3609,7 +3613,7 @@ const fa = {
               }, [
                 e("span", null, [
                   N(a(P.name), 1),
-                  e("small", null, a(b(mt).find(([q]) => q === P.meal)?.[1]) + a(P.estimated ? " · 估重" : ""), 1)
+                  e("small", null, a(b(pt).find(([q]) => q === P.meal)?.[1]) + a(P.estimated ? " · 估重" : ""), 1)
                 ]),
                 e("strong", null, [
                   N(a(P.grams), 1),
@@ -3632,7 +3636,7 @@ const fa = {
                 e("h2", null, "最近记录"),
                 e("p", null, "打开记录或查看历史分析")
               ], -1)),
-              U(O, {
+              j(O, {
                 name: "calendar",
                 size: 18
               })
@@ -3664,7 +3668,7 @@ const fa = {
                   "aria-label": "删除" + P.date + "的记录",
                   onClick: (q) => K.$emit("remove", P.date)
                 }, [
-                  U(O, {
+                  j(O, {
                     name: "close",
                     size: 14
                   })
@@ -3691,7 +3695,7 @@ const fa = {
           ]),
           e("div", lu, [
             e("label", au, [
-              U(O, {
+              j(O, {
                 name: "search",
                 size: 18
               }),
@@ -3700,7 +3704,7 @@ const fa = {
                 type: "search",
                 "aria-label": "搜索记录食物",
                 placeholder: "搜索同一食物库，如香蕉、西红柿",
-                onKeydown: F[4] || (F[4] = Yn(Pe((P) => D.value[0] && G(D.value[0]), ["prevent"]), ["enter"]))
+                onKeydown: F[4] || (F[4] = Xn(Pe((P) => D.value[0] && G(D.value[0]), ["prevent"]), ["enter"]))
               }, null, 544), [
                 [ie, y.value]
               ])
@@ -3711,12 +3715,12 @@ const fa = {
                 "onUpdate:modelValue": F[5] || (F[5] = (P) => p.value = P),
                 "aria-label": "添加食物的餐次"
               }, [
-                (s(!0), o(B, null, J(b(mt), ([P, q]) => (s(), o("option", {
+                (s(!0), o(B, null, J(b(pt), ([P, q]) => (s(), o("option", {
                   key: P,
                   value: P
                 }, a(q), 9, ru))), 128))
               ], 512), [
-                [Ce, p.value]
+                [Ae, p.value]
               ])
             ])
           ]),
@@ -3731,7 +3735,7 @@ const fa = {
                 e("strong", null, a(P.name), 1),
                 e("small", null, a(P.state) + " · " + a(P.source ? "数据库样本" : "暂无成分数据"), 1)
               ]),
-              U(O, {
+              j(O, {
                 name: "plus",
                 size: 17
               })
@@ -3743,7 +3747,7 @@ const fa = {
               onClick: Y
             }, [
               N("手动添加“" + a(y.value) + "”", 1),
-              U(O, {
+              j(O, {
                 name: "plus",
                 size: 16
               })
@@ -3752,7 +3756,7 @@ const fa = {
           e("div", vu, [
             e("h3", null, [
               F[15] || (F[15] = N("已选食物 ", -1)),
-              e("small", null, a(A.value.entries.length) + " 项", 1)
+              e("small", null, a(C.value.entries.length) + " 项", 1)
             ]),
             e("button", {
               type: "button",
@@ -3760,8 +3764,8 @@ const fa = {
               onClick: Y
             }, "＋手动添加")
           ]),
-          A.value.entries.length ? (s(), o("div", mu, [
-            (s(!0), o(B, null, J(A.value.entries, (P, q) => (s(), o("article", {
+          C.value.entries.length ? (s(), o("div", mu, [
+            (s(!0), o(B, null, J(C.value.entries, (P, q) => (s(), o("article", {
               key: P.id,
               class: "vb-diary-entry"
             }, [
@@ -3770,16 +3774,16 @@ const fa = {
                   key: 0,
                   type: "button",
                   class: "vb-entry-name",
-                  onClick: (C) => K.$emit("detail", P.foodId)
+                  onClick: (A) => K.$emit("detail", P.foodId)
                 }, [
-                  N(a(b(At)(b(le)[P.foodId]) || P.name), 1),
-                  U(O, {
+                  N(a(b(It)(b(le)[P.foodId]) || P.name), 1),
+                  j(O, {
                     name: "chevron",
                     size: 13
                   })
                 ], 8, bu)) : te((s(), o("input", {
                   key: 1,
-                  "onUpdate:modelValue": (C) => P.name = C,
+                  "onUpdate:modelValue": (A) => P.name = A,
                   "aria-label": "手动食物" + (q + 1) + "名称",
                   placeholder: "填写食物名称",
                   maxlength: "100",
@@ -3791,9 +3795,9 @@ const fa = {
                   type: "button",
                   class: "vb-icon-button",
                   "aria-label": "移除食物" + (q + 1),
-                  onClick: (C) => A.value.entries.splice(q, 1)
+                  onClick: (A) => C.value.entries.splice(q, 1)
                 }, [
-                  U(O, {
+                  j(O, {
                     name: "close",
                     size: 15
                   })
@@ -3803,17 +3807,17 @@ const fa = {
                 N(a(P.foodId ? b(le)[P.foodId]?.state : "手动条目，暂无营养数据") + a(P.estimated ? " · 份量为估算" : ""), 1),
                 P.nutritionSnapshot?.dataType === "ai-estimate" ? (s(), o("span", hu, "含AI估算")) : I("", !0)
               ]),
-              U(Mn, {
+              j(Rn, {
                 food: b(le)[P.foodId],
-                onChoose: (C) => {
-                  P.grams = C, P.estimated = !0;
+                onChoose: (A) => {
+                  P.grams = A, P.estimated = !0;
                 }
               }, null, 8, ["food", "onChoose"]),
               e("div", ku, [
                 e("label", null, [
                   F[16] || (F[16] = N("可食部重量", -1)),
                   te(e("input", {
-                    "onUpdate:modelValue": (C) => P.grams = C,
+                    "onUpdate:modelValue": (A) => P.grams = A,
                     type: "number",
                     min: "0.1",
                     max: "5000",
@@ -3828,73 +3832,73 @@ const fa = {
                 e("label", $u, [
                   F[18] || (F[18] = e("span", null, "餐次", -1)),
                   te(e("select", {
-                    "onUpdate:modelValue": (C) => P.meal = C
+                    "onUpdate:modelValue": (A) => P.meal = A
                   }, [
-                    (s(!0), o(B, null, J(b(mt), ([C, f]) => (s(), o("option", {
-                      key: C,
-                      value: C
-                    }, a(f), 9, Cu))), 128))
+                    (s(!0), o(B, null, J(b(pt), ([A, f]) => (s(), o("option", {
+                      key: A,
+                      value: A
+                    }, a(f), 9, Au))), 128))
                   ], 8, _u), [
-                    [Ce, P.meal]
+                    [Ae, P.meal]
                   ])
                 ])
               ]),
-              P.referenceConfirmed === !1 ? (s(), o("p", Au, [
+              P.referenceConfirmed === !1 ? (s(), o("p", Cu, [
                 F[19] || (F[19] = N("这是历史记录，具体数据库样本尚未确认，不计入营养小计。", -1)),
                 b(le)[P.foodId]?.source ? (s(), o("button", {
                   key: 0,
                   type: "button",
                   class: "vb-text-button",
-                  onClick: (C) => P.referenceConfirmed = !0
+                  onClick: (A) => P.referenceConfirmed = !0
                 }, "核对后使用此参考样本", 8, Iu)) : (s(), o("button", {
                   key: 1,
                   type: "button",
                   class: "vb-text-button",
-                  onClick: F[6] || (F[6] = (C) => K.$emit("browse"))
+                  onClick: F[6] || (F[6] = (A) => K.$emit("browse"))
                 }, "查找具体食物"))
               ])) : I("", !0)
             ]))), 128))
           ])) : (s(), o("p", Su, "从搜索或下方类别中选择食物，也可以拍照后确认添加。")),
-          (s(!0), o(B, null, J(b(zt), (P) => (s(), o("details", {
+          (s(!0), o(B, null, J(b(Ot), (P) => (s(), o("details", {
             key: P.key,
             class: "vb-diary-food-group",
             onToggle: (q) => c[P.key] = q.target.open
           }, [
             e("summary", null, [
-              U(O, {
-                name: b(_n)[P.key],
+              j(O, {
+                name: b(An)[P.key],
                 size: 18
               }, null, 8, ["name"]),
               N(a(P.name), 1),
               e("small", null, a(P.items.length) + " 个条目", 1),
-              U(O, {
+              j(O, {
                 name: "chevron",
                 size: 14
               })
             ]),
             c[P.key] ? (s(), o("div", Eu, [
-              (s(!0), o(B, null, J(P.items.slice(0, v[P.key] || 24), ([q, C]) => (s(), o("button", {
+              (s(!0), o(B, null, J(P.items.slice(0, v[P.key] || 24), ([q, A]) => (s(), o("button", {
                 key: q,
                 type: "button",
                 onClick: (f) => G(b(le)[q])
-              }, a(C) + " ＋", 9, Uu))), 128)),
+              }, a(A) + " ＋", 9, ju))), 128)),
               P.items.length > (v[P.key] || 24) ? (s(), o("button", {
                 key: 0,
                 type: "button",
                 onClick: (q) => v[P.key] = (v[P.key] || 24) + 24
-              }, "再显示24项", 8, ju)) : I("", !0)
+              }, "再显示24项", 8, Uu)) : I("", !0)
             ])) : I("", !0)
           ], 40, xu))), 128)),
           e("label", Du, [
             F[20] || (F[20] = N("补充备注 ", -1)),
             F[21] || (F[21] = e("span", null, "可选，不发送给 AI", -1)),
             te(e("textarea", {
-              "onUpdate:modelValue": F[7] || (F[7] = (P) => A.value.notes = P),
+              "onUpdate:modelValue": F[7] || (F[7] = (P) => C.value.notes = P),
               rows: "3",
               maxlength: "240",
               placeholder: "记录做法、口味或当天的感受…"
             }, null, 512), [
-              [ie, A.value.notes]
+              [ie, C.value.notes]
             ])
           ]),
           e("details", Pu, [
@@ -3903,7 +3907,7 @@ const fa = {
             (s(!0), o(B, null, J(R.value, (P) => (s(), o("p", {
               key: P.id
             }, [
-              N(a(P.name) + "：" + a(P.nutritionSnapshot?.source?.name || P.nutritionSnapshot?.estimate?.model || "原目录数据"), 1),
+              N(a(P.name) + "：" + a(P.nutritionSnapshot?.source?.name || b(Ge)(P.nutritionSnapshot?.estimate?.model) || "原目录数据"), 1),
               P.nutritionSnapshot?.estimate ? (s(), o("span", Nu, " · " + a(P.nutritionSnapshot.estimate.assumption), 1)) : I("", !0)
             ]))), 128))
           ])
@@ -3911,10 +3915,10 @@ const fa = {
       ])) : I("", !0)
     ]));
   }
-}, Mu = { class: "vb-food-card vb-glass" }, Ru = ["aria-label"], zu = { class: "vb-food-card-copy" }, Ou = { class: "vb-small-label" }, Fu = { key: 0 }, Bu = { key: 0 }, Vu = {
+}, Tu = { class: "vb-food-card vb-glass" }, Ru = ["aria-label"], zu = { class: "vb-food-card-copy" }, Ou = { class: "vb-small-label" }, Fu = { key: 0 }, Bu = { key: 0 }, Vu = {
   key: 1,
   class: "vb-food-composition-note"
-}, qu = { class: "vb-food-card-bottom" }, Lu = ["aria-pressed"], fn = {
+}, qu = { class: "vb-food-card-bottom" }, Lu = ["aria-pressed"], gn = {
   __name: "FoodCard",
   props: { food: Object, compared: Boolean },
   emits: ["detail", "compare"],
@@ -3925,14 +3929,14 @@ const fa = {
       });
     }, { immediate: !0 });
     const { photo: n, loading: d, failed: i } = Tn(() => l.food);
-    return (u, r) => (s(), o("article", Mu, [
+    return (u, r) => (s(), o("article", Tu, [
       e("button", {
         type: "button",
         class: "vb-food-card-open",
         "aria-label": "查看" + t.food.name + "详情",
         onClick: r[0] || (r[0] = (m) => u.$emit("detail", t.food.key))
       }, [
-        U(Yt, {
+        j(Xt, {
           food: t.food,
           photo: b(n),
           loading: b(d),
@@ -3942,8 +3946,8 @@ const fa = {
         }, null, 8, ["food", "photo", "loading", "failed"]),
         e("div", zu, [
           e("span", Ou, a(t.food.categoryName), 1),
-          e("h3", null, a(b(At)(t.food)), 1),
-          e("p", null, a(b(Wt)(t.food)), 1),
+          e("h3", null, a(b(It)(t.food)), 1),
+          e("p", null, a(b(Yt)(t.food)), 1),
           t.food.source ? (s(), o("dl", Fu, [
             (s(!0), o(B, null, J(b(Ee), (m) => (s(), o("div", {
               key: m.id
@@ -3957,7 +3961,7 @@ const fa = {
           ])) : (s(), o("p", Vu, [
             r[3] || (r[3] = N("按实际配方记录份量", -1)),
             r[4] || (r[4] = e("br", null, null, -1)),
-            N(a(b($n).estimates?.[t.food.key] ? "已保存AI单值估算 · 查看假设" : "营养数据暂缺 · 可记录份量"), 1)
+            N(a(b(_n).estimates?.[t.food.key] ? "已保存AI单值估算 · 查看假设" : "营养数据暂缺 · 可记录份量"), 1)
           ]))
         ])
       ], 8, Ru),
@@ -3970,7 +3974,7 @@ const fa = {
           class: me({ selected: t.compared }),
           onClick: r[2] || (r[2] = (m) => u.$emit("compare", t.food.key))
         }, [
-          U(O, {
+          j(O, {
             name: t.compared ? "check" : "plus",
             size: 13
           }, null, 8, ["name"]),
@@ -4009,37 +4013,37 @@ const fa = {
   key: 2,
   class: "vb-data-note",
   role: "status"
-}, hd = { class: "vb-food-results-grid" }, kd = { class: "vb-section-heading vb-category-heading" }, wd = { class: "vb-food-category-grid" }, $d = ["onClick"], _d = ["src", "alt"], Cd = { class: "vb-food-results-top" }, Ad = { class: "vb-food-filter" }, Id = { key: 0 }, Sd = ["onClick"], xd = { key: 1 }, Ed = ["value"], Ud = { class: "vb-food-results-grid" }, jd = {
+}, hd = { class: "vb-food-results-grid" }, kd = { class: "vb-section-heading vb-category-heading" }, wd = { class: "vb-food-category-grid" }, $d = ["onClick"], _d = ["src", "alt"], Ad = { class: "vb-food-results-top" }, Cd = { class: "vb-food-filter" }, Id = { key: 0 }, Sd = ["onClick"], xd = { key: 1 }, Ed = ["value"], jd = { class: "vb-food-results-grid" }, Ud = {
   key: 0,
   class: "vb-glass vb-food-empty"
 }, Dd = {
   key: 1,
   class: "vb-food-pagination",
   "aria-label": "食物列表分页"
-}, Pd = ["disabled"], Nd = ["disabled"], Td = {
+}, Pd = ["disabled"], Nd = ["disabled"], Md = {
   key: 5,
   class: "vb-food-source-note vb-reference-samples"
-}, Md = { class: "vb-reference-sample-list" }, Rd = ["onClick"], zd = { key: 0 }, Od = { class: "vb-food-source-note" }, Fd = ["href"], Bd = ["href"], Vd = {
+}, Td = { class: "vb-reference-sample-list" }, Rd = ["onClick"], zd = { key: 0 }, Od = { class: "vb-food-source-note" }, Fd = ["href"], Bd = ["href"], Vd = {
   __name: "FoodBrowserPage",
   emits: ["detail"],
   setup(t) {
-    const l = T(""), n = T(""), d = T(""), i = T(""), u = T("relevance"), r = T(1), m = T(!1), c = T([]), v = T(""), g = T(!1), $ = T(""), y = T(!1), p = T(null), h = T(""), w = Et, _ = new Set(Et.map((q) => q.key)), A = new Set(ss.map((q) => q.key)), R = H(() => n.value ? Ut(n.value).map((q) => q.food).filter((q) => A.has(q.key) && !_.has(q.key)) : []);
-    function D(q, C = Je.length) {
-      return Ut(q).map((f) => f.food).filter((f) => _.has(f.key)).slice(0, C);
+    const l = M(""), n = M(""), d = M(""), i = M(""), u = M("relevance"), r = M(1), m = M(!1), c = M([]), v = M(""), g = M(!1), $ = M(""), y = M(!1), p = M(null), h = M(""), w = jt, _ = new Set(jt.map((q) => q.key)), C = new Set(os.map((q) => q.key)), R = H(() => n.value ? Ut(n.value).map((q) => q.food).filter((q) => C.has(q.key) && !_.has(q.key)) : []);
+    function D(q, A = He.length) {
+      return Ut(q).map((f) => f.food).filter((f) => _.has(f.key)).slice(0, A);
     }
-    const M = H(() => l.value.trim() ? D(l.value, Je.length).slice(0, 5) : []), V = (q) => w.filter((C) => C.category === q).length, W = Et.length, z = [...new Map(["白菜", "西兰花", "西红柿", "胡萝卜", "苹果", "香蕉", "蓝莓", "米饭", "牛奶", "鸡蛋", "豆腐", "鸡胸肉"].map((q) => {
-      const C = Ut(q).map((f) => f.food).filter((f) => _.has(f.key));
-      return C.find((f) => f.source) || C[0];
+    const T = H(() => l.value.trim() ? D(l.value, He.length).slice(0, 5) : []), V = (q) => w.filter((A) => A.category === q).length, W = jt.length, z = [...new Map(["白菜", "西兰花", "西红柿", "胡萝卜", "苹果", "香蕉", "蓝莓", "米饭", "牛奶", "鸡蛋", "豆腐", "鸡胸肉"].map((q) => {
+      const A = Ut(q).map((f) => f.food).filter((f) => _.has(f.key));
+      return A.find((f) => f.source) || A[0];
     }).filter(Boolean).map((q) => [q.key, q])).values()], G = H(() => {
-      let q = n.value ? D(n.value) : [...w].sort((C, f) => +!C.source - +!f.source);
-      return d.value && (q = q.filter((C) => C.category === d.value)), q;
+      let q = n.value ? D(n.value) : [...w].sort((A, f) => +!A.source - +!f.source);
+      return d.value && (q = q.filter((A) => A.category === d.value)), q;
     }), Y = H(() => [...new Set(G.value.map((q) => q.subcategory))]), ue = H(() => {
-      let q = G.value.filter((C) => !i.value || C.subcategory === i.value);
+      let q = G.value.filter((A) => !i.value || A.subcategory === i.value);
       if (u.value !== "relevance") {
-        const [C, f] = u.value.split(":");
-        q = [...q].sort((k, j) => {
-          if (C === "name") return k.name.localeCompare(j.name, "zh");
-          const oe = k.nutrients[C], ae = j.nutrients[C];
+        const [A, f] = u.value.split(":");
+        q = [...q].sort((k, U) => {
+          if (A === "name") return k.name.localeCompare(U.name, "zh");
+          const oe = k.nutrients[A], ae = U.nutrients[A];
           return oe == null || ae == null ? +(oe == null) - +(ae == null) : (f === "asc" ? 1 : -1) * (oe - ae);
         });
       }
@@ -4056,7 +4060,7 @@ const fa = {
       d.value = "", n.value = "", l.value = "", i.value = "", r.value = 1;
     }
     function F(q) {
-      v.value = "", c.value.includes(q) ? c.value = c.value.filter((C) => C !== q) : c.value.length < 2 ? c.value.push(q) : v.value = "每次选择两种食物进行比较。";
+      v.value = "", c.value.includes(q) ? c.value = c.value.filter((A) => A !== q) : c.value.length < 2 ? c.value.push(q) : v.value = "每次选择两种食物进行比较。";
     }
     async function P() {
       if (!(y.value || !$.value.trim())) {
@@ -4070,52 +4074,52 @@ const fa = {
         }
       }
     }
-    return (q, C) => (s(), o("div", Ju, [
+    return (q, A) => (s(), o("div", Ju, [
       e("div", Hu, [
         e("div", null, [
-          C[14] || (C[14] = e("p", { class: "vb-eyebrow" }, "从认识食物开始", -1)),
-          C[15] || (C[15] = e("h1", null, "食物浏览与查询", -1)),
+          A[14] || (A[14] = e("p", { class: "vb-eyebrow" }, "从认识食物开始", -1)),
+          A[15] || (A[15] = e("h1", null, "食物浏览与查询", -1)),
           e("p", null, a(b(W).toLocaleString()) + " 项有照片的食材与菜式，按名称搜索，打开卡片查看营养与来源。", 1)
         ]),
         e("button", {
           class: "vb-button vb-button-quiet",
           "aria-expanded": g.value,
-          onClick: C[0] || (C[0] = (f) => g.value = !g.value)
+          onClick: A[0] || (A[0] = (f) => g.value = !g.value)
         }, [
-          U(O, {
+          j(O, {
             name: "sparkles",
             size: 17
           }),
-          C[16] || (C[16] = N("问 AI", -1))
+          A[16] || (A[16] = N("问 AI", -1))
         ], 8, Ku)
       ]),
       e("section", Wu, [
         e("span", Yu, [
-          U(O, {
+          j(O, {
             name: "search",
             size: 23
           })
         ]),
-        C[19] || (C[19] = e("div", null, [
+        A[19] || (A[19] = e("div", null, [
           e("h2", null, "今天想了解哪一种食物？"),
           e("p", null, "名称、别名都能查。营养数据统一按每 100 克可食部展示。")
         ], -1)),
         e("form", {
           class: "vb-food-search-form",
-          onSubmit: C[3] || (C[3] = Pe((f) => be(), ["prevent"]))
+          onSubmit: A[3] || (A[3] = Pe((f) => be(), ["prevent"]))
         }, [
           e("div", Xu, [
-            U(O, {
+            j(O, {
               name: "search",
               size: 19
             }),
             te(e("input", {
-              "onUpdate:modelValue": C[1] || (C[1] = (f) => l.value = f),
+              "onUpdate:modelValue": A[1] || (A[1] = (f) => l.value = f),
               type: "search",
               placeholder: "试试香蕉、西红柿、鸡胸肉…",
               "aria-label": "食物查询关键词",
               autocomplete: "off",
-              onFocus: C[2] || (C[2] = (f) => m.value = !0)
+              onFocus: A[2] || (A[2] = (f) => m.value = !0)
             }, null, 544), [
               [ie, l.value]
             ]),
@@ -4126,13 +4130,13 @@ const fa = {
               "aria-label": "清空食物查询",
               onClick: K
             }, [
-              U(O, {
+              j(O, {
                 name: "close",
                 size: 15
               })
             ])) : I("", !0),
-            m.value && M.value.length ? (s(), o("div", Qu, [
-              (s(!0), o(B, null, J(M.value, (f) => (s(), o("button", {
+            m.value && T.value.length ? (s(), o("div", Qu, [
+              (s(!0), o(B, null, J(T.value, (f) => (s(), o("button", {
                 key: f.key,
                 type: "button",
                 onClick: (k) => be(f.name)
@@ -4142,13 +4146,13 @@ const fa = {
               ], 8, Zu))), 128))
             ])) : I("", !0)
           ]),
-          C[17] || (C[17] = e("button", {
+          A[17] || (A[17] = e("button", {
             class: "vb-button vb-button-primary",
             type: "submit"
           }, "搜索", -1))
         ], 32),
         e("div", ed, [
-          C[18] || (C[18] = e("span", null, "推荐搜索", -1)),
+          A[18] || (A[18] = e("span", null, "推荐搜索", -1)),
           (s(), o(B, null, J(["香蕉", "白菜", "燕麦", "鸡胸肉", "鸡蛋"], (f) => e("button", {
             key: f,
             type: "button",
@@ -4158,13 +4162,13 @@ const fa = {
       ]),
       g.value ? (s(), o("section", nd, [
         e("div", sd, [
-          C[20] || (C[20] = e("div", null, [
+          A[20] || (A[20] = e("div", null, [
             e("span", { class: "vb-small-label" }, "以数据库为依据"),
             e("h2", null, "问问 AI，读懂食物数据")
           ], -1)),
-          U(O, { name: "sparkles" })
+          j(O, { name: "sparkles" })
         ]),
-        C[24] || (C[24] = e("p", { class: "vb-data-note" }, "问题与相关数据库条目会发送给 DeepSeek。数值来自食物库，AI 负责解释。", -1)),
+        A[24] || (A[24] = e("p", { class: "vb-data-note" }, "问题与相关数据库条目会发送给维衡 AI。数值来自食物库，AI 负责解释。", -1)),
         c.value.length ? (s(), o("div", od, [
           (s(!0), o(B, null, J(c.value, (f) => (s(), o("button", {
             key: f,
@@ -4176,9 +4180,9 @@ const fa = {
           onSubmit: Pe(P, ["prevent"])
         }, [
           e("label", ad, [
-            C[21] || (C[21] = N("你的问题", -1)),
+            A[21] || (A[21] = N("你的问题", -1)),
             te(e("textarea", {
-              "onUpdate:modelValue": C[4] || (C[4] = (f) => $.value = f),
+              "onUpdate:modelValue": A[4] || (A[4] = (f) => $.value = f),
               maxlength: "600",
               rows: "2",
               placeholder: "100 克香蕉大约有多少热量？或先选两种食物，问问蛋白质的区别。"
@@ -4190,7 +4194,7 @@ const fa = {
             e("button", {
               type: "button",
               class: "vb-text-button",
-              onClick: C[5] || (C[5] = (f) => $.value = c.value.length === 2 ? "这两种食物的蛋白质有什么区别？" : "100 克香蕉大约有多少热量？")
+              onClick: A[5] || (A[5] = (f) => $.value = c.value.length === 2 ? "这两种食物的蛋白质有什么区别？" : "100 克香蕉大约有多少热量？")
             }, "填入示例问题"),
             e("button", {
               type: "submit",
@@ -4201,7 +4205,7 @@ const fa = {
         ], 32),
         h.value ? (s(), o("p", ud, a(h.value), 1)) : I("", !0),
         p.value ? (s(), o("div", dd, [
-          C[22] || (C[22] = e("h3", null, "数据库数值", -1)),
+          A[22] || (A[22] = e("h3", null, "数据库数值", -1)),
           p.value.database.length ? I("", !0) : (s(), o("p", cd, "没有匹配的数据库条目，暂无精确营养数值。")),
           e("div", vd, [
             (s(!0), o(B, null, J(p.value.database, (f) => (s(), o("button", {
@@ -4214,11 +4218,11 @@ const fa = {
               e("small", null, a(f.source?.name || "原有目录，暂无成分数据"), 1)
             ], 8, md))), 128))
           ]),
-          C[23] || (C[23] = e("h3", null, "AI 解释", -1)),
+          A[23] || (A[23] = e("h3", null, "AI 解释", -1)),
           e("p", null, a(p.value.answer.summary), 1),
           e("p", null, a(p.value.answer.explanation), 1),
           e("p", pd, a(p.value.answer.limitations), 1),
-          e("small", bd, a(p.value.model) + " · " + a(new Date(p.value.generatedAt).toLocaleString()), 1)
+          e("small", bd, a(b(Ge)(p.value.model)) + " · " + a(new Date(p.value.generatedAt).toLocaleString()), 1)
         ])) : I("", !0)
       ])) : I("", !0),
       c.value.length ? (s(), o("div", fd, [
@@ -4229,36 +4233,36 @@ const fa = {
         }, a(b(le)[f].name) + " ×", 9, gd))), 128)),
         e("button", {
           class: "vb-text-button",
-          onClick: C[6] || (C[6] = (f) => {
+          onClick: A[6] || (A[6] = (f) => {
             g.value = !0, $.value = "这两种食物的蛋白质有什么区别？";
           })
         }, "问 AI 比较 →")
       ])) : I("", !0),
       v.value ? (s(), o("p", yd, a(v.value), 1)) : I("", !0),
       !d.value && !n.value ? (s(), o(B, { key: 3 }, [
-        C[26] || (C[26] = e("div", { class: "vb-section-heading" }, [
+        A[26] || (A[26] = e("div", { class: "vb-section-heading" }, [
           e("div", null, [
             e("h2", null, "常见食物"),
             e("p", null, "从你熟悉的食材开始。")
           ])
         ], -1)),
         e("div", hd, [
-          (s(), o(B, null, J(z, (f) => U(fn, {
+          (s(), o(B, null, J(z, (f) => j(gn, {
             key: f.key,
             food: f,
             compared: c.value.includes(f.key),
-            onDetail: C[7] || (C[7] = (k) => q.$emit("detail", k)),
+            onDetail: A[7] || (A[7] = (k) => q.$emit("detail", k)),
             onCompare: F
           }, null, 8, ["food", "compared"])), 64))
         ]),
         e("div", kd, [
           e("div", null, [
-            C[25] || (C[25] = e("h2", null, "按类别探索", -1)),
+            A[25] || (A[25] = e("h2", null, "按类别探索", -1)),
             e("p", null, a(b(w).length.toLocaleString()) + " 项食材与菜式，每项都有直接展示的真实照片。", 1)
           ])
         ]),
         e("div", wd, [
-          (s(!0), o(B, null, J(b(os).filter((f) => V(f.id) > 0), (f) => (s(), o("button", {
+          (s(!0), o(B, null, J(b(ls).filter((f) => V(f.id) > 0), (f) => (s(), o("button", {
             key: f.id,
             type: "button",
             class: "vb-food-category-card",
@@ -4274,7 +4278,7 @@ const fa = {
               e("strong", null, a(f.name), 1),
               e("em", null, [
                 N(a(f.description) + " ", 1),
-                U(O, {
+                j(O, {
                   name: "arrow",
                   size: 16
                 })
@@ -4282,28 +4286,28 @@ const fa = {
             ])
           ], 8, $d))), 128))
         ]),
-        C[27] || (C[27] = e("p", { class: "vb-photo-library-note" }, "照片已随网站保存。图片作者与许可可以在详情中查看；有可靠成分样本的食物显示营养值，其余保持未知。", -1))
+        A[27] || (A[27] = e("p", { class: "vb-photo-library-note" }, "照片已随网站保存。图片作者与许可可以在详情中查看；有可靠成分样本的食物显示营养值，其余保持未知。", -1))
       ], 64)) : (s(), o(B, { key: 4 }, [
-        e("div", Cd, [
+        e("div", Ad, [
           e("button", {
             type: "button",
             class: "vb-text-button",
             onClick: K
           }, [
-            U(O, {
+            j(O, {
               name: "back",
               size: 15
             }),
-            C[28] || (C[28] = N("分类总览", -1))
+            A[28] || (A[28] = N("分类总览", -1))
           ]),
-          e("h2", null, a(d.value ? b(on)[d.value].name : "“" + n.value + "”的食物照片与营养资料"), 1),
+          e("h2", null, a(d.value ? b(ln)[d.value].name : "“" + n.value + "”的食物照片与营养资料"), 1),
           e("span", null, a(ue.value.length.toLocaleString()) + " 个结果 · 每 100 克可食部", 1)
         ]),
-        e("div", Ad, [
+        e("div", Cd, [
           Y.value.length <= 10 ? (s(), o("div", Id, [
             e("button", {
               class: me({ selected: !i.value }),
-              onClick: C[8] || (C[8] = (f) => i.value = "")
+              onClick: A[8] || (A[8] = (f) => i.value = "")
             }, "全部", 2),
             (s(!0), o(B, null, J(Y.value, (f) => (s(), o("button", {
               key: f,
@@ -4311,48 +4315,48 @@ const fa = {
               onClick: (k) => i.value = f
             }, a(f), 11, Sd))), 128))
           ])) : (s(), o("label", xd, [
-            C[30] || (C[30] = N("筛选", -1)),
+            A[30] || (A[30] = N("筛选", -1)),
             te(e("select", {
-              "onUpdate:modelValue": C[9] || (C[9] = (f) => i.value = f),
+              "onUpdate:modelValue": A[9] || (A[9] = (f) => i.value = f),
               "aria-label": "食物类型筛选"
             }, [
-              C[29] || (C[29] = e("option", { value: "" }, "全部类型", -1)),
+              A[29] || (A[29] = e("option", { value: "" }, "全部类型", -1)),
               (s(!0), o(B, null, J(Y.value, (f) => (s(), o("option", {
                 key: f,
                 value: f
               }, a(f), 9, Ed))), 128))
             ], 512), [
-              [Ce, i.value]
+              [Ae, i.value]
             ])
           ])),
           e("label", null, [
-            C[32] || (C[32] = N("排序", -1)),
+            A[32] || (A[32] = N("排序", -1)),
             te(e("select", {
-              "onUpdate:modelValue": C[10] || (C[10] = (f) => u.value = f),
+              "onUpdate:modelValue": A[10] || (A[10] = (f) => u.value = f),
               "aria-label": "食物营养指标排序"
-            }, [...C[31] || (C[31] = [
-              hn('<option value="relevance">默认顺序</option><option value="energy:asc">热量从低到高</option><option value="energy:desc">热量从高到低</option><option value="protein:desc">蛋白质从高到低</option><option value="fiber:desc">膳食纤维从高到低</option><option value="name:asc">名称</option>', 6)
+            }, [...A[31] || (A[31] = [
+              kn('<option value="relevance">默认顺序</option><option value="energy:asc">热量从低到高</option><option value="energy:desc">热量从高到低</option><option value="protein:desc">蛋白质从高到低</option><option value="fiber:desc">膳食纤维从高到低</option><option value="name:asc">名称</option>', 6)
             ])], 512), [
-              [Ce, u.value]
+              [Ae, u.value]
             ])
           ])
         ]),
-        e("div", Ud, [
-          (s(!0), o(B, null, J(ye.value, (f) => (s(), ve(fn, {
+        e("div", jd, [
+          (s(!0), o(B, null, J(ye.value, (f) => (s(), ve(gn, {
             key: f.key,
             food: f,
             compared: c.value.includes(f.key),
-            onDetail: C[11] || (C[11] = (k) => q.$emit("detail", k)),
+            onDetail: A[11] || (A[11] = (k) => q.$emit("detail", k)),
             onCompare: F
           }, null, 8, ["food", "compared"]))), 128))
         ]),
-        ue.value.length ? I("", !0) : (s(), o("div", jd, [
-          U(O, {
+        ue.value.length ? I("", !0) : (s(), o("div", Ud, [
+          j(O, {
             name: "search",
             size: 34
           }),
-          C[33] || (C[33] = e("h2", null, "没有找到匹配的食物", -1)),
-          C[34] || (C[34] = e("p", null, "试试常见中文名、英文原名或类别名称。", -1)),
+          A[33] || (A[33] = e("h2", null, "没有找到匹配的食物", -1)),
+          A[34] || (A[34] = e("p", null, "试试常见中文名、英文原名或类别名称。", -1)),
           e("button", {
             class: "vb-button vb-button-quiet",
             onClick: K
@@ -4361,19 +4365,19 @@ const fa = {
         se.value > 1 ? (s(), o("nav", Dd, [
           e("button", {
             disabled: r.value === 1,
-            onClick: C[12] || (C[12] = (f) => r.value--)
+            onClick: A[12] || (A[12] = (f) => r.value--)
           }, "上一页", 8, Pd),
           e("span", null, "第 " + a(r.value) + " / " + a(se.value) + " 页", 1),
           e("button", {
             disabled: r.value === se.value,
-            onClick: C[13] || (C[13] = (f) => r.value++)
+            onClick: A[13] || (A[13] = (f) => r.value++)
           }, "下一页", 8, Nd)
         ])) : I("", !0)
       ], 64)),
-      n.value && R.value.length ? (s(), o("details", Td, [
+      n.value && R.value.length ? (s(), o("details", Md, [
         e("summary", null, "其他营养数据样本 · " + a(R.value.length.toLocaleString()) + " 条", 1),
-        C[35] || (C[35] = e("p", null, "细分品种、品牌和加工状态的原始成分样本仍保留。请按你实际食用的食物选择；这些数据样本可能没有单独配图。", -1)),
-        e("div", Md, [
+        A[35] || (A[35] = e("p", null, "细分品种、品牌和加工状态的原始成分样本仍保留。请按你实际食用的食物选择；这些数据样本可能没有单独配图。", -1)),
+        e("div", Td, [
           (s(!0), o(B, null, J(R.value.slice(0, 80), (f) => (s(), o("button", {
             key: f.key,
             type: "button",
@@ -4386,16 +4390,16 @@ const fa = {
         R.value.length > 80 ? (s(), o("p", zd, "当前显示前80条，请增加名称或加工状态关键词缩小范围。")) : I("", !0)
       ])) : I("", !0),
       e("details", Od, [
-        C[36] || (C[36] = e("summary", null, "数据口径与图片署名", -1)),
-        C[37] || (C[37] = e("p", null, "营养数据来自 USDA SR28（2016 年 5 月修订，公有领域），展示的是对应品种、生熟和加工状态的数据库样本。原目录中没有准确对应的数据保持缺失，不能视为 0。旧记录需确认具体参考条目后参与营养计算。分类结构参考 HowToEat。食物卡片直接使用固定保存的真实照片，不在用户浏览时自动选择搜索引擎结果。照片与名称关联依据来自具体图片说明、百科食物条目或逐项绑定；作者、来源和许可保留在详情中。食材参考照片不证明营养样本具体品牌或品种；扩展样本保留完整英文描述，中文为食材类别提示；校园混合菜尚无配方时保持营养未知。", -1)),
-        C[38] || (C[38] = e("p", null, "碳水采用差减法，含膳食纤维；维 A 为 μg RAE，叶酸为 μg DFE。配方、产地和做法会造成差异。婴幼儿食品类仅为成分查询，不提供婴幼儿膳食推荐。", -1)),
-        C[39] || (C[39] = e("p", null, "每项食物照片的作者、原图链接和许可均在食物详情中显示。", -1)),
-        C[40] || (C[40] = e("p", null, "分类总览图片：", -1)),
+        A[36] || (A[36] = e("summary", null, "数据口径与图片署名", -1)),
+        A[37] || (A[37] = e("p", null, "营养数据来自 USDA SR28（2016 年 5 月修订，公有领域），展示的是对应品种、生熟和加工状态的数据库样本。原目录中没有准确对应的数据保持缺失，不能视为 0。旧记录需确认具体参考条目后参与营养计算。分类结构参考 HowToEat。食物卡片直接使用固定保存的真实照片，不在用户浏览时自动选择搜索引擎结果。照片与名称关联依据来自具体图片说明、百科食物条目或逐项绑定；作者、来源和许可保留在详情中。食材参考照片不证明营养样本具体品牌或品种；扩展样本保留完整英文描述，中文为食材类别提示；校园混合菜尚无配方时保持营养未知。", -1)),
+        A[38] || (A[38] = e("p", null, "碳水采用差减法，含膳食纤维；维 A 为 μg RAE，叶酸为 μg DFE。配方、产地和做法会造成差异。婴幼儿食品类仅为成分查询，不提供婴幼儿膳食推荐。", -1)),
+        A[39] || (A[39] = e("p", null, "每项食物照片的作者、原图链接和许可均在食物详情中显示。", -1)),
+        A[40] || (A[40] = e("p", null, "分类总览图片：", -1)),
         e("ul", null, [
           (s(!0), o(B, null, J(b(Gu), (f) => (s(), o("li", {
             key: f.key
           }, [
-            N(a(b(on)[f.key]?.name) + "：", 1),
+            N(a(b(ln)[f.key]?.name) + "：", 1),
             e("a", {
               href: f.sourceUrl,
               target: "_blank",
@@ -4418,7 +4422,7 @@ function qd(t) {
   return t instanceof Error ? t.message : "Agent 暂时无法完成，请稍后重试。";
 }
 function Ld() {
-  const t = T(""), l = T((/* @__PURE__ */ new Date()).toLocaleDateString("sv-SE")), n = T("lunch"), d = T(null), i = T(""), u = T(!1), r = T([]);
+  const t = M(""), l = M((/* @__PURE__ */ new Date()).toLocaleDateString("sv-SE")), n = M("lunch"), d = M(null), i = M(""), u = M(!1), r = M([]);
   async function m(v, g, $ = {}) {
     if (u.value) return;
     i.value = "", d.value = null, u.value = !0, r.value = [];
@@ -4467,12 +4471,12 @@ const Gd = [
   ["大豆", "豆制品", "soy", "tofu"],
   ["小麦", "wheat"],
   ["坚果", "nuts", "almond", "walnut", "cashew", "pecan", "pistachio", "hazelnut"]
-], Mt = (t, l = 300) => typeof t == "string" ? t.trim().slice(0, l) : "";
-function gn(t = {}) {
+], Rt = (t, l = 300) => typeof t == "string" ? t.trim().slice(0, l) : "";
+function yn(t = {}) {
   if (!t || typeof t != "object" || Array.isArray(t)) throw new Error("就餐条件格式不正确。");
   const l = t.budget === null || t.budget === void 0 || t.budget === "" ? null : Number(t.budget);
   if (l !== null && (!Number.isFinite(l) || l <= 0 || l > 1e3)) throw new Error("预算需为0以上、1000元以内。");
-  const n = (Array.isArray(t.avoids) ? t.avoids.join("、") : Mt(t.avoids)).split(/[,，、;；\n]+/).map((u) => u.trim().replace(/^(不吃|不要|回避|避免|忌口[:：]?)/, "").trim()).filter(Boolean);
+  const n = (Array.isArray(t.avoids) ? t.avoids.join("、") : Rt(t.avoids)).split(/[,，、;；\n]+/).map((u) => u.trim().replace(/^(不吃|不要|回避|避免|忌口[:：]?)/, "").trim()).filter(Boolean);
   if (n.length > 12 || n.some((u) => u.length > 30)) throw new Error("回避项最多12项，每项不超过30字。");
   const d = t.availableFoods ?? [];
   if (!Array.isArray(d) || d.length > 12) throw new Error("可选食物最多12项。");
@@ -4482,18 +4486,18 @@ function gn(t = {}) {
     return { foodId: r.key, name: r.name, grams: m, price: c };
   });
   if (new Set(i.map((u) => u.foodId)).size !== i.length) throw new Error("可选食物不能重复，请修改已有条目的份量。");
-  return { budget: l, avoids: [...new Set(n)], preferences: Mt(t.preferences, 200), exercise: Mt(t.exercise, 200), availableFoods: i, onlyAvailable: i.length > 0 && t.onlyAvailable !== !1 };
+  return { budget: l, avoids: [...new Set(n)], preferences: Rt(t.preferences, 200), exercise: Rt(t.exercise, 200), availableFoods: i, onlyAvailable: i.length > 0 && t.onlyAvailable !== !1 };
 }
-function On(t, l = []) {
-  const n = [t?.name, t?.source?.description, ...t?.aliases || []].join(" ").toLowerCase(), d = dt(n);
+function Fn(t, l = []) {
+  const n = [t?.name, t?.source?.description, ...t?.aliases || []].join(" ").toLowerCase(), d = ct(n);
   return l.filter((i) => {
     const u = /* @__PURE__ */ new Set([i]);
-    for (const r of Gd) if (r.some((m) => dt(m) === dt(i))) for (const m of r) u.add(m);
-    return [...u].some((r) => /^[a-z ]+$/i.test(r) ? new RegExp("\\b" + r.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "s?\\b", "i").test(n) : d.includes(dt(r)));
+    for (const r of Gd) if (r.some((m) => ct(m) === ct(i))) for (const m of r) u.add(m);
+    return [...u].some((r) => /^[a-z ]+$/i.test(r) ? new RegExp("\\b" + r.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "s?\\b", "i").test(n) : d.includes(ct(r)));
   });
 }
 function Jd(t, l) {
-  return !!t && !["13", "17"].includes(t.category) && !On(t, l.avoids).length && (!l.onlyAvailable || l.availableFoods.some((n) => n.foodId === t.key));
+  return !!t && !["13", "17"].includes(t.category) && !Fn(t, l.avoids).length && (!l.onlyAvailable || l.availableFoods.some((n) => n.foodId === t.key));
 }
 function Hd(t, l) {
   const n = t.map((u) => {
@@ -4508,14 +4512,14 @@ const Kd = {
 }, Wd = { class: "vb-agent-heading" }, Yd = { class: "vb-icon-badge" }, Xd = { class: "vb-campus-fields" }, Qd = ["max", "disabled"], Zd = ["disabled"], ec = ["value"], tc = ["disabled"], nc = ["disabled"], sc = { class: "vb-analysis-tabs" }, oc = ["disabled"], lc = ["disabled", "onClick"], ac = { class: "vb-more-conditions" }, ic = { class: "vb-agent-goal" }, rc = ["disabled"], uc = { class: "vb-campus-fields" }, dc = ["disabled"], cc = ["disabled"], vc = { class: "vb-campus-candidates" }, mc = { class: "vb-candidate-search" }, pc = ["disabled"], bc = ["disabled"], fc = ["value"], gc = ["disabled"], yc = { class: "vb-candidate-list" }, hc = ["onUpdate:modelValue", "disabled"], kc = ["onUpdate:modelValue", "disabled"], wc = ["disabled", "onClick"], $c = {
   key: 0,
   class: "vb-agent-context-optin"
-}, _c = ["disabled"], Cc = { class: "vb-agent-context-optin" }, Ac = ["disabled"], Ic = { class: "vb-agent-context-optin" }, Sc = ["disabled"], xc = {
+}, _c = ["disabled"], Ac = { class: "vb-agent-context-optin" }, Cc = ["disabled"], Ic = { class: "vb-agent-context-optin" }, Sc = ["disabled"], xc = {
   key: 0,
   class: "vb-field-error",
   role: "alert"
-}, Ec = ["disabled"], Uc = {
+}, Ec = ["disabled"], jc = {
   key: 0,
   class: "vb-loading-ring"
-}, jc = {
+}, Uc = {
   key: 0,
   class: "vb-agent-progress",
   role: "status",
@@ -4524,11 +4528,11 @@ const Kd = {
   key: 1,
   class: "vb-agent-error",
   role: "alert"
-}, Nc = ["disabled"], Tc = {
+}, Nc = ["disabled"], Mc = {
   key: 2,
   class: "vb-agent-error",
   role: "status"
-}, Mc = {
+}, Tc = {
   key: 3,
   class: "vb-agent-plan"
 }, Rc = { class: "vb-agent-plan-heading" }, zc = { class: "vb-eyebrow" }, Oc = { class: "vb-data-note" }, Fc = { key: 0 }, Bc = { key: 1 }, Vc = { class: "vb-agent-items" }, qc = { class: "vb-agent-item-title" }, Lc = ["onClick"], Gc = ["onClick"], Jc = {
@@ -4547,8 +4551,8 @@ const Kd = {
   setup(t, { emit: l }) {
     const n = t, d = l, { goal: i, date: u, meal: r, response: m, error: c, busy: v, progress: g, run: $, clear: y } = Ld();
     i.value = "结合我的就餐条件，安排一份食物多样、方便选择的下一餐";
-    const p = et({ budget: "", avoids: "", preferences: n.preferences || "", exercise: "", availableFoods: [], onlyAvailable: !0 }), h = T(-1), w = T(""), _ = T(!1), A = T(!0), R = T(!1), D = T(""), M = T(""), V = T(""), W = [["breakfast", "早餐"], ["lunch", "午餐"], ["dinner", "晚餐"], ["snack", "加餐"]], z = H(() => M.value.trim() ? Lt(M.value, 8) : []), G = H(() => tt((n.records || []).find((f) => f.date === u.value))), Y = H(() => m.value?.status === "ready" ? m.value : null), ue = H(() => (Y.value?.plan.items || []).map((f, k) => ({ id: "agent-" + k, foodId: f.foodId, name: f.name, grams: f.grams, meal: f.meal, group: le[f.foodId]?.group || "snacks", source: "catalogue", estimated: !0, referenceConfirmed: !0 }))), se = H(() => Y.value ? Hd(Y.value.plan.items, Y.value.conditions) : null), ye = H(() => !Y.value || !Y.value.plan.items.length || se.value?.status === "over_budget" || Y.value.plan.items.some((f) => !Number.isFinite(f.grams) || f.grams < 0.1 || f.grams > 5e3));
-    re([i, u, r, p, A, R, () => n.profile, () => n.records], () => {
+    const p = tt({ budget: "", avoids: "", preferences: n.preferences || "", exercise: "", availableFoods: [], onlyAvailable: !0 }), h = M(-1), w = M(""), _ = M(!1), C = M(!0), R = M(!1), D = M(""), T = M(""), V = M(""), W = [["breakfast", "早餐"], ["lunch", "午餐"], ["dinner", "晚餐"], ["snack", "加餐"]], z = H(() => T.value.trim() ? Gt(T.value, 8) : []), G = H(() => nt((n.records || []).find((f) => f.date === u.value))), Y = H(() => m.value?.status === "ready" ? m.value : null), ue = H(() => (Y.value?.plan.items || []).map((f, k) => ({ id: "agent-" + k, foodId: f.foodId, name: f.name, grams: f.grams, meal: f.meal, group: le[f.foodId]?.group || "snacks", source: "catalogue", estimated: !0, referenceConfirmed: !0 }))), se = H(() => Y.value ? Hd(Y.value.plan.items, Y.value.conditions) : null), ye = H(() => !Y.value || !Y.value.plan.items.length || se.value?.status === "over_budget" || Y.value.plan.items.some((f) => !Number.isFinite(f.grams) || f.grams < 0.1 || f.grams > 5e3));
+    re([i, u, r, p, C, R, () => n.profile, () => n.records], () => {
       !v.value && m.value && y(), _.value = !1;
     }, { deep: !0 }), re(() => n.preferences, (f) => p.preferences = f || "");
     function be() {
@@ -4562,21 +4566,21 @@ const Kd = {
           D.value = "最多加入12项备选食物。";
           return;
         }
-        p.availableFoods.push({ foodId: f.key, name: f.name, grams: 100, price: "" }), V.value = "", M.value = "";
+        p.availableFoods.push({ foodId: f.key, name: f.name, grams: 100, price: "" }), V.value = "", T.value = "";
       }
     }
     async function ge() {
       D.value = "", _.value = !1;
       let f;
       try {
-        await qe(p.availableFoods.map((j) => j.foodId)), f = gn(p);
-        const k = f.availableFoods.find((j) => On(le[j.foodId], f.avoids).length);
+        await qe(p.availableFoods.map((U) => U.foodId)), f = yn(p);
+        const k = f.availableFoods.find((U) => Fn(le[U.foodId], f.avoids).length);
         if (k) throw Error("备选食物“" + k.name + "”命中回避项，请先移除或修改条件。");
       } catch (k) {
         D.value = k.message;
         return;
       }
-      await $(n.profile, R.value ? { safetyFlags: (n.flags || []).filter((k) => ["正在使用药物", "孕期或哺乳期", "有需要管理的健康状况", "正在使用营养补充剂"].includes(k)) } : void 0, { conditions: f, ...A.value ? { recordContext: { date: u.value, entries: G.value.map((k) => ({ foodId: k.foodId, name: k.name, grams: k.grams, meal: k.meal, referenceConfirmed: k.referenceConfirmed })) } } : {} });
+      await $(n.profile, R.value ? { safetyFlags: (n.flags || []).filter((k) => ["正在使用药物", "孕期或哺乳期", "有需要管理的健康状况", "正在使用营养补充剂"].includes(k)) } : void 0, { conditions: f, ...C.value ? { recordContext: { date: u.value, entries: G.value.map((k) => ({ foodId: k.foodId, name: k.name, grams: k.grams, meal: k.meal, referenceConfirmed: k.referenceConfirmed })) } } : {} });
     }
     function K() {
       ye.value || _.value || (_.value = !0, d("confirm", { confirmationId: Y.value.confirmationId, date: Y.value.date, meal: Y.value.meal, items: Y.value.plan.items, onResult: (f) => {
@@ -4584,28 +4588,28 @@ const Kd = {
       } }));
     }
     function F(f, k) {
-      Y.value && (Y.value.plan.items[f].grams = Number(k), Y.value.plan.items[f].portion = ln(le[Y.value.plan.items[f].foodId], Number(k)), _.value = !1);
+      Y.value && (Y.value.plan.items[f].grams = Number(k), Y.value.plan.items[f].portion = an(le[Y.value.plan.items[f].foodId], Number(k)), _.value = !1);
     }
     const P = H(() => {
       let f;
       try {
-        f = gn(p);
+        f = yn(p);
       } catch {
         return [];
       }
-      return (f.availableFoods.length && f.onlyAvailable ? f.availableFoods.map((j) => le[j.foodId]) : Je).filter((j) => j && !j.__summary && j.source && Jd(j, f) && !Y.value?.plan.items.some((oe) => oe.foodId === j.key)).slice(0, 60);
+      return (f.availableFoods.length && f.onlyAvailable ? f.availableFoods.map((U) => le[U.foodId]) : He).filter((U) => U && !U.__summary && U.source && Jd(U, f) && !Y.value?.plan.items.some((oe) => oe.foodId === U.key)).slice(0, 60);
     });
     function q(f) {
       const k = le[w.value];
       if (!k || !P.value.some((oe) => oe.key === k.key)) return;
-      const j = Y.value.plan.items[f];
-      Y.value.plan.items[f] = { ...j, foodId: k.key, name: k.name, portion: ln(k, j.grams), reason: "用户从符合当前回避条件的目录中替换；份量沿用，请核对。", sourceName: k.source?.name || "", source: k.source?.id || "", missing: [] }, _.value = !1, h.value = -1, w.value = "";
+      const U = Y.value.plan.items[f];
+      Y.value.plan.items[f] = { ...U, foodId: k.key, name: k.name, portion: an(k, U.grams), reason: "用户从符合当前回避条件的目录中替换；份量沿用，请核对。", sourceName: k.source?.name || "", source: k.source?.id || "", missing: [] }, _.value = !1, h.value = -1, w.value = "";
     }
-    const C = (f) => typeof f == "number" && Number.isFinite(f) ? f.toLocaleString("zh-CN", { maximumFractionDigits: 1 }) : "暂无数据";
+    const A = (f) => typeof f == "number" && Number.isFinite(f) ? f.toLocaleString("zh-CN", { maximumFractionDigits: 1 }) : "暂无数据";
     return (f, k) => (s(), o("section", Kd, [
       e("header", Wd, [
         e("span", Yd, [
-          U(O, {
+          j(O, {
             name: "sparkles",
             size: 21
           })
@@ -4624,7 +4628,7 @@ const Kd = {
           e("label", null, [
             k[16] || (k[16] = N("日期", -1)),
             te(e("input", {
-              "onUpdate:modelValue": k[0] || (k[0] = (j) => St(u) ? u.value = j : null),
+              "onUpdate:modelValue": k[0] || (k[0] = (U) => xt(u) ? u.value = U : null),
               type: "date",
               max: b(ke)(),
               disabled: b(v)
@@ -4635,21 +4639,21 @@ const Kd = {
           e("label", null, [
             k[17] || (k[17] = N("餐次", -1)),
             te(e("select", {
-              "onUpdate:modelValue": k[1] || (k[1] = (j) => St(r) ? r.value = j : null),
+              "onUpdate:modelValue": k[1] || (k[1] = (U) => xt(r) ? r.value = U : null),
               disabled: b(v)
             }, [
-              (s(), o(B, null, J(W, ([j, oe]) => e("option", {
-                key: j,
-                value: j
+              (s(), o(B, null, J(W, ([U, oe]) => e("option", {
+                key: U,
+                value: U
               }, a(oe), 9, ec)), 64))
             ], 8, Zd), [
-              [Ce, b(r)]
+              [Ae, b(r)]
             ])
           ]),
           e("label", null, [
             k[18] || (k[18] = N("预算（元，可选）", -1)),
             te(e("input", {
-              "onUpdate:modelValue": k[2] || (k[2] = (j) => p.budget = j),
+              "onUpdate:modelValue": k[2] || (k[2] = (U) => p.budget = U),
               type: "number",
               min: "0.01",
               max: "1000",
@@ -4663,7 +4667,7 @@ const Kd = {
           e("label", null, [
             k[19] || (k[19] = N("不吃的食物", -1)),
             te(e("input", {
-              "onUpdate:modelValue": k[3] || (k[3] = (j) => p.avoids = j),
+              "onUpdate:modelValue": k[3] || (k[3] = (U) => p.avoids = U),
               maxlength: "300",
               placeholder: "例如花生、香菜，用逗号分开",
               disabled: b(v)
@@ -4677,15 +4681,15 @@ const Kd = {
             type: "button",
             class: "vb-button vb-button-quiet",
             disabled: b(v),
-            onClick: k[4] || (k[4] = (j) => p.budget = "15")
+            onClick: k[4] || (k[4] = (U) => p.budget = "15")
           }, "预算15元", 8, oc),
-          (s(), o(B, null, J(["清淡", "素食偏好"], (j) => e("button", {
-            key: j,
+          (s(), o(B, null, J(["清淡", "素食偏好"], (U) => e("button", {
+            key: U,
             type: "button",
             class: "vb-button vb-button-quiet",
             disabled: b(v),
-            onClick: (oe) => p.preferences = j
-          }, a(j), 9, lc)), 64)),
+            onClick: (oe) => p.preferences = U
+          }, a(U), 9, lc)), 64)),
           e("span", null, "已选偏好：" + a(p.preferences || "未设置"), 1)
         ]),
         e("details", ac, [
@@ -4693,7 +4697,7 @@ const Kd = {
           e("label", ic, [
             k[20] || (k[20] = e("span", null, "这餐想怎么安排？", -1)),
             te(e("textarea", {
-              "onUpdate:modelValue": k[5] || (k[5] = (j) => St(i) ? i.value = j : null),
+              "onUpdate:modelValue": k[5] || (k[5] = (U) => xt(i) ? i.value = U : null),
               rows: "2",
               maxlength: "500",
               disabled: b(v),
@@ -4706,7 +4710,7 @@ const Kd = {
             e("label", null, [
               k[21] || (k[21] = N("口味与饮食偏好", -1)),
               te(e("input", {
-                "onUpdate:modelValue": k[6] || (k[6] = (j) => p.preferences = j),
+                "onUpdate:modelValue": k[6] || (k[6] = (U) => p.preferences = U),
                 maxlength: "200",
                 placeholder: "例如清淡、喜欢家常菜",
                 disabled: b(v)
@@ -4717,7 +4721,7 @@ const Kd = {
             e("label", null, [
               k[22] || (k[22] = N("运动情况（可选）", -1)),
               te(e("input", {
-                "onUpdate:modelValue": k[7] || (k[7] = (j) => p.exercise = j),
+                "onUpdate:modelValue": k[7] || (k[7] = (U) => p.exercise = U),
                 maxlength: "200",
                 placeholder: "例如今天散步；仅作背景，不自动开运动营养处方",
                 disabled: b(v)
@@ -4731,16 +4735,16 @@ const Kd = {
             k[28] || (k[28] = e("p", null, "从目录选具体食物并核对生熟。复杂菜式的配料、份量和是否有售仍需自行确认；没有准确样本可在饮食记录中手动记账。", -1)),
             e("div", mc, [
               te(e("input", {
-                "onUpdate:modelValue": k[8] || (k[8] = (j) => M.value = j),
+                "onUpdate:modelValue": k[8] || (k[8] = (U) => T.value = U),
                 "aria-label": "搜索备选食物",
                 placeholder: "搜索米饭、鸡肉、豆腐…",
                 disabled: b(v),
-                onInput: k[9] || (k[9] = (j) => V.value = "")
+                onInput: k[9] || (k[9] = (U) => V.value = "")
               }, null, 40, pc), [
-                [ie, M.value]
+                [ie, T.value]
               ]),
               te(e("select", {
-                "onUpdate:modelValue": k[10] || (k[10] = (j) => V.value = j),
+                "onUpdate:modelValue": k[10] || (k[10] = (U) => V.value = U),
                 "aria-label": "选择具体食物",
                 disabled: b(v) || !z.value.length
               }, [
@@ -4748,12 +4752,12 @@ const Kd = {
                   value: "",
                   disabled: ""
                 }, "选择具体品种与状态", -1)),
-                (s(!0), o(B, null, J(z.value, (j) => (s(), o("option", {
-                  key: j.key,
-                  value: j.key
-                }, a(j.name), 9, fc))), 128))
+                (s(!0), o(B, null, J(z.value, (U) => (s(), o("option", {
+                  key: U.key,
+                  value: U.key
+                }, a(U.name), 9, fc))), 128))
               ], 8, bc), [
-                [Ce, V.value]
+                [Ae, V.value]
               ]),
               e("button", {
                 type: "button",
@@ -4763,14 +4767,14 @@ const Kd = {
               }, "加入备选", 8, gc)
             ]),
             e("div", yc, [
-              (s(!0), o(B, null, J(p.availableFoods, (j, oe) => (s(), o("article", {
-                key: j.foodId
+              (s(!0), o(B, null, J(p.availableFoods, (U, oe) => (s(), o("article", {
+                key: U.foodId
               }, [
-                e("strong", null, a(j.name), 1),
+                e("strong", null, a(U.name), 1),
                 e("label", null, [
                   k[24] || (k[24] = N("这份可食部（克）", -1)),
                   te(e("input", {
-                    "onUpdate:modelValue": (ae) => j.grams = ae,
+                    "onUpdate:modelValue": (ae) => U.grams = ae,
                     type: "number",
                     min: "0.1",
                     max: "5000",
@@ -4779,7 +4783,7 @@ const Kd = {
                   }, null, 8, hc), [
                     [
                       ie,
-                      j.grams,
+                      U.grams,
                       void 0,
                       { number: !0 }
                     ]
@@ -4788,7 +4792,7 @@ const Kd = {
                 e("label", null, [
                   k[25] || (k[25] = N("这份已知价格（元）", -1)),
                   te(e("input", {
-                    "onUpdate:modelValue": (ae) => j.price = ae,
+                    "onUpdate:modelValue": (ae) => U.price = ae,
                     type: "number",
                     min: "0",
                     max: "1000",
@@ -4796,7 +4800,7 @@ const Kd = {
                     placeholder: "未知则留空",
                     disabled: b(v)
                   }, null, 8, kc), [
-                    [ie, j.price]
+                    [ie, U.price]
                   ])
                 ]),
                 e("button", {
@@ -4809,23 +4813,23 @@ const Kd = {
             ]),
             p.availableFoods.length ? (s(), o("label", $c, [
               te(e("input", {
-                "onUpdate:modelValue": k[11] || (k[11] = (j) => p.onlyAvailable = j),
+                "onUpdate:modelValue": k[11] || (k[11] = (U) => p.onlyAvailable = U),
                 type: "checkbox",
                 disabled: b(v)
               }, null, 8, _c), [
-                [vt, p.onlyAvailable]
+                [mt, p.onlyAvailable]
               ]),
               k[26] || (k[26] = e("span", null, "仅从这些备选食物中规划", -1))
             ])) : I("", !0)
           ])
         ]),
-        e("label", Cc, [
+        e("label", Ac, [
           te(e("input", {
-            "onUpdate:modelValue": k[12] || (k[12] = (j) => A.value = j),
+            "onUpdate:modelValue": k[12] || (k[12] = (U) => C.value = U),
             type: "checkbox",
             disabled: b(v)
-          }, null, 8, Ac), [
-            [vt, A.value]
+          }, null, 8, Cc), [
+            [mt, C.value]
           ]),
           e("span", null, [
             N("使用所选日期的 " + a(G.value.length) + " 项已记录食物", 1),
@@ -4834,24 +4838,24 @@ const Kd = {
         ]),
         e("label", Ic, [
           te(e("input", {
-            "onUpdate:modelValue": k[13] || (k[13] = (j) => R.value = j),
+            "onUpdate:modelValue": k[13] || (k[13] = (U) => R.value = U),
             type: "checkbox",
             disabled: b(v)
           }, null, 8, Sc), [
-            [vt, R.value]
+            [mt, R.value]
           ]),
           k[31] || (k[31] = e("span", null, [
             N("本次附带我已选择的安全提醒"),
             e("small", null, "用于提示核对，不生成疾病或特殊生理人群的营养处方。")
           ], -1))
         ]),
-        k[32] || (k[32] = e("p", { class: "vb-data-note" }, "点击生成会把本次条件、基础身体档案和勾选的相关记录发送给 DeepSeek。显式回避项会过滤目录，但本地库没有完整配料与交叉污染资料，不能保证过敏安全。", -1)),
+        k[32] || (k[32] = e("p", { class: "vb-data-note" }, "点击生成会把本次条件、基础身体档案和勾选的相关记录发送给维衡 AI。显式回避项会过滤目录，但本地库没有完整配料与交叉污染资料，不能保证过敏安全。", -1)),
         D.value ? (s(), o("p", xc, a(D.value), 1)) : I("", !0),
         e("button", {
           class: "vb-button vb-button-primary",
           disabled: b(v) || !b(i).trim()
         }, [
-          b(v) ? (s(), o("span", Uc)) : (s(), ve(O, {
+          b(v) ? (s(), o("span", jc)) : (s(), ve(O, {
             key: 1,
             name: "sparkles",
             size: 16
@@ -4859,14 +4863,14 @@ const Kd = {
           N(a(b(v) ? "正在等待真实检索与计算…" : Y.value ? "按当前条件重新规划" : "生成待确认方案"), 1)
         ], 8, Ec)
       ], 32),
-      b(v) || b(g).length ? (s(), o("div", jc, [
+      b(v) || b(g).length ? (s(), o("div", Uc, [
         e("div", null, [
           e("strong", null, a(b(v) ? "正在执行；仅展示已完成步骤" : "本次实际执行记录"), 1),
           b(v) ? (s(), o("p", Dc, "模型响应需要一些时间，完成的工具步骤会陆续显示。")) : I("", !0),
           e("ol", null, [
-            (s(!0), o(B, null, J(b(g), (j, oe) => (s(), o("li", { key: oe }, [
-              e("strong", null, a(j.label), 1),
-              N(" · " + a(j.resultSummary), 1)
+            (s(!0), o(B, null, J(b(g), (U, oe) => (s(), o("li", { key: oe }, [
+              e("strong", null, a(U.label), 1),
+              N(" · " + a(U.resultSummary), 1)
             ]))), 128))
           ])
         ])
@@ -4880,11 +4884,11 @@ const Kd = {
           onClick: ge
         }, "保留条件并重试", 8, Nc)
       ])) : I("", !0),
-      b(m)?.status === "needs_evidence" ? (s(), o("p", Tc, a(b(m).message) + " 请修改备选食物或检索描述。", 1)) : I("", !0),
-      Y.value ? (s(), o("section", Mc, [
+      b(m)?.status === "needs_evidence" ? (s(), o("p", Mc, a(b(m).message) + " 请修改备选食物或检索描述。", 1)) : I("", !0),
+      Y.value ? (s(), o("section", Tc, [
         e("div", Rc, [
           e("div", null, [
-            e("p", zc, "待确认 · " + a(Y.value.date) + " · " + a(W.find((j) => j[0] === Y.value.meal)?.[1]), 1),
+            e("p", zc, "待确认 · " + a(Y.value.date) + " · " + a(W.find((U) => U[0] === Y.value.meal)?.[1]), 1),
             e("h3", null, a(Y.value.plan.title), 1)
           ]),
           k[34] || (k[34] = e("span", { class: "vb-pill" }, "确认后只加入草稿", -1))
@@ -4895,26 +4899,26 @@ const Kd = {
           key: 0,
           class: me(["vb-campus-cost", { "is-caution": se.value.status === "over_budget" }])
         }, [
-          e("h4", null, a(se.value.complete ? "按录入价格估算：约 ¥" + C(se.value.total) : "价格待确认"), 1),
+          e("h4", null, a(se.value.complete ? "按录入价格估算：约 ¥" + A(se.value.total) : "价格待确认"), 1),
           se.value.budget !== null ? (s(), o("p", Fc, "本餐预算 ¥" + a(se.value.budget) + " · " + a(se.value.status === "within_budget" ? "按已录入价格估算在预算内" : se.value.status === "over_budget" ? "当前份量估算超预算，请调整后再确认" : "价格不完整，暂不能判断是否符合预算"), 1)) : I("", !0),
-          se.value.complete ? I("", !0) : (s(), o("p", Bc, "已知价格小计约 ¥" + a(C(se.value.knownSubtotal)) + "，其余食物未计价。", 1)),
+          se.value.complete ? I("", !0) : (s(), o("p", Bc, "已知价格小计约 ¥" + a(A(se.value.knownSubtotal)) + "，其余食物未计价。", 1)),
           e("small", null, a(se.value.basis) + "。" + a(se.value.availability) + "。", 1)
         ], 2)) : I("", !0),
         e("div", Vc, [
-          (s(!0), o(B, null, J(Y.value.plan.items, (j, oe) => (s(), o("article", {
-            key: j.foodId,
+          (s(!0), o(B, null, J(Y.value.plan.items, (U, oe) => (s(), o("article", {
+            key: U.foodId,
             class: "vb-agent-item"
           }, [
             e("div", qc, [
               e("div", null, [
-                U(Yt, {
-                  food: b(le)[j.foodId],
+                j(Xt, {
+                  food: b(le)[U.foodId],
                   class: "vb-plan-photo",
                   label: !1
                 }, null, 8, ["food"]),
-                e("h4", null, a(b(At)(b(le)[j.foodId])), 1),
-                e("small", null, a(b(Wt)(b(le)[j.foodId])), 1),
-                e("p", null, a(j.reason), 1)
+                e("h4", null, a(b(It)(b(le)[U.foodId])), 1),
+                e("small", null, a(b(Yt)(b(le)[U.foodId])), 1),
+                e("p", null, a(U.reason), 1)
               ]),
               e("button", {
                 type: "button",
@@ -4942,7 +4946,7 @@ const Kd = {
                   value: ae.key
                 }, a(ae.name), 9, Hc))), 128))
               ], 512), [
-                [Ce, w.value]
+                [Ae, w.value]
               ]),
               e("button", {
                 type: "button",
@@ -4955,7 +4959,7 @@ const Kd = {
             e("label", Yc, [
               k[36] || (k[36] = N("可食部估算克数", -1)),
               e("input", {
-                value: j.grams,
+                value: U.grams,
                 type: "number",
                 min: "0.1",
                 max: "5000",
@@ -4967,27 +4971,27 @@ const Kd = {
             e("div", Qc, [
               (s(), o(B, null, J([{ id: "energy", name: "热量", unit: "kcal" }, { id: "protein", name: "蛋白质", unit: "g" }, { id: "carbs", name: "碳水", unit: "g" }, { id: "fat", name: "脂肪", unit: "g" }], (ae) => e("small", {
                 key: ae.id
-              }, a(ae.name) + " " + a(C(j.portion[ae.id])) + a(j.portion[ae.id] !== null ? " " + ae.unit : ""), 1)), 64))
+              }, a(ae.name) + " " + a(A(U.portion[ae.id])) + a(U.portion[ae.id] !== null ? " " + ae.unit : ""), 1)), 64))
             ]),
             e("details", Zc, [
               k[39] || (k[39] = e("summary", null, "查看这份食物的依据", -1)),
-              e("p", null, "状态：" + a(b(le)[j.foodId]?.state), 1),
+              e("p", null, "状态：" + a(b(le)[U.foodId]?.state), 1),
               e("p", null, [
                 k[38] || (k[38] = N("来源：", -1)),
-                b(le)[j.foodId]?.source ? (s(), o("a", {
+                b(le)[U.foodId]?.source ? (s(), o("a", {
                   key: 0,
-                  href: b(le)[j.foodId].source.url,
+                  href: b(le)[U.foodId].source.url,
                   target: "_blank",
                   rel: "noopener"
-                }, a(j.sourceName) + " · " + a(j.source), 9, ev)) : (s(), o("span", tv, "暂无可核验成分数据"))
+                }, a(U.sourceName) + " · " + a(U.source), 9, ev)) : (s(), o("span", tv, "暂无可核验成分数据"))
               ]),
-              e("p", null, a(b(le)[j.foodId]?.source?.description), 1),
+              e("p", null, a(b(le)[U.foodId]?.source?.description), 1),
               k[40] || (k[40] = e("p", null, "每100克可食部 × 当前克数 ÷ 100。克数是规划估算，营养数据不是身体检测结果。", -1)),
-              j.missing.length ? (s(), o("p", nv, "缺失指标：" + a(j.missing.join("、")), 1)) : I("", !0)
+              U.missing.length ? (s(), o("p", nv, "缺失指标：" + a(U.missing.join("、")), 1)) : I("", !0)
             ])
           ]))), 128))
         ]),
-        U(qt, {
+        j(Lt, {
           entries: ue.value,
           targets: t.nutrition || {},
           compact: "",
@@ -4997,26 +5001,26 @@ const Kd = {
         Y.value.plan.suggestions.length ? (s(), o("div", sv, [
           k[41] || (k[41] = e("h4", null, "执行建议", -1)),
           e("ul", null, [
-            (s(!0), o(B, null, J(Y.value.plan.suggestions, (j) => (s(), o("li", { key: j }, a(j), 1))), 128))
+            (s(!0), o(B, null, J(Y.value.plan.suggestions, (U) => (s(), o("li", { key: U }, a(U), 1))), 128))
           ])
         ])) : I("", !0),
         Y.value.plan.cautions.length ? (s(), o("div", ov, [
           k[42] || (k[42] = e("h4", null, "需要核对", -1)),
           e("ul", null, [
-            (s(!0), o(B, null, J(Y.value.plan.cautions, (j) => (s(), o("li", { key: j }, a(j), 1))), 128))
+            (s(!0), o(B, null, J(Y.value.plan.cautions, (U) => (s(), o("li", { key: U }, a(U), 1))), 128))
           ])
         ])) : I("", !0),
         e("details", lv, [
           k[43] || (k[43] = e("summary", null, "原始工具调用与版本", -1)),
           e("ol", null, [
-            (s(!0), o(B, null, J(Y.value.trace, (j, oe) => (s(), o("li", { key: oe }, [
-              e("strong", null, a(j.label), 1),
-              N(" · " + a(j.inputSummary) + " · " + a(j.resultSummary), 1)
+            (s(!0), o(B, null, J(Y.value.trace, (U, oe) => (s(), o("li", { key: oe }, [
+              e("strong", null, a(U.label), 1),
+              N(" · " + a(U.inputSummary) + " · " + a(U.resultSummary), 1)
             ]))), 128))
           ]),
-          e("small", null, a(Y.value.model) + " · " + a(Y.value.dataVersion) + " · " + a(new Date(Y.value.generatedAt).toLocaleString("zh-CN")), 1)
+          e("small", null, a(b(Ge)(Y.value.model)) + " · " + a(Y.value.dataVersion) + " · " + a(new Date(Y.value.generatedAt).toLocaleString("zh-CN")), 1)
         ]),
-        U(In),
+        j(Sn),
         e("div", av, [
           k[44] || (k[44] = e("p", null, "仅在确认后加入“本次选择”。实际吃过后，在饮食记录中核对并保存当天记录。", -1)),
           e("button", {
@@ -5031,7 +5035,7 @@ const Kd = {
 }, uv = { class: "vb-page-title" }, dv = {
   key: 0,
   class: "vb-glass vb-plan-context"
-}, cv = { class: "vb-glass vb-record-prompt" }, vv = /* @__PURE__ */ He({
+}, cv = { class: "vb-glass vb-record-prompt" }, vv = /* @__PURE__ */ Ke({
   __name: "MealplanPage",
   props: {
     nutrition: {},
@@ -5060,7 +5064,7 @@ const Kd = {
           e("p", null, "身体档案缺失、未满18岁或不适用成人公式时，本次不生成成人营养配额。仍可检索食物、核对营养成分和记录饮食。")
         ], -1)
       ])])),
-      U(rv, {
+      j(rv, {
         profile: t.profile || void 0,
         nutrition: t.nutrition || void 0,
         preferences: t.preferences,
@@ -5084,12 +5088,12 @@ const Kd = {
       ])
     ], 64));
   }
-}), mv = { class: "vb-page-title" }, pv = { class: "vb-glass vb-profile-details" }, bv = { class: "vb-section-heading" }, fv = { class: "vb-pill" }, gv = { key: 0 }, yv = { key: 1 }, hv = { class: "vb-profile-settings" }, kv = { class: "vb-glass" }, wv = { class: "vb-section-heading" }, $v = { class: "vb-field" }, _v = ["value"], Cv = { class: "vb-glass" }, Av = { class: "vb-section-heading" }, Iv = ["checked", "onChange"], Sv = {
+}), mv = { class: "vb-page-title" }, pv = { class: "vb-glass vb-profile-details" }, bv = { class: "vb-section-heading" }, fv = { class: "vb-pill" }, gv = { key: 0 }, yv = { key: 1 }, hv = { class: "vb-profile-settings" }, kv = { class: "vb-glass" }, wv = { class: "vb-section-heading" }, $v = { class: "vb-field" }, _v = ["value"], Av = { class: "vb-glass" }, Cv = { class: "vb-section-heading" }, Iv = ["checked", "onChange"], Sv = {
   __name: "ProfilePage",
   props: { profile: Object, nutrition: Object, flags: Array, preferences: String },
   emits: ["edit", "update:flags", "update:preferences"],
   setup(t, { emit: l }) {
-    const n = t, d = H(() => Gt.find((m) => m.key === n.profile.activity)), i = l, u = ["正在使用药物", "孕期或哺乳期", "有需要管理的健康状况", "正在使用营养补充剂"];
+    const n = t, d = H(() => Jt.find((m) => m.key === n.profile.activity)), i = l, u = ["正在使用药物", "孕期或哺乳期", "有需要管理的健康状况", "正在使用营养补充剂"];
     function r(m, c, v) {
       i("update:flags", c ? [...v, m] : v.filter((g) => g !== m));
     }
@@ -5104,7 +5108,7 @@ const Kd = {
           class: "vb-button vb-button-primary",
           onClick: c[0] || (c[0] = (v) => m.$emit("edit"))
         }, [
-          U(O, {
+          j(O, {
             name: "edit",
             size: 17
           }),
@@ -5114,7 +5118,7 @@ const Kd = {
       e("section", pv, [
         e("div", bv, [
           c[4] || (c[4] = e("h2", null, "基础信息", -1)),
-          e("span", fv, a(b(_e) ? b(pt) === "synced" ? "账号已同步" : "本机保存 · 账号同步状态见账号面板" : "游客本地保存"), 1)
+          e("span", fv, a(b(_e) ? b(bt) === "synced" ? "账号已同步" : "本机保存 · 账号同步状态见账号面板" : "游客本地保存"), 1)
         ]),
         e("dl", null, [
           e("div", null, [
@@ -5158,7 +5162,7 @@ const Kd = {
               e("h2", null, "饮食偏好"),
               e("p", null, "记下喜欢、回避或需要核对的食物")
             ], -1)),
-            U(O, { name: "bowl" })
+            j(O, { name: "bowl" })
           ]),
           e("label", $v, [
             c[14] || (c[14] = e("span", { class: "vb-sr-only" }, "饮食偏好备注", -1)),
@@ -5172,13 +5176,13 @@ const Kd = {
           ]),
           c[15] || (c[15] = e("p", { class: "vb-section-note" }, "用于饮食备忘和下一餐默认偏好；显式忌口请在规划中单独填写，不能自动验证过敏原。", -1))
         ]),
-        e("section", Cv, [
-          e("div", Av, [
+        e("section", Av, [
+          e("div", Cv, [
             c[16] || (c[16] = e("div", null, [
               e("h2", null, "需要谨慎核对的情况"),
               e("p", null, "可选，用于显示相应安全提醒")
             ], -1)),
-            U(O, { name: "shield" })
+            j(O, { name: "shield" })
           ]),
           (s(), o(B, null, J(u, (v) => e("label", {
             key: v,
@@ -5199,10 +5203,10 @@ const Kd = {
 }, xv = {
   key: 0,
   class: "vb-page-title"
-}, Ev = { class: "vb-local-chip" }, Uv = {
+}, Ev = { class: "vb-local-chip" }, jv = {
   key: 1,
   class: "vb-glass vb-safety-highlight"
-}, jv = { class: "vb-safety-grid" }, Dv = { class: "vb-icon-badge" }, Pv = {
+}, Uv = { class: "vb-safety-grid" }, Dv = { class: "vb-icon-badge" }, Pv = {
   __name: "SafetyPage",
   props: { flags: Array, embedded: Boolean },
   setup(t) {
@@ -5215,15 +5219,15 @@ const Kd = {
           e("p", null, "把营养信息作为参考，把自己的实际情况放在前面。")
         ], -1)),
         e("span", Ev, [
-          U(O, {
+          j(O, {
             name: "lock",
             size: 15
           }),
           i[0] || (i[0] = N("本地隐私模式", -1))
         ])
       ])),
-      t.flags.length ? (s(), o("section", Uv, [
-        U(O, {
+      t.flags.length ? (s(), o("section", jv, [
+        j(O, {
           name: "shield",
           size: 25
         }),
@@ -5232,13 +5236,13 @@ const Kd = {
           e("p", null, "你已标记：" + a(t.flags.join("、")) + "。当前通用目标不覆盖这些特殊情况。", 1)
         ])
       ])) : I("", !0),
-      e("div", jv, [
+      e("div", Uv, [
         (s(), o(B, null, J(n, ([u, r, m]) => e("article", {
           key: r,
           class: "vb-glass"
         }, [
           e("span", Dv, [
-            U(O, {
+            j(O, {
               name: u,
               size: 23
             }, null, 8, ["name"])
@@ -5247,19 +5251,19 @@ const Kd = {
           e("p", null, a(m), 1)
         ])), 64))
       ]),
-      U(In)
+      j(Sn)
     ], 64));
   }
 }, Nv = {
   key: 0,
   class: "vb-page-title vb-submission-title"
-}, Tv = { class: "vb-glass vb-submission-hero" }, Mv = { class: "vb-submission-hero-copy" }, Rv = { class: "vb-icon-badge" }, zv = {
+}, Mv = { class: "vb-glass vb-submission-hero" }, Tv = { class: "vb-submission-hero-copy" }, Rv = { class: "vb-icon-badge" }, zv = {
   class: "vb-submission-stats",
   "aria-label": "食物数据审计概况"
-}, Ov = { class: "vb-submission-version" }, Fv = {
+}, Ov = {
   class: "vb-submission-path",
   "aria-label": "产品工作流"
-}, Bv = { class: "vb-submission-step-top" }, Vv = { class: "vb-icon-badge" }, qv = ["onClick"], Lv = { class: "vb-submission-columns" }, Gv = { class: "vb-glass vb-submission-panel" }, Jv = { class: "vb-submission-boundary" }, Hv = { class: "vb-icon-badge" }, Kv = { class: "vb-icon-badge" }, Wv = { class: "vb-icon-badge" }, Yv = { class: "vb-glass vb-submission-panel" }, Xv = { class: "vb-inline-note" }, Qv = { class: "vb-glass vb-submission-evidence" }, Zv = { class: "vb-submission-evidence-actions" }, em = /* @__PURE__ */ He({
+}, Fv = { class: "vb-submission-step-top" }, Bv = { class: "vb-icon-badge" }, Vv = ["onClick"], qv = { class: "vb-submission-columns" }, Lv = { class: "vb-glass vb-submission-panel" }, Gv = { class: "vb-submission-boundary" }, Jv = { class: "vb-icon-badge" }, Hv = { class: "vb-icon-badge" }, Kv = { class: "vb-icon-badge" }, Wv = { class: "vb-glass vb-submission-panel" }, Yv = { class: "vb-inline-note" }, Xv = { class: "vb-glass vb-submission-evidence" }, Qv = { class: "vb-submission-evidence-actions" }, Zv = /* @__PURE__ */ Ke({
   __name: "SubmissionGuidePage",
   props: {
     embedded: { type: Boolean }
@@ -5267,10 +5271,9 @@ const Kd = {
   emits: ["navigate"],
   setup(t) {
     const l = {
-      foodCount: Je.length,
-      sourcedCount: Je.filter((d) => !!d.source?.id).length,
-      categories: new Set(Je.map((d) => d.category).filter(Boolean)).size,
-      sourceName: "USDA Standard Reference 28（2016-05）"
+      foodCount: He.length,
+      sourcedCount: He.filter((d) => !!d.source?.id).length,
+      categories: new Set(He.map((d) => d.category).filter(Boolean)).size
     }, n = [
       { number: "01", title: "查证食物", copy: "按名称、别名和分类检索；查看品种、生熟状态、每 100 克可食部数据和来源。", icon: "search", page: "food", action: "打开食物浏览" },
       { number: "02", title: "生成待确认方案", copy: "Agent 从同一食物库找证据，调用白名单工具读取详情、计算营养并比较目标。", icon: "sparkles", page: "mealplan", action: "打开膳食方案" },
@@ -5288,23 +5291,22 @@ const Kd = {
           class: "vb-button vb-button-primary",
           onClick: i[0] || (i[0] = (u) => d.$emit("navigate", "mealplan"))
         }, [
-          U(O, {
+          j(O, {
             name: "sparkles",
             size: 17
           }),
           i[3] || (i[3] = N("体验餐食规划 ", -1))
         ])
       ])),
-      e("section", Tv, [
-        e("div", Mv, [
+      e("section", Mv, [
+        e("div", Tv, [
           e("span", Rv, [
-            U(O, {
+            j(O, {
               name: "leaf",
               size: 22
             })
           ]),
           i[5] || (i[5] = e("div", null, [
-            e("p", { class: "vb-small-label" }, "项目定位"),
             e("h2", null, "让营养计算有依据，让饮食安排更贴近日常。"),
             e("p", null, "面向全年龄段，以饮食记录和营养摄入计算为核心。记录食物与份量，查看能量、维生素和矿物质的已知合计与参考依据，再结合预算、忌口和偏好安排下一餐。不同年龄按适用条件分析，缺失值不补0。")
           ], -1))
@@ -5322,25 +5324,22 @@ const Kd = {
             e("strong", null, a(l.categories), 1),
             i[8] || (i[8] = e("span", null, "食物分类", -1))
           ])
-        ]),
-        e("small", Ov, "数据版本：" + a(b(ls)) + " · " + a(l.sourceName), 1)
+        ])
       ]),
-      i[19] || (i[19] = e("div", { class: "vb-submission-section-heading" }, [
+      i[18] || (i[18] = e("div", { class: "vb-submission-section-heading" }, [
         e("div", null, [
-          e("p", { class: "vb-eyebrow" }, "四步完成一条闭环"),
           e("h2", null, "从检索到回顾")
-        ]),
-        e("span", null, "每一步都可返回核对")
+        ])
       ], -1)),
-      e("section", Fv, [
+      e("section", Ov, [
         (s(), o(B, null, J(n, (u) => e("article", {
           key: u.number,
           class: "vb-glass vb-submission-step"
         }, [
-          e("div", Bv, [
+          e("div", Fv, [
             e("span", null, a(u.number), 1),
-            e("span", Vv, [
-              U(O, {
+            e("span", Bv, [
+              j(O, {
                 name: u.icon
               }, null, 8, ["name"])
             ])
@@ -5352,21 +5351,20 @@ const Kd = {
             onClick: (r) => d.$emit("navigate", u.page)
           }, [
             N(a(u.action), 1),
-            U(O, {
+            j(O, {
               name: "arrow",
               size: 15
             })
-          ], 8, qv)
+          ], 8, Vv)
         ])), 64))
       ]),
-      e("div", Lv, [
-        e("section", Gv, [
-          i[12] || (i[12] = e("p", { class: "vb-eyebrow" }, "职责边界", -1)),
-          i[13] || (i[13] = e("h2", null, "哪些由程序决定，哪些由 AI 协助", -1)),
-          e("div", Jv, [
+      e("div", qv, [
+        e("section", Lv, [
+          i[12] || (i[12] = e("h2", null, "哪些由程序决定，哪些由 AI 协助", -1)),
+          e("div", Gv, [
             e("article", null, [
-              e("span", Hv, [
-                U(O, { name: "chart" })
+              e("span", Jv, [
+                j(O, { name: "chart" })
               ]),
               i[9] || (i[9] = e("div", null, [
                 e("h3", null, "程序与食物库"),
@@ -5374,8 +5372,8 @@ const Kd = {
               ], -1))
             ]),
             e("article", null, [
-              e("span", Kv, [
-                U(O, { name: "sparkles" })
+              e("span", Hv, [
+                j(O, { name: "sparkles" })
               ]),
               i[10] || (i[10] = e("div", null, [
                 e("h3", null, "AI 的工作"),
@@ -5383,8 +5381,8 @@ const Kd = {
               ], -1))
             ]),
             e("article", null, [
-              e("span", Wv, [
-                U(O, { name: "check" })
+              e("span", Kv, [
+                j(O, { name: "check" })
               ]),
               i[11] || (i[11] = e("div", null, [
                 e("h3", null, "用户确认"),
@@ -5393,49 +5391,48 @@ const Kd = {
             ])
           ])
         ]),
-        e("section", Yv, [
-          i[15] || (i[15] = hn('<p class="vb-eyebrow">实现与隐私</p><h2>AI 请求经过服务端，记录保存在当前浏览器</h2><ol class="vb-submission-flow"><li><strong>Vue 3 页面</strong><span>食物浏览、Agent、饮食记录与报告共用同一领域数据。</span></li><li><strong>Node.js API</strong><span>集中管理模型配置、白名单工具、结构校验与错误状态。</span></li><li><strong>DeepSeek</strong><span>仅在调用相应 AI 功能时接收该功能所需的请求内容。</span></li><li><strong>本地存储</strong><span>饮食记录、草稿和报告保存在当前浏览器；照片只在用户选图并发起识别时上传。</span></li></ol>', 3)),
-          e("p", Xv, [
-            U(O, {
+        e("section", Wv, [
+          i[14] || (i[14] = kn('<h2>AI 请求经过服务端，记录保存在当前浏览器</h2><ol class="vb-submission-flow"><li><strong>Vue 3 页面</strong><span>食物浏览、Agent、饮食记录与报告共用同一领域数据。</span></li><li><strong>Node.js API</strong><span>集中管理模型配置、白名单工具、结构校验与错误状态。</span></li><li><strong>维衡 AI</strong><span>仅在调用相应 AI 功能时接收该功能所需的请求内容。</span></li><li><strong>本地存储</strong><span>饮食记录、草稿和报告保存在当前浏览器；照片只在用户选图并发起识别时上传。</span></li></ol>', 2)),
+          e("p", Yv, [
+            j(O, {
               name: "info",
               size: 16
             }),
-            i[14] || (i[14] = N("AI 建议用于一般饮食管理，不替代医疗诊断或个体化临床建议。", -1))
+            i[13] || (i[13] = N("AI 建议用于一般饮食管理，不替代医疗诊断或个体化临床建议。", -1))
           ])
         ])
       ]),
-      e("section", Qv, [
-        i[18] || (i[18] = e("div", null, [
-          e("p", { class: "vb-eyebrow" }, "可复核材料"),
+      e("section", Xv, [
+        i[17] || (i[17] = e("div", null, [
           e("h2", null, "数据依据和验证入口"),
-          e("p", null, "覆盖率来自仓库内可重复执行的数据审计；接口 mock 测试与真实模型冒烟分开记录，真实调用未执行时不会记作通过。")
+          e("p", null, "覆盖率来自仓库内可重复执行的数据审计；接口模拟检查与真实模型调用分开记录，未执行真实调用时不会记作通过。")
         ], -1)),
-        e("div", Zv, [
+        e("div", Qv, [
           e("button", {
             class: "vb-button vb-button-quiet",
             onClick: i[1] || (i[1] = (u) => d.$emit("navigate", "food"))
           }, [
-            U(O, {
+            j(O, {
               name: "apple",
               size: 16
             }),
-            i[16] || (i[16] = N("核对食物来源", -1))
+            i[15] || (i[15] = N("核对食物来源", -1))
           ]),
           e("button", {
             class: "vb-button vb-button-quiet",
             onClick: i[2] || (i[2] = (u) => d.$emit("navigate", "assessment"))
           }, [
-            U(O, {
+            j(O, {
               name: "report",
               size: 16
             }),
-            i[17] || (i[17] = N("查看报告样例", -1))
+            i[16] || (i[16] = N("查看报告样例", -1))
           ])
         ])
       ])
     ], 64));
   }
-}), tm = [
+}), em = [
   { id: "health-canada-life-stage", title: "Health Canada / NASEM年龄分组参考", version: "2023能量公式及公开RDA/AI表", volume: "能量、维生素和矿物质公开页面", status: "已接入年龄分组公式和部分参考值", scope: "未成年人按年龄/月龄匹配；活动类别近似对应，不作为治疗或婴儿喂养处方", locator: "按年龄段、性别及指标定位；life-stage-references.json保留原始来源链接", units: "能量kcal/天，身高cm、体重kg；营养素g、mg、μg/天", url: "https://www.canada.ca/en/health-canada/services/food-nutrition/healthy-eating/dietary-reference-intakes/tables.html", kind: "人群参考量与公式" },
   { id: "schofield", title: "FAO/WHO/UNU Schofield静息能量公式", version: "Human energy requirements公开附录", volume: "按年龄和性别分组的体重公式", status: "已接入分组公式，明确高龄外推限制", scope: "儿童及高龄仅作参考展示；79岁以上沿用60岁以上组，不宣称已在百岁人群验证", locator: "FAO公开章节中的年龄分组系数", units: "kcal/天，体重kg", url: "https://www.fao.org/4/y5686e/y5686e07.htm", kind: "公式估算" },
   { id: "usda-sr28", title: "USDA National Nutrient Database, SR28", version: "2016年5月修订", volume: "ABBREV 数据文件", status: "已接入营养数据", scope: "对应美国样本，每100克可食部；并非中国食堂配方", locator: "原始NDB ID与英文描述逐条保留", units: "kcal、g、mg、μg；维A RAE、叶酸DFE", url: "https://fdc.nal.usda.gov/download-datasets/", kind: "食物营养数据" },
@@ -5444,21 +5441,21 @@ const Kd = {
   { id: "guidelines-2022", title: "中国居民膳食指南", version: "2022", volume: "中国营养学会公开八条膳食准则", status: "已接入公开原则摘要，未接入整本书及受限图示", scope: "具体人群需使用对应指南；本产品面向全年龄段，按适用条件匹配参考", locator: "官网公开“2022版平衡膳食八准则”", units: "原则说明；未新增未经核对的定量目标", url: "https://dg.cnsoc.org/newslist_0402_1.htm", kind: "膳食搭配原则" },
   { id: "sport-textbook", title: "运动营养学教材", version: "待确认", volume: "作者、出版社、版次和章节均待提供", status: "待明确具体书目与授权资料，未接入", scope: "暂不提供竞技训练或特殊运动的个体化营养处方", locator: "无已核实章节或页码", units: "未接入定量目标", url: null, kind: "待接入运动营养参考" },
   { id: "mifflin", title: "Mifflin–St Jeor 静息能量预测公式", version: "1990原研究；本产品采用简化表达", volume: "原始论文", status: "已接入公式", scope: "原研究对象19—78岁；18岁显示粗略估算提示，未成年人及高龄采用独立的年龄分组参考并说明限制", locator: "PubMed PMID 2305711", units: "kcal/天；输入kg、cm、岁", url: "https://pubmed.ncbi.nlm.nih.gov/2305711/", kind: "公式估算" }
-], nm = ["食物多样、合理搭配", "吃动平衡，关注健康体重", "关注蔬果、奶类、全谷和大豆", "鱼禽蛋瘦肉适量搭配", "关注盐、油、糖和饮酒", "规律进餐、足量饮水", "会烹会选，阅读食品标签", "分餐与减少浪费"], sm = [["EAR", "平均需要量", "不能凭单日记录判断个体缺乏。"], ["RNI", "推荐摄入量", "膳食评价和计划的参考，不是补充剂剂量。"], ["AI", "适宜摄入量", "与RNI的制定依据不同，摄入低于AI不直接证明不足。"], ["UL", "可耐受最高摄入量", "是风险边界，不能作为推荐目标。"]], om = {
+], tm = ["食物多样、合理搭配", "吃动平衡，关注健康体重", "关注蔬果、奶类、全谷和大豆", "鱼禽蛋瘦肉适量搭配", "关注盐、油、糖和饮酒", "规律进餐、足量饮水", "会烹会选，阅读食品标签", "分餐与减少浪费"], nm = [["EAR", "平均需要量", "不能凭单日记录判断个体缺乏。"], ["RNI", "推荐摄入量", "膳食评价和计划的参考，不是补充剂剂量。"], ["AI", "适宜摄入量", "与RNI的制定依据不同，摄入低于AI不直接证明不足。"], ["UL", "可耐受最高摄入量", "是风险边界，不能作为推荐目标。"]], sm = {
   class: "vb-glass vb-evidence-panel",
   "aria-labelledby": "reference-title"
-}, lm = { class: "vb-reference-list" }, am = ["href"], im = {
+}, om = { class: "vb-reference-list" }, lm = ["href"], am = {
   key: 1,
   class: "vb-data-note"
-}, rm = { class: "vb-reference-terms" }, um = {
+}, im = { class: "vb-reference-terms" }, rm = {
   __name: "ReferencePanel",
   setup(t) {
-    return (l, n) => (s(), o("section", om, [
+    return (l, n) => (s(), o("section", sm, [
       n[8] || (n[8] = e("p", { class: "vb-eyebrow" }, "数据依据与适用范围", -1)),
       n[9] || (n[9] = e("h2", { id: "reference-title" }, "每一种依据，都有明确用途", -1)),
       n[10] || (n[10] = e("p", null, "食物成分数据、个人目标和膳食建议分别注明来源。列出参考书目不代表已经接入整本书。", -1)),
-      e("div", lm, [
-        (s(!0), o(B, null, J(b(tm), (d) => (s(), o("details", {
+      e("div", om, [
+        (s(!0), o(B, null, J(b(em), (d) => (s(), o("details", {
           key: d.id
         }, [
           e("summary", null, [
@@ -5488,12 +5485,12 @@ const Kd = {
             href: d.url,
             target: "_blank",
             rel: "noopener noreferrer"
-          }, "核对公开来源 ↗", 8, am)) : (s(), o("p", im, "等待明确书名、作者、出版社和版本后再核验。"))
+          }, "核对公开来源 ↗", 8, lm)) : (s(), o("p", am, "等待明确书名、作者、出版社和版本后再核验。"))
         ]))), 128))
       ]),
-      e("details", rm, [
+      e("details", im, [
         n[4] || (n[4] = e("summary", null, "理解 EAR、RNI、AI 和 UL", -1)),
-        (s(!0), o(B, null, J(b(sm), ([d, i, u]) => (s(), o("p", { key: d }, [
+        (s(!0), o(B, null, J(b(nm), ([d, i, u]) => (s(), o("p", { key: d }, [
           e("strong", null, a(d) + " · " + a(i), 1),
           N("：" + a(u), 1)
         ]))), 128)),
@@ -5502,33 +5499,33 @@ const Kd = {
       e("details", null, [
         n[6] || (n[6] = e("summary", null, "膳食指南2022公开原则摘要", -1)),
         e("ul", null, [
-          (s(!0), o(B, null, J(b(nm), (d) => (s(), o("li", { key: d }, a(d), 1))), 128))
+          (s(!0), o(B, null, J(b(tm), (d) => (s(), o("li", { key: d }, a(d), 1))), 128))
         ]),
         n[7] || (n[7] = e("p", { class: "vb-data-note" }, "文字为原则摘要，不复制官方膳食宝塔或餐盘图示；不同人群应采用对应指南。", -1))
       ])
     ]));
   }
-}, dm = { class: "vb-page-title" }, cm = { class: "vb-local-chip" }, vm = { "aria-labelledby": "about-project-heading" }, mm = {
+}, um = { class: "vb-page-title" }, dm = { class: "vb-local-chip" }, cm = { "aria-labelledby": "about-project-heading" }, vm = {
   class: "vb-about-safety",
   "aria-labelledby": "about-safety-heading"
-}, pm = {
+}, mm = {
   class: "vb-glass vb-reset-section",
   "aria-labelledby": "about-reset-heading"
-}, bm = {
+}, pm = {
   key: 0,
   role: "alert"
-}, fm = {
+}, bm = {
   key: 0,
   class: "vb-field-error",
   role: "alert"
-}, gm = { class: "vb-reset-actions" }, ym = ["disabled"], hm = ["disabled"], km = /* @__PURE__ */ He({
+}, fm = { class: "vb-reset-actions" }, gm = ["disabled"], ym = ["disabled"], hm = /* @__PURE__ */ Ke({
   __name: "AboutPage",
   props: {
     flags: {}
   },
   emits: ["navigate"],
   setup(t) {
-    const l = T(!1), n = T(!1), d = T("");
+    const l = M(!1), n = M(!1), d = M("");
     function i() {
       try {
         const r = JSON.parse(we.getItem("weiheng.local.v2") || "{}"), m = { format: "weiheng-profile-food-records-v1", exportedAt: (/* @__PURE__ */ new Date()).toISOString(), profile: r.profile || null, records: (Array.isArray(r.records) ? r.records : []).map((g) => ({ date: g.date, entries: g.entries })), scope: "仅当前使用空间的档案及食物记录；不含备注、照片、附件和聊天" }, c = URL.createObjectURL(new Blob([JSON.stringify(m, null, 2)], { type: "application/json" })), v = document.createElement("a");
@@ -5548,92 +5545,86 @@ const Kd = {
       }
     }
     return (r, m) => (s(), o(B, null, [
-      e("div", dm, [
+      e("div", um, [
         m[5] || (m[5] = e("div", null, [
-          e("p", { class: "vb-eyebrow" }, "项目介绍 · 使用边界 · 隐私说明"),
           e("h1", null, "关于维衡 AI"),
           e("p", null, "维衡 AI：面向全年龄段的饮食记录与营养分析工具，帮助用户计算能量、宏量营养素、维生素和矿物质摄入，了解饮食结构，并安排下一餐。")
         ], -1)),
-        e("span", cm, [
+        e("span", dm, [
           m[4] || (m[4] = e("span", { class: "vb-status-dot" }, null, -1)),
           N(a(b(_e) ? "账号保存 · AI 按需联网" : "游客本地保存 · AI 按需联网"), 1)
         ])
       ]),
-      e("section", vm, [
+      e("section", cm, [
         m[6] || (m[6] = e("div", { class: "vb-submission-section-heading vb-about-section-heading" }, [
           e("div", null, [
-            e("p", { class: "vb-eyebrow" }, "作品说明"),
             e("h2", { id: "about-project-heading" }, "从食物证据到日常建议")
-          ]),
-          e("span", null, "功能流程与实现依据")
+          ])
         ], -1)),
-        U(em, {
+        j(Zv, {
           embedded: "",
           onNavigate: m[0] || (m[0] = (c) => r.$emit("navigate", c))
         })
       ]),
-      U(um),
-      e("section", mm, [
+      j(rm),
+      e("section", vm, [
         m[7] || (m[7] = e("div", { class: "vb-submission-section-heading vb-about-section-heading" }, [
           e("div", null, [
-            e("p", { class: "vb-eyebrow" }, "安全中心"),
             e("h2", { id: "about-safety-heading" }, "使用边界与隐私")
-          ]),
-          e("span", null, "把营养信息作为参考")
+          ])
         ], -1)),
-        U(Pv, {
+        j(Pv, {
           flags: t.flags,
           embedded: ""
         }, null, 8, ["flags"])
       ]),
-      e("section", pm, [
+      e("section", mm, [
         e("div", null, [
-          m[8] || (m[8] = e("p", { class: "vb-eyebrow" }, "当前使用空间的数据管理", -1)),
-          m[9] || (m[9] = e("h2", { id: "about-reset-heading" }, "导出、清除缓存与数据", -1)),
+          m[8] || (m[8] = e("h2", { id: "about-reset-heading" }, "导出、清除缓存与数据", -1)),
           e("p", null, a(b(_e) ? "导出当前账号空间的档案与食物记录，不包含备注、照片、附件和聊天。档案、食物记录、草稿与膳食方案同步到本地网站服务端；文字聊天也按账号同步；照片附件文件和分析报告仍保存在当前浏览器。" : "导出当前游客空间的档案与食物记录，不包含备注、照片、附件和聊天。游客数据保存在当前浏览器，不会自动同步到其他设备。"), 1),
           e("button", {
             class: "vb-text-button",
             onClick: i
           }, "导出档案与食物记录（JSON）"),
-          m[10] || (m[10] = e("p", { class: "vb-section-note" }, "重置会删除当前使用空间的档案、记录、草稿、聊天、照片、报告及设置。已登录时同时清除当前账号服务端数据；共用同一游客空间的使用者都会受影响，其他账号空间不清除。", -1)),
-          d.value ? (s(), o("p", bm, a(d.value), 1)) : I("", !0)
+          m[9] || (m[9] = e("p", { class: "vb-section-note" }, "重置会删除当前使用空间的档案、记录、草稿、聊天、照片、报告及设置。已登录时同时清除当前账号服务端数据；共用同一游客空间的使用者都会受影响，其他账号空间不清除。", -1)),
+          d.value ? (s(), o("p", pm, a(d.value), 1)) : I("", !0)
         ]),
         e("button", {
           class: "vb-button vb-button-quiet vb-reset-button",
           onClick: m[1] || (m[1] = (c) => l.value = !0)
         }, "清空数据并重置")
       ]),
-      l.value ? (s(), ve(lt, {
+      l.value ? (s(), ve(at, {
         key: 0,
         title: b(_e) ? "确认清空当前账号数据？" : "确认清空当前游客数据？",
         onClose: m[3] || (m[3] = (c) => !n.value && (l.value = !1))
       }, {
-        default: ot(() => [
+        default: lt(() => [
           e("p", null, "身体档案、饮食记录、草稿、聊天、照片与附件、AI 报告及偏好设置都会被删除，无法撤销。" + a(b(_e) ? "同时会删除此账号保存在本地网站服务端的档案、饮食记录、草稿与膳食方案。" : "") + "重置后需要重新建立档案。", 1),
-          m[11] || (m[11] = e("p", null, "仅清理当前浏览器当前使用空间；共用同一访客空间的使用者都会受影响。其他账号空间不清除，同一空间的其他页面也会刷新。", -1)),
-          d.value ? (s(), o("p", fm, a(d.value), 1)) : I("", !0),
-          e("div", gm, [
+          m[10] || (m[10] = e("p", null, "仅清理当前浏览器当前使用空间；共用同一访客空间的使用者都会受影响。其他账号空间不清除，同一空间的其他页面也会刷新。", -1)),
+          d.value ? (s(), o("p", bm, a(d.value), 1)) : I("", !0),
+          e("div", fm, [
             e("button", {
               class: "vb-button vb-button-quiet",
               disabled: n.value,
               onClick: m[2] || (m[2] = (c) => l.value = !1)
-            }, "取消", 8, ym),
+            }, "取消", 8, gm),
             e("button", {
               class: "vb-button vb-button-primary",
               disabled: n.value,
               onClick: u
-            }, a(n.value ? "正在清理…" : "确认清空并重置"), 9, hm)
+            }, a(n.value ? "正在清理…" : "确认清空并重置"), 9, ym)
           ])
         ]),
         _: 1
       }, 8, ["title"])) : I("", !0)
     ], 64));
   }
-}), wm = ["data-theme"], $m = ["inert"], _m = { class: "vb-main" }, Cm = { class: "vb-topbar" }, Am = { class: "vb-breadcrumb" }, Im = { class: "vb-topbar-actions" }, Sm = { class: "vb-local-chip" }, xm = ["aria-label"], Em = {
+}), km = ["data-theme"], wm = ["inert"], $m = { class: "vb-main" }, _m = { class: "vb-topbar" }, Am = { class: "vb-breadcrumb" }, Cm = { class: "vb-topbar-actions" }, Im = { class: "vb-local-chip" }, Sm = ["aria-label"], xm = {
   key: 0,
   class: "vb-storage-error",
   role: "alert"
-}, Um = { class: "vb-footer" }, jm = {
+}, Em = { class: "vb-footer" }, jm = {
   key: 4,
   class: "vb-toast",
   role: "status"
@@ -5641,11 +5632,11 @@ const Kd = {
   __name: "App",
   props: { initialPage: { type: String, default: "overview" }, initialEditor: Boolean },
   setup(t) {
-    const { state: l, theme: n, nutrition: d, records: i, storageError: u, updateProfile: r, saveRecord: m, clearDraftAfterSave: c, addToDraft: v, addPlanToDraft: g, toggleHabit: $ } = Jt(), { toggleTheme: y } = vs(n), { reports: p, reportStorageError: h, loadReports: w, latestReport: _, isStale: A, generateReport: R } = Kt();
+    const { state: l, theme: n, nutrition: d, records: i, storageError: u, updateProfile: r, saveRecord: m, clearDraftAfterSave: c, addToDraft: v, addPlanToDraft: g, toggleHabit: $ } = Ht(), { toggleTheme: y } = vs(n), { reports: p, reportStorageError: h, loadReports: w, latestReport: _, isStale: C, generateReport: R } = Wt();
     w();
-    const D = t, M = H(() => l.flags.includes("孕期或哺乳期") ? { ...l.profile, physiologicalStage: "special" } : l.profile || {}), V = T(D.initialPage), W = T(D.initialEditor), z = T(!1), G = T(null), Y = T(null), ue = T(null), se = T(ke()), ye = T(!1), be = T(""), ge = T(""), K = T(""), F = H(() => p.value.find((ee) => ee.id === ge.value) || _(be.value)), P = H(() => l.records.find((ee) => ee.date === be.value)), q = { overview: "概览", dietAssistant: "维衡AI助手", assessment: "营养分析", mealplan: "膳食方案", diary: "饮食记录", food: "食物浏览", profile: "个人档案", about: "关于" }, C = H(() => _e.value ? pt.value === "error" ? "账号同步暂不可用 · 本机副本保留" : pt.value === "syncing" || pt.value === "pending" ? "账号数据同步中…" : "邮箱账号 · 服务器保存" : "游客本地保存 · AI 按需联网");
+    const D = t, T = H(() => l.flags.includes("孕期或哺乳期") ? { ...l.profile, physiologicalStage: "special" } : l.profile || {}), V = M(D.initialPage), W = M(D.initialEditor), z = M(!1), G = M(null), Y = M(null), ue = M(null), se = M(ke()), ye = M(!1), be = M(""), ge = M(""), K = M(""), F = H(() => p.value.find((ee) => ee.id === ge.value) || _(be.value)), P = H(() => l.records.find((ee) => ee.date === be.value)), q = { overview: "概览", dietAssistant: "维衡AI助手", assessment: "营养分析", mealplan: "膳食方案", diary: "饮食记录", food: "食物浏览", profile: "个人档案", about: "关于" }, A = H(() => _e.value ? bt.value === "error" ? "账号同步暂不可用 · 本机副本保留" : bt.value === "syncing" || bt.value === "pending" ? "账号数据同步中…" : "邮箱账号 · 服务器保存" : "游客本地保存 · AI 按需联网");
     let f, k = 0;
-    function j(ee, L = null) {
+    function U(ee, L = null) {
       clearTimeout(f), G.value = { message: ee, undo: L }, f = setTimeout(() => G.value = null, 7e3);
     }
     function oe(ee) {
@@ -5654,77 +5645,77 @@ const Kd = {
     function ae() {
       W.value = !1, z.value = !0;
     }
-    function It() {
+    function St() {
       z.value = !1;
     }
-    function at(ee) {
+    function it(ee) {
       const L = r(ee);
       if (L) {
-        j(L);
+        U(L);
         return;
       }
-      W.value = !1, oe("overview"), j(_e.value ? "身体档案已保存，账号同步状态可在账号面板查看" : "身体档案已保存到当前浏览器");
+      W.value = !1, oe("overview"), U(_e.value ? "身体档案已保存，账号同步状态可在账号面板查看" : "身体档案已保存到当前浏览器");
     }
-    async function it(ee, L = !1) {
+    async function rt(ee, L = !1) {
       const Z = ++k;
       K.value = "", be.value = ee.date, ge.value = "";
       try {
-        const he = R(ee, M.value, { force: L });
+        const he = R(ee, T.value, { force: L });
         await xe();
-        const Ge = await he;
-        Z === k && be.value === ee.date && (ge.value = Ge?.id || "");
+        const Je = await he;
+        Z === k && be.value === ee.date && (ge.value = Je?.id || "");
       } catch (he) {
         Z === k && (K.value = he.message || "分析暂时不可用，请重试。");
       }
     }
-    function rt(ee) {
+    function ut(ee) {
       if (!ye.value) {
         ye.value = !0;
         try {
           const L = m(ee);
           if (!L.ok) {
-            j(L.error);
+            U(L.error);
             return;
           }
-          c(L.record.date, L.record), j("饮食记录已保存，正在分析"), it(L.record);
+          c(L.record.date, L.record), U("饮食记录已保存，正在分析"), rt(L.record);
         } finally {
           ye.value = !1;
         }
       }
     }
-    function Ke(ee, L) {
+    function We(ee, L) {
       L ? p.value.find((he) => he.id === L) : _(ee), be.value = ee, ge.value = L || "", K.value = "", l.records.find((he) => he.date === ee);
     }
-    function We(ee = be.value) {
+    function Ye(ee = be.value) {
       const L = l.records.find((Z) => Z.date === ee);
-      L && it(L, !0);
+      L && rt(L, !0);
     }
-    function Te(ee) {
+    function Me(ee) {
       if (!Fe(ee.date) || ee.date > ke() || Number(ee.grams) < 0.1 || Number(ee.grams) > 5e3) {
-        j("请核对日期与食用克数。");
+        U("请核对日期与食用克数。");
         return;
       }
       const L = v(ee);
-      se.value = ee.date, ue.value = null, oe("diary"), j(L ? "已加入“本次选择”，核对后保存这一天。" : "已加入当前页面，但本地存储失败，请保留此页。");
+      se.value = ee.date, ue.value = null, oe("diary"), U(L ? "已加入“本次选择”，核对后保存这一天。" : "已加入当前页面，但本地存储失败，请保留此页。");
     }
-    async function Ye(ee) {
+    async function Xe(ee) {
       const L = $e();
       try {
         if (await qe(ee.items.map((he) => he.foodId)), L !== $e()) return;
       } catch (he) {
-        ee.onResult?.({ ok: !1, error: he.message }), j(he.message);
+        ee.onResult?.({ ok: !1, error: he.message }), U(he.message);
         return;
       }
       const Z = g(ee);
       if (ee.onResult?.(Z), !Z.ok) {
-        j(Z.error);
+        U(Z.error);
         return;
       }
-      se.value = ee.date, oe("diary"), j(Z.duplicate ? "该方案已加入草稿，不会重复添加。" : "已加入本次选择；实际吃过后核对份量并保存当天记录。");
+      se.value = ee.date, oe("diary"), U(Z.duplicate ? "该方案已加入草稿，不会重复添加。" : "已加入本次选择；实际吃过后核对份量并保存当天记录。");
     }
-    function Xe(ee) {
+    function Qe(ee) {
       const L = l.records.find((Z) => Z.date === ee);
-      L && (l.records = l.records.filter((Z) => Z.date !== ee), j("这条饮食记录已删除，报告快照仍保留。", () => {
+      L && (l.records = l.records.filter((Z) => Z.date !== ee), U("这条饮食记录已删除，报告快照仍保留。", () => {
         m(L), G.value = null;
       }));
     }
@@ -5735,21 +5726,21 @@ const Kd = {
       e("div", {
         inert: W.value || ue.value || be.value || void 0
       }, [
-        U(ms, {
+        j(ms, {
           active: V.value,
           onNavigate: oe
         }, null, 8, ["active"]),
-        e("div", _m, [
-          e("header", Cm, [
+        e("div", $m, [
+          e("header", _m, [
             e("span", Am, [
               L[15] || (L[15] = e("span", null, "营养工作台", -1)),
               L[16] || (L[16] = e("i", null, "/", -1)),
               N(a(q[V.value]), 1)
             ]),
-            e("div", Im, [
-              e("span", Sm, [
+            e("div", Cm, [
+              e("span", Im, [
                 L[17] || (L[17] = e("i", { class: "vb-status-dot" }, null, -1)),
-                N(a(C.value), 1)
+                N(a(A.value), 1)
               ]),
               e("button", {
                 class: "vb-account-trigger",
@@ -5760,17 +5751,17 @@ const Kd = {
                 "aria-label": b(n) === "light" ? "切换至深色模式" : "切换至浅色模式",
                 onClick: L[0] || (L[0] = (...Z) => b(y) && b(y)(...Z))
               }, [
-                U(O, {
+                j(O, {
                   name: b(n) === "light" ? "moon" : "sun",
                   size: 19
                 }, null, 8, ["name"])
-              ], 8, xm),
+              ], 8, Sm),
               e("button", {
                 class: "vb-avatar",
                 "aria-label": "查看个人档案",
                 onClick: L[1] || (L[1] = (Z) => oe("profile"))
               }, [
-                U(O, {
+                j(O, {
                   name: "person",
                   size: 18
                 })
@@ -5783,19 +5774,19 @@ const Kd = {
             class: "vb-content",
             tabindex: "-1"
           }, [
-            b(u) || b(h) ? (s(), o("p", Em, a(b(u) || b(h)), 1)) : I("", !0),
+            b(u) || b(h) ? (s(), o("p", xm, a(b(u) || b(h)), 1)) : I("", !0),
             (s(), o(B, { key: 1 }, [
-              te(U(gi, {
+              te(j(gi, {
                 active: V.value === "dietAssistant",
                 records: b(l).records,
                 targets: b(d),
-                profile: M.value
+                profile: T.value
               }, null, 8, ["active", "records", "targets", "profile"]), [
-                [Xn, V.value === "dietAssistant"]
+                [Qn, V.value === "dietAssistant"]
               ]),
               V.value === "overview" ? (s(), ve(ps, {
                 key: 0,
-                profile: M.value,
+                profile: T.value,
                 nutrition: b(d),
                 "record-count": b(i).length,
                 records: b(i),
@@ -5808,22 +5799,22 @@ const Kd = {
                 habits: b(l).habits,
                 flags: b(l).flags,
                 reports: b(p),
-                profile: M.value,
+                profile: T.value,
                 onNavigate: oe,
                 onToggleHabit: b($),
-                onOpenReport: Ke,
-                onRetryReport: We
-              }, null, 8, ["records", "habits", "flags", "reports", "profile", "onToggleHabit"])) : V.value === "diary" ? (s(), ve(Tu, {
+                onOpenReport: We,
+                onRetryReport: Ye
+              }, null, 8, ["records", "habits", "flags", "reports", "profile", "onToggleHabit"])) : V.value === "diary" ? (s(), ve(Mu, {
                 key: 2,
                 records: b(i),
                 reports: b(p),
-                profile: M.value,
+                profile: T.value,
                 nutrition: b(d),
                 "initial-date": se.value,
                 saving: ye.value,
-                onSave: rt,
-                onRemove: Xe,
-                onAnalysis: Ke,
+                onSave: ut,
+                onRemove: Qe,
+                onAnalysis: We,
                 onBrowse: L[3] || (L[3] = (Z) => oe("food")),
                 onDetail: L[4] || (L[4] = (Z) => ue.value = b(le)[Z])
               }, null, 8, ["records", "reports", "profile", "nutrition", "initial-date", "saving"])) : V.value === "food" ? (s(), ve(Vd, {
@@ -5834,66 +5825,66 @@ const Kd = {
                 nutrition: b(d),
                 preferences: b(l).preferences,
                 flags: b(l).flags,
-                profile: M.value,
+                profile: T.value,
                 records: b(l).records,
                 onNavigate: oe,
-                onAddPlan: Ye
+                onAddPlan: Xe
               }, null, 8, ["nutrition", "preferences", "flags", "profile", "records"])) : V.value === "profile" ? (s(), ve(Sv, {
                 key: 5,
-                profile: M.value,
+                profile: T.value,
                 nutrition: b(d),
                 flags: b(l).flags,
                 "onUpdate:flags": L[6] || (L[6] = (Z) => b(l).flags = Z),
                 preferences: b(l).preferences,
                 "onUpdate:preferences": L[7] || (L[7] = (Z) => b(l).preferences = Z),
                 onEdit: L[8] || (L[8] = (Z) => W.value = !0)
-              }, null, 8, ["profile", "nutrition", "flags", "preferences"])) : V.value === "about" ? (s(), ve(km, {
+              }, null, 8, ["profile", "nutrition", "flags", "preferences"])) : V.value === "about" ? (s(), ve(hm, {
                 key: 6,
                 flags: b(l).flags,
                 onNavigate: oe
               }, null, 8, ["flags"])) : I("", !0)
             ], 64)),
-            e("footer", Um, [
-              U(O, {
+            e("footer", Em, [
+              j(O, {
                 name: "leaf",
                 size: 14
               }),
               L[18] || (L[18] = N("维衡 AI · 把健康，放进每一餐", -1)),
-              L[19] || (L[19] = e("span", null, "营养信息仅供一般参考", -1))
+              L[19] || (L[19] = e("span", null, "营养信息仅供一般参考 · © 2026 维衡 AI 版权所有", -1))
             ])
           ], 512)
         ])
-      ], 8, $m),
+      ], 8, wm),
       W.value ? (s(), ve(uo, {
         key: 0,
         profile: b(l).profile,
-        onComplete: at,
+        onComplete: it,
         onClose: L[9] || (L[9] = (Z) => W.value = !1),
         onLogin: ae
       }, null, 8, ["profile"])) : I("", !0),
       z.value ? (s(), ve(bs, {
         key: 1,
-        onClose: It
+        onClose: St
       })) : I("", !0),
       ue.value ? (s(), ve(ll, {
         key: 2,
         "food-id": ue.value.key,
         onClose: L[10] || (L[10] = (Z) => ue.value = null),
-        onAdd: Te
+        onAdd: Me
       }, null, 8, ["food-id"])) : I("", !0),
       be.value ? (s(), ve(zl, {
         key: 3,
         report: F.value,
         record: P.value,
-        stale: F.value ? b(A)(F.value, P.value, M.value) : !1,
+        stale: F.value ? b(C)(F.value, P.value, T.value) : !1,
         error: K.value,
         onClose: L[11] || (L[11] = (Z) => {
           be.value = "", ge.value = "";
         }),
-        onRetry: L[12] || (L[12] = (Z) => We())
+        onRetry: L[12] || (L[12] = (Z) => Ye())
       }, null, 8, ["report", "record", "stale", "error"])) : I("", !0),
       G.value ? (s(), o("div", jm, [
-        U(O, {
+        j(O, {
           name: "check",
           size: 17
         }),
@@ -5907,13 +5898,13 @@ const Kd = {
           "aria-label": "关闭通知",
           onClick: L[14] || (L[14] = (Z) => G.value = null)
         }, [
-          U(O, {
+          j(O, {
             name: "close",
             size: 15
           })
         ])
       ])) : I("", !0)
-    ], 10, wm));
+    ], 10, km));
   }
 };
 export {

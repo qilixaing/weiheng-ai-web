@@ -8,6 +8,7 @@ import { applyAiEstimatesToEntries } from '../lib/nutritionSnapshot.js';
 import { FOOD_BY_ID } from '../data/catalogue.js';
 import {entryNutrient} from '../lib/nutritionSnapshot.js';
 import {estimateMidpoint,estimatePoint} from '../lib/nutritionEstimate.js';
+import { aiDisplayName } from '../lib/aiBranding.js';
 
 const props = defineProps({ report: Object, record: Object, stale: Boolean, error: String });
 defineEmits(['close', 'retry']);
@@ -51,7 +52,7 @@ const estimateAssumption = (food) => {
       <span class="vb-pill">{{ report?.status === 'complete' ? '分析完成' : report?.status === 'pending' ? '分析中' : '待完成' }}</span>
     </div>
     <p class="vb-data-note">饮食记录已保存；AI分析单独进行，不影响继续记账。</p>
-    <section v-if="!report && !error"><p>分析时向DeepSeek发送当天食物、份量、营养汇总和必要的身体档案，不发送备注和照片。</p><button type="button" class="vb-button vb-button-primary" :disabled="!record" @click="$emit('retry')">开始AI分析</button></section>
+    <section v-if="!report && !error"><p>分析时向维衡 AI发送当天食物、份量、营养汇总和必要的身体档案，不发送备注和照片。</p><button type="button" class="vb-button vb-button-primary" :disabled="!record" @click="$emit('retry')">开始AI分析</button></section>
     <p v-if="stale" class="vb-inline-warning">记录已更新，当前结果对应旧记录。<button v-if="report?.status!=='pending'" class="vb-text-button" @click="$emit('retry')">重新分析</button></p>
     <p v-if="!record" class="vb-inline-warning">对应的饮食记录已删除，仍可查看报告快照；恢复记录后可重新分析。</p>
 
@@ -59,7 +60,7 @@ const estimateAssumption = (food) => {
       <span class="vb-loading-ring" />
       <div>
         <strong>正在分析饮食搭配与营养目标…</strong>
-        <small>{{ missingFoodCount ? '同时自动估算 ' + missingFoodCount + ' 项食物的缺失指标。' : '程序已计算营养汇总，DeepSeek 正在生成解释与建议。' }}</small>
+        <small>{{ missingFoodCount ? '同时自动估算 ' + missingFoodCount + ' 项食物的缺失指标。' : '程序已计算营养汇总，维衡 AI 正在生成解释与建议。' }}</small>
       </div>
     </div>
     <div v-if="error || ['failed', 'interrupted'].includes(report?.status)" class="vb-report-error" role="alert">
@@ -126,7 +127,7 @@ const estimateAssumption = (food) => {
     </div>
     <details v-if="report" class="vb-intake-more"><summary>查看分析信息</summary><div class="vb-report-meta">
       <span>生成时间：{{ time(report.generatedAt) || '尚未生成' }}</span>
-      <span v-if="report.model">模型：{{ report.model }}</span>
+      <span v-if="report.model">由 {{ aiDisplayName(report.model) }} 生成</span>
       <span>数据版本：{{ report.dataVersion }}</span>
       <span>食物库：{{ report.snapshot?.intake?.dataVersion }}</span>
       <small>报告、照片保存在本机浏览器。清理站点数据后无法恢复。</small>

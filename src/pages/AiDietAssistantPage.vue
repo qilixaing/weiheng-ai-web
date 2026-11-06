@@ -6,6 +6,7 @@ import ChatMessageExport from '../components/ChatMessageExport.vue';
 import {useChatScroll} from '../composables/useChatScroll';
 import ModalShell from '../components/ModalShell.vue';
 import { aiStream } from '../lib/aiClient.js';
+import { aiDisplayName } from '../lib/aiBranding.js';
 import { appendPendingAssistantMessage } from '../lib/aiChatState.js';
 import {requestedDocumentFormat} from '../lib/chatDocumentIntent.js';
 import {selectChatThreads} from '../lib/chatSelection.js';
@@ -582,7 +583,7 @@ function clearLocalHistory(): void {
             <p v-else-if="message.role!=='assistant'||!requestedDocumentFormat(exportQuestion(message.id))" class="vb-simple-text">{{ message.content }}</p>
             <ChatMessageExport v-if="message.role==='assistant'&&message.status==='complete'&&message.content.trim()&&requestedDocumentFormat(exportQuestion(message.id))" :content="message.content" :question="exportQuestion(message.id)" :auto="currentMessages.at(-1)?.id===message.id" @retry="retry(message.id)" />
             <small v-if="message.status === 'complete'" class="vb-simple-message-meta">
-              {{ formatMessageTime(message.createdAt) }}<template v-if="message.role === 'assistant'"> · {{ message.model || 'DeepSeek' }}</template>
+              {{ formatMessageTime(message.createdAt) }}<template v-if="message.role === 'assistant'"> · {{ aiDisplayName(message.model) }}</template>
             </small>
           </div>
         </article>
@@ -630,8 +631,8 @@ function clearLocalHistory(): void {
             <summary><AppIcon name="lock" :size="12" />隐私与使用说明</summary>
             <div class="vb-simple-privacy-panel">
               <p>附件支持 JPG、PNG、WebP、PDF、DOCX 和常见文本文件，每条消息最多 3 个。照片每张最多 8 MB，文件每个最多 10 MB、24,000 字；PDF 最多 40 页，仅提取可读文字，扫描件请改发截图。</p>
-              <p>选择附件时仅在本地读取；点击发送后，所选照片的压缩图、文件提取的文字及问题会发送给 DeepSeek，并在后续相关对话中作为上下文。PDF、Word 的排版与内嵌图片不发送。登录后的文字对话同步至网站服务器，游客对话和附件文件保存在当前浏览器。</p>
-              <p>点击发送时，会携带你当前浏览器中最新保存的身体档案（性别、年龄、身高、体重、活动水平），以及所选日期的食物名称、克数、餐次、程序计算的营养汇总与每日目标，供 DeepSeek 回答相关问题。修改档案后，下次提问会使用新数据；未填写的档案不会被猜测或补全。饮食记录中的照片、备注、健康标记和偏好备注不会自动发送。</p>
+              <p>选择附件时仅在本地读取；点击发送后，所选照片的压缩图、文件提取的文字及问题会发送给维衡 AI，并在后续相关对话中作为上下文。PDF、Word 的排版与内嵌图片不发送。登录后的文字对话同步至网站服务器，游客对话和附件文件保存在当前浏览器。</p>
+              <p>点击发送时，会携带你当前浏览器中最新保存的身体档案（性别、年龄、身高、体重、活动水平），以及所选日期的食物名称、克数、餐次、程序计算的营养汇总与每日目标，供 维衡 AI 回答相关问题。修改档案后，下次提问会使用新数据；未填写的档案不会被猜测或补全。饮食记录中的照片、备注、健康标记和偏好备注不会自动发送。</p>
               <p>跨对话记忆开启时，发送新问题会额外携带最多最近 50 轮完整的纯文字对话作为背景（不含附件）。为控制请求长度，每条记忆最多保留 220 字。可在“更多”中关闭；多人共用此浏览器时建议关闭。当前问题和最新身体档案优先于旧对话。</p>
               <p>饮食相关回复仅供一般参考；引用营养数据时会区分程序计算值与未知项，不把缺失数据当作 0。</p>
             </div>
