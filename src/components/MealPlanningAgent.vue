@@ -7,7 +7,7 @@ import {foodTitle,foodState} from '../lib/foodPresentation.js';
 import SourcesNote from './SourcesNote.vue';
 import {useMealAgent} from '../composables/useMealAgent';
 import {calculateIntake,portion,recordEntries,todayDate} from '../lib/foodNutrition.js';
-import {FOOD_BY_ID,searchFoods,ALL_FOODS} from '../data/catalogue.js';
+import {FOOD_BY_ID,searchFoods,ALL_FOODS,ensureFoodDetails} from '../data/catalogue.js';
 import {normalizeMealConditions,calculateMealCost,foodConflicts,allowedMealFood} from '../lib/mealConditions.js';
 const props=defineProps({profile:Object,nutrition:Object,preferences:String,flags:Array,records:Array});
 const emit=defineEmits(['confirm']);
@@ -27,7 +27,7 @@ watch([goal,date,meal,conditions,shareHistory,shareSafety,()=>props.profile,()=>
 watch(()=>props.preferences,value=>conditions.preferences=value||'');
 function addCandidate(){const food=FOOD_BY_ID[candidateId.value];inputError.value='';if(!food)return;if(conditions.availableFoods.some(x=>x.foodId===food.key)){inputError.value='该食物已在备选中，请直接修改份量。';return;}if(conditions.availableFoods.length>=12){inputError.value='最多加入12项备选食物。';return;}conditions.availableFoods.push({foodId:food.key,name:food.name,grams:100,price:''});candidateId.value='';candidateQuery.value='';}
 async function generate(){inputError.value='';confirmed.value=false;let normalized;
- try{normalized=normalizeMealConditions(conditions);const conflict=normalized.availableFoods.find(x=>foodConflicts(FOOD_BY_ID[x.foodId],normalized.avoids).length);if(conflict)throw Error('备选食物“'+conflict.name+'”命中回避项，请先移除或修改条件。');}
+ try{await ensureFoodDetails(conditions.availableFoods.map(x=>x.foodId));normalized=normalizeMealConditions(conditions);const conflict=normalized.availableFoods.find(x=>foodConflicts(FOOD_BY_ID[x.foodId],normalized.avoids).length);if(conflict)throw Error('备选食物“'+conflict.name+'”命中回避项，请先移除或修改条件。');}
  catch(e){inputError.value=e.message;return;}
  await run(props.profile,shareSafety.value?{safetyFlags:(props.flags||[]).filter(x=>['正在使用药物','孕期或哺乳期','有需要管理的健康状况','正在使用营养补充剂'].includes(x))}:undefined,{conditions:normalized,...(shareHistory.value?{recordContext:{date:date.value,entries:history.value.map(x=>({foodId:x.foodId,name:x.name,grams:x.grams,meal:x.meal,referenceConfirmed:x.referenceConfirmed}))}}:{})});
 }
@@ -36,7 +36,7 @@ function updateGrams(index,value){if(!ready.value)return;ready.value.plan.items[
 const replacements=computed(()=>{
  let c;try{c=normalizeMealConditions(conditions);}catch{return [];}
  const options=c.availableFoods.length&&c.onlyAvailable?c.availableFoods.map(x=>FOOD_BY_ID[x.foodId]):ALL_FOODS;
- return options.filter(f=>f&&f.source&&allowedMealFood(f,c)&&!ready.value?.plan.items.some(i=>i.foodId===f.key)).slice(0,60);
+ return options.filter(f=>f&&!f.__summary&&f.source&&allowedMealFood(f,c)&&!ready.value?.plan.items.some(i=>i.foodId===f.key)).slice(0,60);
 });
 function replaceFood(index){const food=FOOD_BY_ID[replacementId.value];if(!food||!replacements.value.some(f=>f.key===food.key))return;
  const old=ready.value.plan.items[index];ready.value.plan.items[index]={...old,foodId:food.key,name:food.name,portion:portion(food,old.grams),reason:'用户从符合当前回避条件的目录中替换；份量沿用，请核对。',sourceName:food.source?.name||'',source:food.source?.id||'',missing:[]};confirmed.value=false;replacing.value=-1;replacementId.value='';

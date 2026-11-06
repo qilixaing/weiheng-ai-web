@@ -7,7 +7,6 @@ import { aiRequest } from '../lib/aiClient.js';
 import FoodCard from '../components/FoodCard.vue';
 import AppIcon from '../components/AppIcon.vue';
 import imageCredits from '../data/foodImageSources.json' with {type:'json'};
-import {FOOD_PHOTO_CREDITS} from '../data/foodPhotos.js';
 defineEmits(['detail']);
 const query=ref(''),submitted=ref(''),category=ref(''),subcategory=ref(''),sort=ref('relevance'),page=ref(1),suggestionsOpen=ref(false);
 const comparison=ref([]),compareMessage=ref(''),askOpen=ref(false),question=ref(''),asking=ref(false),answer=ref(null),askError=ref('');

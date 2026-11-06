@@ -2,7 +2,7 @@
 import {ref,computed,watch} from 'vue';
 import {foodTitle,foodState} from '../lib/foodPresentation.js';
 import {sampleChoices,sampleLabel} from '../lib/foodSamples.js';
-import {FOOD_BY_ID} from '../data/catalogue.js';
+import {FOOD_BY_ID,ensureFoodDetails} from '../data/catalogue.js';
 import {calculateIntake,formatTotal,MACROS,NUTRIENTS,MEALS,formatNutrient,todayDate} from '../lib/foodNutrition.js';
 import {createNutritionSnapshot} from '../lib/nutritionSnapshot.js';
 import {useFoodPhoto} from '../composables/useFoodPhoto.js';
@@ -15,20 +15,24 @@ const props=defineProps({foodId:String});const emit=defineEmits(['close','add'])
 const selectedId=ref(props.foodId),grams=ref(100),date=ref(todayDate()),meal=ref('unspecified'),aiEstimate=ref(null);
 watch(()=>props.foodId,id=>{selectedId.value=id;});watch(selectedId,()=>{aiEstimate.value=null;});
 const food=computed(()=>FOOD_BY_ID[selectedId.value]);
+const detailsError=ref('');
+async function loadDetails(){const id=selectedId.value;detailsError.value='';try{await ensureFoodDetails(id);}catch(e){if(selectedId.value===id)detailsError.value=e.message;}}
+watch(selectedId,loadDetails,{immediate:true});
 const choices=computed(()=>sampleChoices(FOOD_BY_ID[props.foodId]));
 const needsEstimate=computed(()=>MACROS.some(m=>typeof food.value?.nutrients?.[m.id]!=='number'));
-const snapshot=computed(()=>createNutritionSnapshot(food.value,needsEstimate.value?aiEstimate.value:null));
+const snapshot=computed(()=>food.value?.__summary?null:createNutritionSnapshot(food.value,needsEstimate.value?aiEstimate.value:null));
 const totals=computed(()=>calculateIntake([{foodId:food.value.key,grams:Number(grams.value),nutritionSnapshot:snapshot.value}]).totals);
-const valid=computed(()=>Number(grams.value)>=0.1&&Number(grams.value)<=5000&&date.value&&date.value<=todayDate());
+const valid=computed(()=>!food.value?.__summary&&Number(grams.value)>=0.1&&Number(grams.value)<=5000&&date.value&&date.value<=todayDate());
 const {photo,loading:photoLoading,failed:photoFailed}=useFoodPhoto(()=>food.value);
-const credit=computed(()=>photo.value?.imageCredit||photo.value);
+const credit=computed(()=>food.value?.imageCredit||photo.value?.imageCredit||photo.value);
 function add(){if(valid.value)emit('add',{foodId:food.value.key,grams:Number(grams.value),date:date.value,meal:meal.value,nutritionSnapshot:snapshot.value});}
 </script>
 <template><ModalShell v-if="food" title="食物详情" wide @close="$emit('close')">
  <div class="vb-food-detail-top"><figure><FoodImage :food="food" :photo="photo" :loading="photoLoading" :failed="photoFailed" :label="false" :lazy="false" class="vb-food-detail-image" /></figure><div><p class="vb-eyebrow">{{ food.categoryName }}</p><h1>{{ sampleLabel(food.key)||foodTitle(food) }}</h1><p class="vb-food-state">{{ foodState(food) }}</p><span class="vb-pill">{{ food.source?'数据库':aiEstimate?'AI估算':'数据不完整' }}</span>
  <label v-if="choices.length" class="vb-field">选择营养样本<select v-model="selectedId" aria-label="选择营养样本"><option v-if="!choices.some(c=>c.id===props.foodId)" :value="props.foodId">当前食物 · {{ FOOD_BY_ID[props.foodId]?.source?'数据库':'通用估算' }}</option><option v-for="c in choices" :key="c.id" :value="c.id">{{ c.label }}</option></select><small>按实际品种和做法选择，不同样本分别计算。</small></label>
  </div></div>
- <details v-if="needsEstimate" class="vb-intake-more"><summary>查看估算依据与调整</summary><FoodNutritionEstimate :food="food" @resolved="aiEstimate=$event" /></details>
+ <details v-if="needsEstimate&&!food.__summary" class="vb-intake-more"><summary>查看估算依据与调整</summary><FoodNutritionEstimate :food="food" @resolved="aiEstimate=$event" /></details>
+ <p v-if="detailsError" class="vb-feature-error">{{detailsError}} <button type="button" class="vb-text-button" @click="loadDetails">重试</button></p>
  <form class="vb-food-portion-form" @submit.prevent="add"><PortionPicker :food="food" @choose="grams=$event" /><div class="vb-portion-controls"><label>可食部重量<input v-model="grams" type="number" min="0.1" max="5000" step="0.1" aria-label="实际食用克数" /><small>克</small></label><label>记录日期<input v-model="date" type="date" :max="todayDate()" required /></label><label>餐次<select v-model="meal"><option v-for="[key,label] in MEALS" :key="key" :value="key">{{ label }}</option></select></label></div>
  <div class="vb-portion-macros"><div v-for="metric in MACROS" :key="metric.id"><span>{{ metric.id==='carbs'?'碳水':metric.name }}</span><strong>{{ formatTotal(totals[metric.id]) }} <small v-if="totals[metric.id].value!=null||totals[metric.id].range">{{ metric.unit }}</small></strong><small v-if="totals[metric.id].range">AI估算</small></div></div>
  <button class="vb-button vb-button-primary" type="submit" :disabled="!valid"><AppIcon name="plus" :size="16" />添加记录</button><small class="vb-data-note">加入本次选择，实际吃过后保存当天记录。</small></form>

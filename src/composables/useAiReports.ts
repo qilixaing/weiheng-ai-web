@@ -1,7 +1,7 @@
 import { ref, type Ref } from 'vue';
 import { localAll, localPut } from '../lib/localDatabase.js';
 import { aiRequest } from '../lib/aiClient.js';
-import { FOOD_BY_ID } from '../data/catalogue.js';
+import { FOOD_BY_ID, ensureFoodDetails } from '../data/catalogue.js';
 import {entryNutrient} from '../lib/nutritionSnapshot.js';
 import {currentActor} from '../lib/storageScope.js';
 import {
@@ -97,6 +97,8 @@ async function generateReport(
   { force = false }: GenerateReportOptions = {},
 ): Promise<AiNutritionReport | undefined> {
   const identity=currentActor();
+  await ensureFoodDetails(recordEntries(record).filter(e=>e.foodId&&!e.nutritionSnapshot).map(e=>String(e.foodId)));
+  if(currentActor()!==identity)return;
   await loadReports();
   if(currentActor()!==identity)return;
   const version = analysisVersion(record, profile);

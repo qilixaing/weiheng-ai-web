@@ -1,0 +1,11 @@
+// Shared ranking rules for the server catalogue and the progressive browser index.
+export function createCatalogueSearch(foods){
+const normalizeSearch=value=>String(value||'').toLowerCase().replace(/[\s\p{P}\p{S}]+/gu,'');
+const searchIndex=()=>foods.map(food=>({food,name:normalizeSearch(food.name),key:normalizeSearch(food.key),aliases:[...new Set((food.aliases||[]).map(normalizeSearch).filter(Boolean))],category:normalizeSearch(food.categoryName)}));
+function near(a,b){if(a.length<2||b.length<2||Math.abs(a.length-b.length)>1)return false;let edits=0,i=0,j=0;while(i<a.length&&j<b.length){if(a[i]===b[j]){i++;j++;continue;}if(++edits>1)return false;if(a.length>=b.length)i++;if(b.length>=a.length)j++;}return edits+(a.length-i)+(b.length-j)<=1;}
+function rankFoods(query,limit=foods.length){const q=normalizeSearch(query);if(!q)return[];const ranked=searchIndex().flatMap(({food,name,key,aliases,category})=>{let match,score;if(name===q){match='exact_name';score=0;}else if(aliases.includes(q)){match='exact_alias';score=1;}else if(key===q){match='exact_id';score=2;}else if(name.includes(q)){match='name_contains';score=3;}else if(aliases.some(alias=>alias.includes(q))){match='alias_contains';score=4;}else if(category.includes(q)){match='category';score=5;}else if([name,key,...aliases].some(term=>near(term,q))){match='fuzzy';score=6;}else return[];return[{food,score,match}];});const hasDirect=ranked.some(item=>item.score<6);return ranked.filter(item=>hasDirect?item.score<6:true).sort((a,b)=>a.score-b.score||Number(!a.food.source)-Number(!b.food.source)||Number(!!a.food.expanded)-Number(!!b.food.expanded)||a.food.name.localeCompare(b.food.name,'zh')).slice(0,Math.max(0,limit));}
+function searchFoods(query,limit=foods.length){return rankFoods(query,limit).map(item=>item.food);}
+function findMentionedFoods(question,limit=6){const q=normalizeSearch(question);if(!q)return[];return foods.map(food=>({food,length:Math.max(0,...[food.name,...(food.aliases||[])].map(normalizeSearch).filter(term=>term.length>=2&&q.includes(term)).map(term=>term.length))})).filter(item=>item.length).sort((a,b)=>b.length-a.length||Number(!a.food.source)-Number(!b.food.source)||a.food.name.localeCompare(b.food.name,'zh')).slice(0,Math.max(0,limit)).map(item=>item.food);}
+
+return {normalizeSearch,rankFoods,searchFoods,findMentionedFoods};
+}

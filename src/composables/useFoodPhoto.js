@@ -18,6 +18,6 @@ export function useFoodPhoto(foodSource) {
       if (id === requestId) loading.value = false;
     }
   }
-  watch(() => unref(typeof foodSource === 'function' ? foodSource() : foodSource)?.key, () => load(), {immediate: true});
+  watch(() => {const food=unref(typeof foodSource === 'function' ? foodSource() : foodSource);return [food?.key,food?.image];}, () => load(), {immediate: true});
   return {photo, loading, failed, retry: () => load(true)};
 }

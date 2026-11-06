@@ -18,7 +18,7 @@ for (const path of [source, target]) {
   if (pkg.name !== 'vitabalance-web') throw new Error('目标不是维衡 AI 项目：' + path);
 }
 const directories = ['.vscode', 'src', 'server', 'scripts', 'tests', 'docs', 'assets', 'content-dist'];
-const topFiles = ['package.json', 'package-lock.json', 'vite.config.js', 'tsconfig.json', 'foods.js', 'server.mjs', 'auth-store.mjs', 'agent-demo.js', 'README.md', 'VUE_CONTENT.md', 'site.webmanifest', '.gitignore'];
+const topFiles = ['package.json', 'package-lock.json', 'vite.config.js', 'tsconfig.json', 'foods.js', 'server.mjs', 'auth-store.mjs', 'agent-demo.js', 'README.md', 'VUE_CONTENT.md', 'site.webmanifest', '.gitignore', '.gitattributes'];
 const protectedCode = ['index.html', 'app.js', 'styles.css', 'ambient-background.js'];
 const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 async function maybeRead(path) { try { return await readFile(path); } catch (error) { if (error.code === 'ENOENT') return null; throw error; } }

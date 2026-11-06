@@ -1,10 +1,11 @@
 <script setup>
 import {ref,reactive,computed,watch,nextTick} from 'vue';
-import {FOOD_GROUPS,FOOD_BY_ID,searchFoods,GROUP_ICONS} from '../data/catalogue.js';
+import {FOOD_GROUPS,FOOD_BY_ID,ensureFoodDetails,searchFoods,GROUP_ICONS} from '../data/catalogue.js';
 import {todayDate,MEALS,normalizeEntries,makeRecord,analysisVersion} from '../lib/foodNutrition.js';
 import {useLocalNutrition} from '../composables/useLocalNutrition.js';
 import {useAiReports} from '../composables/useAiReports';
 import PortionPicker from '../components/PortionPicker.vue';
+import {currentActor} from '../lib/storageScope.js';
 import {createNutritionSnapshot} from '../lib/nutritionSnapshot.js';
 import {foodTitle} from '../lib/foodPresentation.js';
 import AppIcon from '../components/AppIcon.vue';
@@ -19,9 +20,10 @@ const draft=computed(()=>state.drafts[date.value]);const selected=computed(()=>n
 const savedRecord=computed(()=>props.records.find(item=>item.date===date.value));
 const latestFor=value=>props.reports.find(report=>report.date===value);
 const pendingSame=computed(()=>{const report=latestFor(date.value);return report?.status==='pending'&&report.dataVersion===analysisVersion(makeRecord(draft.value),props.profile);});
-function addFood(food){addToDraft({date:date.value,foodId:food.key,grams:food.grams||100,meal:meal.value});query.value='';activeAsideTab.value='selected';}
+const adding=new Set();
+async function addFood(food){const day=date.value,actor=currentActor(),slot=meal.value,key=day+':'+food.key;if(adding.has(key))return;adding.add(key);try{await ensureFoodDetails(food.key);if(date.value!==day||currentActor()!==actor)return;addToDraft({date:day,foodId:food.key,grams:food.grams||100,meal:slot});query.value='';activeAsideTab.value='selected';}catch(e){error.value=e.message;}finally{adding.delete(key);}}
 function addManual(){draft.value.entries.push({id:crypto.randomUUID(),foodId:null,name:query.value.trim(),grams:100,meal:meal.value,group:'snacks',source:'manual',referenceConfirmed:true});query.value='';}
-function confirmPhoto({items,batchId}){if(draft.value.appliedBatches.includes(batchId))return;const entries=normalizeEntries(items.map(item=>({...item,id:crypto.randomUUID(),meal:meal.value,source:'photo',estimated:true,referenceConfirmed:true,nutritionSnapshot:createNutritionSnapshot(FOOD_BY_ID[item.foodId])})));if(entries.length!==items.length){error.value='请核对每项食物名称与克数。';return;}draft.value.entries.push(...entries);draft.value.appliedBatches.push(batchId);draft.value.recognition.confirmed=true;activeAsideTab.value='selected';}
+async function confirmPhoto({items,batchId}){const day=date.value,actor=currentActor();if(draft.value.appliedBatches.includes(batchId))return;try{await ensureFoodDetails(items.map(item=>item.foodId));}catch(e){error.value=e.message;return;}if(date.value!==day||currentActor()!==actor||draft.value.appliedBatches.includes(batchId))return;const entries=normalizeEntries(items.map(item=>({...item,id:crypto.randomUUID(),meal:meal.value,source:'photo',estimated:true,referenceConfirmed:true,nutritionSnapshot:createNutritionSnapshot(FOOD_BY_ID[item.foodId])})));if(entries.length!==items.length){error.value='请核对每项食物名称与克数。';return;}draft.value.entries.push(...entries);draft.value.appliedBatches.push(batchId);draft.value.recognition.confirmed=true;activeAsideTab.value='selected';}
 function save(){if(props.saving)return;error.value='';if(selected.value.length!==draft.value.entries.length){error.value='请填写每项食物名称，并将克数设为 0.1–5000 克；不需要的项目可删除。';return;}emit('save',JSON.parse(JSON.stringify(draft.value)));}
 function switchTab(tab){activeAsideTab.value=tab;if(matchMedia('(max-width:950px)').matches)nextTick(()=>asidePanel.value?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'}));}
 function tabKeys(event){const tab=['ArrowRight','ArrowDown','End'].includes(event.key)?'history':['ArrowLeft','ArrowUp','Home'].includes(event.key)?'selected':null;if(tab){event.preventDefault();switchTab(tab);nextTick(()=>document.getElementById('vb-tab-'+tab)?.focus());}}

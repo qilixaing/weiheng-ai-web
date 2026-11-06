@@ -1,6 +1,7 @@
 import type { FoodReference } from '../types/nutrition';
 
 export interface CatalogueFood extends FoodReference {
+  __summary?: boolean;
   key: string;
   name: string;
   aliases: string[];
@@ -34,6 +35,7 @@ export const FOOD_BY_ID: Record<string, CatalogueFood>;
 export const FOOD_GROUPS: FoodGroup[];
 export const CORE_GROUPS: FoodGroup[];
 export const GROUP_ICONS: Record<string, string>;
+export function ensureFoodDetails(ids: string | string[]): Promise<CatalogueFood[]>;
 export function normalizeSearch(value: unknown): string;
 export function rankFoods(query: string, limit?: number): Array<{ food: CatalogueFood; score: number; match: string }>;
 export function searchFoods(query: string, limit?: number): CatalogueFood[];

@@ -1,0 +1,4 @@
+/content-dist/** -text
+*.br binary
+*.gz binary
+*.sh text eol=lf

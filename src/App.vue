@@ -2,7 +2,7 @@
 import {ref,computed,nextTick,onBeforeUnmount} from 'vue';
 import {useLocalNutrition} from './composables/useLocalNutrition.js';
 import {useAiReports} from './composables/useAiReports';
-import {FOOD_BY_ID} from './data/catalogue.js';
+import {FOOD_BY_ID,ensureFoodDetails} from './data/catalogue.js';
 import {todayDate,validDate,MACROS} from './lib/foodNutrition.js';
 import AppIcon from './components/AppIcon.vue';
 import AppSidebar from './components/AppSidebar.vue';
@@ -18,7 +18,7 @@ import MealplanPage from './pages/MealplanPage.vue';
 import ProfilePage from './pages/ProfilePage.vue';
 import AboutPage from './pages/AboutPage.vue';
 import AccountDialog from './components/AccountDialog.vue';
-import { accountUser, accountSyncStatus } from './lib/storageScope.js';
+import { accountUser, accountSyncStatus, currentActor } from './lib/storageScope.js';
 import {useThemeTransition} from './composables/useThemeTransition.js';
 
 const {state,theme,nutrition,records,storageError,updateProfile,saveRecord,addToDraft,addPlanToDraft,toggleHabit}=useLocalNutrition();
@@ -43,7 +43,7 @@ function saved(draft){if(saving.value)return;saving.value=true;try{const result=
 function openAnalysis(date,id){const existing=id?reports.value.find(item=>item.id===id):latestReport(date);reportDate.value=date;reportId.value=id||'';analysisError.value='';const record=state.records.find(item=>item.date===date);if(!record)return;}
 function retryAnalysis(date=reportDate.value){const record=state.records.find(item=>item.date===date);if(record)analyze(record,true);}
 function addFood(input){if(!validDate(input.date)||input.date>todayDate()||Number(input.grams)<0.1||Number(input.grams)>5000){notify('请核对日期与食用克数。');return;}const ok=addToDraft(input);diaryDate.value=input.date;detailFood.value=null;navigate('diary');notify(ok?'已加入“本次选择”，核对后保存这一天。':'已加入当前页面，但本地存储失败，请保留此页。');}
-function addAgentPlan(payload){const result=addPlanToDraft(payload);payload.onResult?.(result);if(!result.ok){notify(result.error);return;}diaryDate.value=payload.date;navigate('diary');notify(result.duplicate?'该方案已加入草稿，不会重复添加。':'已加入本次选择；实际吃过后核对份量并保存当天记录。');}
+async function addAgentPlan(payload){const actor=currentActor();try{await ensureFoodDetails(payload.items.map(item=>item.foodId));if(actor!==currentActor())return;}catch(e){payload.onResult?.({ok:false,error:e.message});notify(e.message);return;}const result=addPlanToDraft(payload);payload.onResult?.(result);if(!result.ok){notify(result.error);return;}diaryDate.value=payload.date;navigate('diary');notify(result.duplicate?'该方案已加入草稿，不会重复添加。':'已加入本次选择；实际吃过后核对份量并保存当天记录。');}
 function removeRecord(date){const record=state.records.find(item=>item.date===date);if(!record)return;state.records=state.records.filter(item=>item.date!==date);notify('这条饮食记录已删除，报告快照仍保留。',()=>{saveRecord(record);toast.value=null;});}
 onBeforeUnmount(()=>clearTimeout(toastTimer));
 </script>

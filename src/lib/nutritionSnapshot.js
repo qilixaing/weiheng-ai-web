@@ -1,5 +1,5 @@
 import {FOOD_DATA_VERSION} from '../data/catalogue.js';
-import storedEstimates from '../data/aiFoodEstimates.json' with {type:'json'};
+import storedEstimates from '../data/foodEstimates.js';
 
 // Snapshots are per 100 g edible portion. AI may only supply missing macros.
 const units={energy:'kcal',protein:'g',carbs:'g',fat:'g',fiber:'g',water:'g',cholesterol:'mg',vitaminA:'μg RAE',vitaminC:'mg',vitaminD:'μg',vitaminE:'mg',vitaminK:'μg',b1:'mg',b2:'mg',b6:'mg',b12:'μg',folate:'μg DFE',calcium:'mg',iron:'mg',magnesium:'mg',phosphorus:'mg',potassium:'mg',sodium:'mg',zinc:'mg',copper:'mg',manganese:'mg',selenium:'μg',iodine:'μg'};
@@ -21,6 +21,7 @@ export function normalizeSnapshot(input,foodId){
 }
 export function createNutritionSnapshot(food,estimate){
  if(!food?.key)return null;
+ if(food.__summary)throw new Error('请先读取完整食物资料，再添加记录。');
  if(estimate===undefined){const row=storedEstimates.estimates?.[food.key];if(row)estimate={foodId:food.key,basisGrams:100,model:row.model,generatedAt:row.generatedAt,estimate:row};}
  const compatible=estimate?.foodId===food.key&&estimate.basisGrams===100;
  const ranges={};

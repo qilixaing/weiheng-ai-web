@@ -1,12 +1,14 @@
 <script setup>
-import { computed } from 'vue';
+import { computed,watch } from 'vue';
 import {foodTitle,foodState} from '../lib/foodPresentation.js';
 import { MACROS,formatNutrient } from '../lib/foodNutrition.js';
 import { useFoodPhoto } from '../composables/useFoodPhoto.js';
-import storedEstimates from '../data/aiFoodEstimates.json' with {type:'json'};
+import storedEstimates from '../data/foodEstimates.js';
 import AppIcon from './AppIcon.vue';
 import FoodImage from './FoodImage.vue';
+import {ensureFoodDetails} from '../data/catalogue.js';
 const props=defineProps({food:Object,compared:Boolean});defineEmits(['detail','compare']);
+watch(()=>props.food.key,id=>{void ensureFoodDetails(id).catch(()=>{});},{immediate:true});
 const {photo,loading,failed}=useFoodPhoto(()=>props.food);
 const photoNote=computed(()=>photo.value?.imageNote||(loading.value?'正在按食材名称查找开放许可照片。':failed.value?'暂时未找到图片，可打开详情重新检索。':'图片来源将在详情中显示。'));
 </script>

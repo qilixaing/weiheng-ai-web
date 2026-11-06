@@ -1,5 +1,6 @@
 export const foodTitle = food => String(food?.name || '').split(' · ')[0].replace(/（[^）]*）/g,'').trim();
 export function foodState(food) {
+  if(food?.__summary)return food.state||'';
   if (!food?.expanded) return food?.state || '';
   const text=String(food.source?.description||'');
   const states=[];
