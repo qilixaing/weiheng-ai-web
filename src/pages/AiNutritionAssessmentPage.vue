@@ -30,8 +30,8 @@ function openReport(date: string, id: string): void {
 <template>
   <div class="vb-page-title">
     <div>
-      <p class="vb-eyebrow">从饮食回顾到 AI 分析</p>
-      <h1>营养摄入分析与不足风险提示</h1>
+
+      <h1>营养摄入分析</h1>
       <p>先看程序计算的摄入与完整性，再查看饮食结构和AI解释。缺失与未记录不当作0。</p>
     </div>
     <button class="vb-button vb-button-primary" @click="emit('navigate', 'diary')">

@@ -1,7 +1,7 @@
 import { r as M, a as H, b as tt, w as re, o as s, d as o, e, F as B, f as J, n as hn, g as me, h as $t, i as j, j as I, k as Pe, t as a, l as ve, m as te, v as ie, p as N, u as b, q as Ae, s as xe, x as Ve, y as Yn, z as lt, A as Ke, B as mt, C as Xn, D as kn, E as xt, G as Qn } from "./vue-runtime-wiGxZMXT.js";
-import { v as Fe, t as ke, F as le, c as _t, r as nt, n as Zn, m as es, a as zt, e as qe, b as wn, d as yt, M as Ee, f as qt, g as ht, h as $n, s as _n, i as pt, j as sn, N as ts, k as De, _ as Lt, l as ns, C as Et, G as An, o as Ot, p as ss, q as Gt, u as on, P as jt, R as os, w as Ut, x as ls, y as ln, A as He, z as ct, B as an } from "./IntakeAnalysis--YRn2hnC.js";
-import { s as st, a as _e, o as as, b as we, t as Cn, c as is, d as $e, e as rs, f as us, g as ds, h as bt } from "./main-D0WUrqL2.js";
-import { v as ot, A as Jt, c as In, _ as O, p as cs, a as Sn, u as vs, b as ms, d as ps, e as bs } from "./useThemeTransition-CWq8KZel.js";
+import { v as Fe, t as ke, F as le, c as _t, r as nt, n as Zn, m as es, a as zt, e as qe, b as wn, d as yt, M as Ee, f as qt, g as ht, h as $n, s as _n, i as pt, j as sn, N as ts, k as De, _ as Lt, l as ns, C as Et, G as An, o as Ot, p as ss, q as Gt, u as on, P as jt, R as os, w as Ut, x as ls, y as ln, A as He, z as ct, B as an } from "./IntakeAnalysis-HIn5UQfC.js";
+import { s as st, a as _e, o as as, b as we, t as Cn, c as is, d as $e, e as rs, f as us, g as ds, h as bt } from "./main-DkJ_d5GU.js";
+import { v as ot, A as Jt, c as In, _ as O, p as cs, a as Sn, u as vs, b as ms, d as ps, e as bs } from "./useThemeTransition-DAFG7iua.js";
 function fs(t, l) {
   if (!l || !Fe(l.date) || l.date > ke() || !["breakfast", "lunch", "dinner", "snack", "unspecified"].includes(l.meal) || !Array.isArray(l.items) || !l.items.length || l.items.length > 8) throw new Error("请核对方案日期、餐次和食物列表。");
   const n = String(l.confirmationId || "").slice(0, 100);
@@ -2939,8 +2939,7 @@ const fa = {
     return (i, u) => (s(), o(B, null, [
       e("div", sr, [
         u[6] || (u[6] = e("div", null, [
-          e("p", { class: "vb-eyebrow" }, "从饮食回顾到 AI 分析"),
-          e("h1", null, "营养摄入分析与不足风险提示"),
+          e("h1", null, "营养摄入分析"),
           e("p", null, "先看程序计算的摄入与完整性，再查看饮食结构和AI解释。缺失与未记录不当作0。")
         ], -1)),
         e("button", {
@@ -3515,7 +3514,6 @@ const fa = {
     return (K, F) => (s(), o("div", Or, [
       e("div", Fr, [
         F[8] || (F[8] = e("div", null, [
-          e("p", { class: "vb-eyebrow" }, "一餐一记，慢慢更了解自己"),
           e("h1", null, "饮食记录"),
           e("p", null, "填写可食部克数，核对食物，再保存这一天。")
         ], -1)),
@@ -4077,8 +4075,7 @@ const fa = {
     return (q, A) => (s(), o("div", Ju, [
       e("div", Hu, [
         e("div", null, [
-          A[14] || (A[14] = e("p", { class: "vb-eyebrow" }, "从认识食物开始", -1)),
-          A[15] || (A[15] = e("h1", null, "食物浏览与查询", -1)),
+          A[14] || (A[14] = e("h1", null, "食物浏览与查询", -1)),
           e("p", null, a(b(W).toLocaleString()) + " 项有照片的食材与菜式，按名称搜索，打开卡片查看营养与来源。", 1)
         ]),
         e("button", {
@@ -4090,7 +4087,7 @@ const fa = {
             name: "sparkles",
             size: 17
           }),
-          A[16] || (A[16] = N("问 AI", -1))
+          A[15] || (A[15] = N("问 AI", -1))
         ], 8, Ku)
       ]),
       e("section", Wu, [
@@ -4100,9 +4097,8 @@ const fa = {
             size: 23
           })
         ]),
-        A[19] || (A[19] = e("div", null, [
-          e("h2", null, "今天想了解哪一种食物？"),
-          e("p", null, "名称、别名都能查。营养数据统一按每 100 克可食部展示。")
+        A[18] || (A[18] = e("div", null, [
+          e("h2", null, "今天想了解哪一种食物？")
         ], -1)),
         e("form", {
           class: "vb-food-search-form",
@@ -4146,13 +4142,13 @@ const fa = {
               ], 8, Zu))), 128))
             ])) : I("", !0)
           ]),
-          A[17] || (A[17] = e("button", {
+          A[16] || (A[16] = e("button", {
             class: "vb-button vb-button-primary",
             type: "submit"
           }, "搜索", -1))
         ], 32),
         e("div", ed, [
-          A[18] || (A[18] = e("span", null, "推荐搜索", -1)),
+          A[17] || (A[17] = e("span", null, "推荐搜索", -1)),
           (s(), o(B, null, J(["香蕉", "白菜", "燕麦", "鸡胸肉", "鸡蛋"], (f) => e("button", {
             key: f,
             type: "button",
@@ -4162,13 +4158,13 @@ const fa = {
       ]),
       g.value ? (s(), o("section", nd, [
         e("div", sd, [
-          A[20] || (A[20] = e("div", null, [
+          A[19] || (A[19] = e("div", null, [
             e("span", { class: "vb-small-label" }, "以数据库为依据"),
             e("h2", null, "问问 AI，读懂食物数据")
           ], -1)),
           j(O, { name: "sparkles" })
         ]),
-        A[24] || (A[24] = e("p", { class: "vb-data-note" }, "问题与相关数据库条目会发送给维衡 AI。数值来自食物库，AI 负责解释。", -1)),
+        A[23] || (A[23] = e("p", { class: "vb-data-note" }, "问题与相关数据库条目会发送给维衡 AI。数值来自食物库，AI 负责解释。", -1)),
         c.value.length ? (s(), o("div", od, [
           (s(!0), o(B, null, J(c.value, (f) => (s(), o("button", {
             key: f,
@@ -4180,7 +4176,7 @@ const fa = {
           onSubmit: Pe(P, ["prevent"])
         }, [
           e("label", ad, [
-            A[21] || (A[21] = N("你的问题", -1)),
+            A[20] || (A[20] = N("你的问题", -1)),
             te(e("textarea", {
               "onUpdate:modelValue": A[4] || (A[4] = (f) => $.value = f),
               maxlength: "600",
@@ -4205,7 +4201,7 @@ const fa = {
         ], 32),
         h.value ? (s(), o("p", ud, a(h.value), 1)) : I("", !0),
         p.value ? (s(), o("div", dd, [
-          A[22] || (A[22] = e("h3", null, "数据库数值", -1)),
+          A[21] || (A[21] = e("h3", null, "数据库数值", -1)),
           p.value.database.length ? I("", !0) : (s(), o("p", cd, "没有匹配的数据库条目，暂无精确营养数值。")),
           e("div", vd, [
             (s(!0), o(B, null, J(p.value.database, (f) => (s(), o("button", {
@@ -4218,7 +4214,7 @@ const fa = {
               e("small", null, a(f.source?.name || "原有目录，暂无成分数据"), 1)
             ], 8, md))), 128))
           ]),
-          A[23] || (A[23] = e("h3", null, "AI 解释", -1)),
+          A[22] || (A[22] = e("h3", null, "AI 解释", -1)),
           e("p", null, a(p.value.answer.summary), 1),
           e("p", null, a(p.value.answer.explanation), 1),
           e("p", pd, a(p.value.answer.limitations), 1),
@@ -4240,10 +4236,9 @@ const fa = {
       ])) : I("", !0),
       v.value ? (s(), o("p", yd, a(v.value), 1)) : I("", !0),
       !d.value && !n.value ? (s(), o(B, { key: 3 }, [
-        A[26] || (A[26] = e("div", { class: "vb-section-heading" }, [
+        A[25] || (A[25] = e("div", { class: "vb-section-heading" }, [
           e("div", null, [
-            e("h2", null, "常见食物"),
-            e("p", null, "从你熟悉的食材开始。")
+            e("h2", null, "常见食物")
           ])
         ], -1)),
         e("div", hd, [
@@ -4257,7 +4252,7 @@ const fa = {
         ]),
         e("div", kd, [
           e("div", null, [
-            A[25] || (A[25] = e("h2", null, "按类别探索", -1)),
+            A[24] || (A[24] = e("h2", null, "按类别探索", -1)),
             e("p", null, a(b(w).length.toLocaleString()) + " 项食材与菜式，每项都有直接展示的真实照片。", 1)
           ])
         ]),
@@ -4286,7 +4281,7 @@ const fa = {
             ])
           ], 8, $d))), 128))
         ]),
-        A[27] || (A[27] = e("p", { class: "vb-photo-library-note" }, "照片已随网站保存。图片作者与许可可以在详情中查看；有可靠成分样本的食物显示营养值，其余保持未知。", -1))
+        A[26] || (A[26] = e("p", { class: "vb-photo-library-note" }, "照片已随网站保存。图片作者与许可可以在详情中查看；有可靠成分样本的食物显示营养值，其余保持未知。", -1))
       ], 64)) : (s(), o(B, { key: 4 }, [
         e("div", Ad, [
           e("button", {
@@ -4298,7 +4293,7 @@ const fa = {
               name: "back",
               size: 15
             }),
-            A[28] || (A[28] = N("分类总览", -1))
+            A[27] || (A[27] = N("分类总览", -1))
           ]),
           e("h2", null, a(d.value ? b(ln)[d.value].name : "“" + n.value + "”的食物照片与营养资料"), 1),
           e("span", null, a(ue.value.length.toLocaleString()) + " 个结果 · 每 100 克可食部", 1)
@@ -4315,12 +4310,12 @@ const fa = {
               onClick: (k) => i.value = f
             }, a(f), 11, Sd))), 128))
           ])) : (s(), o("label", xd, [
-            A[30] || (A[30] = N("筛选", -1)),
+            A[29] || (A[29] = N("筛选", -1)),
             te(e("select", {
               "onUpdate:modelValue": A[9] || (A[9] = (f) => i.value = f),
               "aria-label": "食物类型筛选"
             }, [
-              A[29] || (A[29] = e("option", { value: "" }, "全部类型", -1)),
+              A[28] || (A[28] = e("option", { value: "" }, "全部类型", -1)),
               (s(!0), o(B, null, J(Y.value, (f) => (s(), o("option", {
                 key: f,
                 value: f
@@ -4330,11 +4325,11 @@ const fa = {
             ])
           ])),
           e("label", null, [
-            A[32] || (A[32] = N("排序", -1)),
+            A[31] || (A[31] = N("排序", -1)),
             te(e("select", {
               "onUpdate:modelValue": A[10] || (A[10] = (f) => u.value = f),
               "aria-label": "食物营养指标排序"
-            }, [...A[31] || (A[31] = [
+            }, [...A[30] || (A[30] = [
               kn('<option value="relevance">默认顺序</option><option value="energy:asc">热量从低到高</option><option value="energy:desc">热量从高到低</option><option value="protein:desc">蛋白质从高到低</option><option value="fiber:desc">膳食纤维从高到低</option><option value="name:asc">名称</option>', 6)
             ])], 512), [
               [Ae, u.value]
@@ -4355,8 +4350,8 @@ const fa = {
             name: "search",
             size: 34
           }),
-          A[33] || (A[33] = e("h2", null, "没有找到匹配的食物", -1)),
-          A[34] || (A[34] = e("p", null, "试试常见中文名、英文原名或类别名称。", -1)),
+          A[32] || (A[32] = e("h2", null, "没有找到匹配的食物", -1)),
+          A[33] || (A[33] = e("p", null, "试试常见中文名、英文原名或类别名称。", -1)),
           e("button", {
             class: "vb-button vb-button-quiet",
             onClick: K
@@ -4376,7 +4371,7 @@ const fa = {
       ], 64)),
       n.value && R.value.length ? (s(), o("details", Md, [
         e("summary", null, "其他营养数据样本 · " + a(R.value.length.toLocaleString()) + " 条", 1),
-        A[35] || (A[35] = e("p", null, "细分品种、品牌和加工状态的原始成分样本仍保留。请按你实际食用的食物选择；这些数据样本可能没有单独配图。", -1)),
+        A[34] || (A[34] = e("p", null, "细分品种、品牌和加工状态的原始成分样本仍保留。请按你实际食用的食物选择；这些数据样本可能没有单独配图。", -1)),
         e("div", Td, [
           (s(!0), o(B, null, J(R.value.slice(0, 80), (f) => (s(), o("button", {
             key: f.key,
@@ -4390,11 +4385,11 @@ const fa = {
         R.value.length > 80 ? (s(), o("p", zd, "当前显示前80条，请增加名称或加工状态关键词缩小范围。")) : I("", !0)
       ])) : I("", !0),
       e("details", Od, [
-        A[36] || (A[36] = e("summary", null, "数据口径与图片署名", -1)),
-        A[37] || (A[37] = e("p", null, "营养数据来自 USDA SR28（2016 年 5 月修订，公有领域），展示的是对应品种、生熟和加工状态的数据库样本。原目录中没有准确对应的数据保持缺失，不能视为 0。旧记录需确认具体参考条目后参与营养计算。分类结构参考 HowToEat。食物卡片直接使用固定保存的真实照片，不在用户浏览时自动选择搜索引擎结果。照片与名称关联依据来自具体图片说明、百科食物条目或逐项绑定；作者、来源和许可保留在详情中。食材参考照片不证明营养样本具体品牌或品种；扩展样本保留完整英文描述，中文为食材类别提示；校园混合菜尚无配方时保持营养未知。", -1)),
-        A[38] || (A[38] = e("p", null, "碳水采用差减法，含膳食纤维；维 A 为 μg RAE，叶酸为 μg DFE。配方、产地和做法会造成差异。婴幼儿食品类仅为成分查询，不提供婴幼儿膳食推荐。", -1)),
-        A[39] || (A[39] = e("p", null, "每项食物照片的作者、原图链接和许可均在食物详情中显示。", -1)),
-        A[40] || (A[40] = e("p", null, "分类总览图片：", -1)),
+        A[35] || (A[35] = e("summary", null, "数据口径与图片署名", -1)),
+        A[36] || (A[36] = e("p", null, "营养数据来自 USDA SR28（2016 年 5 月修订，公有领域），展示的是对应品种、生熟和加工状态的数据库样本。原目录中没有准确对应的数据保持缺失，不能视为 0。旧记录需确认具体参考条目后参与营养计算。分类结构参考 HowToEat。食物卡片直接使用固定保存的真实照片，不在用户浏览时自动选择搜索引擎结果。照片与名称关联依据来自具体图片说明、百科食物条目或逐项绑定；作者、来源和许可保留在详情中。食材参考照片不证明营养样本具体品牌或品种；扩展样本保留完整英文描述，中文为食材类别提示；校园混合菜尚无配方时保持营养未知。", -1)),
+        A[37] || (A[37] = e("p", null, "碳水采用差减法，含膳食纤维；维 A 为 μg RAE，叶酸为 μg DFE。配方、产地和做法会造成差异。婴幼儿食品类仅为成分查询，不提供婴幼儿膳食推荐。", -1)),
+        A[38] || (A[38] = e("p", null, "每项食物照片的作者、原图链接和许可均在食物详情中显示。", -1)),
+        A[39] || (A[39] = e("p", null, "分类总览图片：", -1)),
         e("ul", null, [
           (s(!0), o(B, null, J(b(Gu), (f) => (s(), o("li", {
             key: f.key
@@ -4615,7 +4610,6 @@ const Kd = {
           })
         ]),
         k[15] || (k[15] = e("div", null, [
-          e("p", { class: "vb-eyebrow" }, "家庭、外食与食堂 · 有依据的营养决策"),
           e("h2", { id: "meal-agent-title" }, "安排我的下一餐"),
           e("p", null, "说清预算和回避项，结合你的备选食物检索与计算。方案先核对，实际吃过后再记录。")
         ], -1))
@@ -5049,7 +5043,6 @@ const Kd = {
     return (l, n) => (s(), o(B, null, [
       e("div", uv, [
         n[4] || (n[4] = e("div", null, [
-          e("p", { class: "vb-eyebrow" }, "全年龄段的饮食记录与营养分析"),
           e("h1", null, "膳食方案"),
           e("p", null, "结合身体档案、饮食记录与就餐条件，安排更适合自己的下一餐。")
         ], -1)),
@@ -5100,7 +5093,6 @@ const Kd = {
     return (m, c) => (s(), o(B, null, [
       e("div", mv, [
         c[3] || (c[3] = e("div", null, [
-          e("p", { class: "vb-eyebrow" }, "随身体与生活变化，随时更新"),
           e("h1", null, "个人档案"),
           e("p", null, "身体档案支持整体跳过。主页支持0—120岁年龄段参考卡片；婴幼儿、青少年和高龄采用对应分组并注明范围，资料缺失时保持未知。")
         ], -1)),
