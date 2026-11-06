@@ -150,11 +150,19 @@ export interface AiNutrientRange {
   unit: string;
 }
 
+export interface AiNutrientEstimate {
+  value: number;
+  unit: string;
+  /** Legacy fields are accepted when reading previously saved reports. */
+  low?: number;
+  high?: number;
+}
+
 export interface AiFoodEstimate {
   entryId: string;
   name: string;
   grams: number;
-  values: Partial<Record<'energy' | 'protein' | 'carbs' | 'fat', AiNutrientRange>>;
+  values: Partial<Record<'energy' | 'protein' | 'carbs' | 'fat', AiNutrientEstimate | AiNutrientRange>>;
   assumption: string;
 }
 

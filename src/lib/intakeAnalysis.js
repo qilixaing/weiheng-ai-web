@@ -19,7 +19,7 @@ export function intakeTrend(records,endDate,days=7){
  return Array.from({length:days},(_,i)=>{const d=new Date(end);d.setUTCDate(d.getUTCDate()-days+1+i);const date=d.toISOString().slice(0,10),record=records.find(r=>r.date===date),entries=recordEntries(record);return {date,recorded:entries.length>0,...calculateIntake(entries)};});
 }
 export function interpretation(row){
- if(row.range)return row.complete?'含AI估算范围；不作精确比例比较':'含AI估算，仍有未知项';
+ if(row.range)return row.complete?'含AI单值参考估算；不作营养诊断':'含AI单值估算，仍有未知项';
  if(row.value==null)return '暂无可计算数据';
  if(!row.complete)return `仅已知小计；${row.missing.length}项缺少该指标，无法比较`;
  if(!row.reference)return '暂无匹配参考；不判断不足';

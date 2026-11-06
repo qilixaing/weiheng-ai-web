@@ -21,7 +21,7 @@ import AccountDialog from './components/AccountDialog.vue';
 import { accountUser, accountSyncStatus, currentActor } from './lib/storageScope.js';
 import {useThemeTransition} from './composables/useThemeTransition.js';
 
-const {state,theme,nutrition,records,storageError,updateProfile,saveRecord,addToDraft,addPlanToDraft,toggleHabit}=useLocalNutrition();
+const {state,theme,nutrition,records,storageError,updateProfile,saveRecord,clearDraftAfterSave,addToDraft,addPlanToDraft,toggleHabit}=useLocalNutrition();
 const {toggleTheme}=useThemeTransition(theme);
 const {reports,reportStorageError,loadReports,latestReport,isStale,generateReport}=useAiReports();loadReports();
 const launch=defineProps({initialPage:{type:String,default:'overview'},initialEditor:Boolean});
@@ -39,7 +39,7 @@ function openAccount(){wizardOpen.value=false;accountOpen.value=true;}
 function closeAccount(){accountOpen.value=false;}
 function finishProfile(profile){const error=updateProfile(profile);if(error){notify(error);return;}wizardOpen.value=false;navigate('overview');notify(accountUser.value?'身体档案已保存，账号同步状态可在账号面板查看':'身体档案已保存到当前浏览器');}
 async function analyze(record,force=false){const request=++analysisSequence;analysisError.value='';reportDate.value=record.date;reportId.value='';try{const task=generateReport(record,effectiveProfile.value,{force});await nextTick();const result=await task;if(request===analysisSequence&&reportDate.value===record.date)reportId.value=result?.id||'';}catch(error){if(request===analysisSequence)analysisError.value=error.message||'分析暂时不可用，请重试。';}}
-function saved(draft){if(saving.value)return;saving.value=true;try{const result=saveRecord(draft);if(!result.ok){notify(result.error);return;}notify('饮食记录已保存，正在分析');void analyze(result.record);}finally{saving.value=false;}}
+function saved(draft){if(saving.value)return;saving.value=true;try{const result=saveRecord(draft);if(!result.ok){notify(result.error);return;}clearDraftAfterSave(result.record.date,result.record);notify('饮食记录已保存，正在分析');void analyze(result.record);}finally{saving.value=false;}}
 function openAnalysis(date,id){const existing=id?reports.value.find(item=>item.id===id):latestReport(date);reportDate.value=date;reportId.value=id||'';analysisError.value='';const record=state.records.find(item=>item.date===date);if(!record)return;}
 function retryAnalysis(date=reportDate.value){const record=state.records.find(item=>item.date===date);if(record)analyze(record,true);}
 function addFood(input){if(!validDate(input.date)||input.date>todayDate()||Number(input.grams)<0.1||Number(input.grams)>5000){notify('请核对日期与食用克数。');return;}const ok=addToDraft(input);diaryDate.value=input.date;detailFood.value=null;navigate('diary');notify(ok?'已加入“本次选择”，核对后保存这一天。':'已加入当前页面，但本地存储失败，请保留此页。');}

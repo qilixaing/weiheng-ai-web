@@ -2,7 +2,8 @@ import { ref, type Ref } from 'vue';
 import { localAll, localPut } from '../lib/localDatabase.js';
 import { aiRequest } from '../lib/aiClient.js';
 import { FOOD_BY_ID, ensureFoodDetails } from '../data/catalogue.js';
-import {entryNutrient} from '../lib/nutritionSnapshot.js';
+import {entryNutrient,applyAiEstimatesToEntries} from '../lib/nutritionSnapshot.js';
+import {estimatePoint} from '../lib/nutritionEstimate.js';
 import {currentActor} from '../lib/storageScope.js';
 import {
   MACROS,
@@ -164,21 +165,25 @@ async function generateReport(
             const food = entry.referenceConfirmed === false ? undefined : FOOD_BY_ID[entry.foodId || ''];
             const keys = MACROS.filter((metric) => {const n=entryNutrient(entry,food,metric.id);return typeof n.value!=='number'&&!n.range;}).map((metric) => metric.id);
             return Boolean(estimate && keys.every((key) => {
-              const range = estimate.values[key as keyof typeof estimate.values];
-              return range && Number.isFinite(range.low) && Number.isFinite(range.high) && range.high > range.low;
+              const value = estimate.values[key as keyof typeof estimate.values];
+              const metric = MACROS.find((item) => item.id === key);
+              return value && metric && estimatePoint(value, metric.unit) !== null;
             }));
           });
         if (!complete) {
           throw new Error('AI 服务端没有返回完整的缺失营养估算。请停止并重新启动当前 Node 服务后重试；当天饮食记录已经保存。');
         }
       }
+      const estimatedEntries=applyAiEstimatesToEntries(entries,response.calculation?.estimation?.foods||[],{model:response.model,generatedAt:response.generatedAt});
+      const estimatedIntake=calculateIntake(estimatedEntries);
       await persist({
         ...report,
+        snapshot:{...report.snapshot,entries:estimatedEntries,intake:estimatedIntake},
         status: 'complete',
         generatedAt: response.generatedAt,
         model: response.model,
         result: response.analysis,
-        calculation: response.calculation,
+        calculation: response.calculation?{...response.calculation,intake:estimatedIntake}:response.calculation,
       });
     } catch (error: unknown) {
       if(currentActor()!==identity)return;

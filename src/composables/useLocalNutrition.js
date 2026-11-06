@@ -85,6 +85,14 @@ export function useLocalNutrition() {
     try{appStorage.setItem(STORAGE_KEY,JSON.stringify({...state,records:next,calculated:nutrition.value}));}catch{storageError.value='保存未完成：浏览器本地空间不足或禁止存储。请保留此页，调整后重试。';return{ok:false,error:storageError.value};}
     state.records=next;return{ok:true,record:saved};
   }
+  /** After a successful save, keep a hidden base so later additions for the same day do not replace saved foods. */
+  function clearDraftAfterSave(date,record){
+    const draft=ensureDraft(date);if(!draft)return;
+    draft.savedEntries=JSON.parse(JSON.stringify(Array.isArray(record?.entries)?record.entries:[]));
+    draft.entries=[];
+    draft.recognition=null;
+    draft.appliedBatches=[];
+  }
   /** @param {string} date @returns {StoredDraft|null} */
   function ensureDraft(date){if(!validDate(date))return null;if(!state.drafts[date]){const record=state.records.find(item=>item.date===date);state.drafts[date]={date,entries:recordEntries(record),notes:record?.notes||'',photoId:record?.photoId||null,recognition:null,appliedBatches:[]};}return state.drafts[date];}
   /** @param {FoodEntryInput & {date: string}} input */
@@ -102,6 +110,6 @@ export function useLocalNutrition() {
       const next={...state.drafts,[payload.date]:result.draft};appStorage.setItem(STORAGE_KEY,JSON.stringify({...state,drafts:next,calculated:nutrition.value}));state.drafts=next;return{ok:true,duplicate:false};
     }catch(e){return{ok:false,error:e.message||'方案保存失败，请保留当前页。'};}
   }
-  return { state, theme, nutrition, records, storageError, updateProfile, saveRecord, ensureDraft, addToDraft, addPlanToDraft, toggleHabit };
+  return { state, theme, nutrition, records, storageError, updateProfile, saveRecord, clearDraftAfterSave, ensureDraft, addToDraft, addPlanToDraft, toggleHabit };
 }
 

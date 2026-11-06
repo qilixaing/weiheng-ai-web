@@ -3,14 +3,23 @@ import { computed } from 'vue';
 import ModalShell from './ModalShell.vue';
 import NutrientSummary from './NutrientSummary.vue';
 import { calculateNutrition } from '../lib/nutrition.js';
-import { formatNutrient, MACROS } from '../lib/foodNutrition.js';
+import { calculateIntake, formatNutrient, MACROS } from '../lib/foodNutrition.js';
+import { applyAiEstimatesToEntries } from '../lib/nutritionSnapshot.js';
 import { FOOD_BY_ID } from '../data/catalogue.js';
 import {entryNutrient} from '../lib/nutritionSnapshot.js';
+import {estimateMidpoint,estimatePoint} from '../lib/nutritionEstimate.js';
 
 const props = defineProps({ report: Object, record: Object, stale: Boolean, error: String });
 defineEmits(['close', 'retry']);
 
 const targets = computed(() => props.report?.calculation?.targets || calculateNutrition(props.report?.snapshot?.profile));
+const reportIntake = computed(() => {
+  const snapshot=props.report?.snapshot;
+  const estimates=props.report?.calculation?.estimation?.foods||[];
+  if(!snapshot||!estimates.length)return snapshot?.intake;
+  const entries=applyAiEstimatesToEntries(snapshot.entries||[],estimates,{model:props.report?.model,generatedAt:props.report?.generatedAt});
+  return calculateIntake(entries);
+});
 const sections = [
   ['overview', '摄入概况'],
   ['targetComparison', '与目标的关系'],
@@ -27,6 +36,12 @@ const missingFoodItems = computed(() => (props.report?.snapshot?.entries || []).
 const missingFoodCount = computed(() => props.report?.calculation?.estimation?.missingFoodCount ?? missingFoodItems.value.length);
 const estimates = computed(() => props.report?.calculation?.estimation?.foods || []);
 const signed = (value) => (value > 0 ? '+' : value < 0 ? '−' : '') + formatNutrient(Math.abs(value));
+const signedEstimate = (value) => signed(estimateMidpoint(value));
+const estimateAssumption = (food) => {
+  const legacy = Object.values(food?.values || {}).some((value) => value && typeof value.value !== 'number'
+    && typeof value.low === 'number' && typeof value.high === 'number');
+  return `${legacy ? '旧估算范围按上下限中点换为单值参考；' : ''}${food?.assumption || ''}`;
+};
 </script>
 
 <template>
@@ -55,24 +70,24 @@ const signed = (value) => (value > 0 ? '+' : value < 0 ? '−' : '') + formatNut
     <p v-if="report?.persistenceFailed" class="vb-feature-error">报告暂时未写入浏览器数据库，请保留此页并检查存储权限。</p>
 
     <template v-if="report?.snapshot">
-      <h3 class="vb-report-section-title">程序计算的营养汇总</h3>
-      <NutrientSummary :summary="report.snapshot.intake" :targets="targets" details />
+      <h3 class="vb-report-section-title">本次摄入汇总</h3>
+      <NutrientSummary :summary="reportIntake || report.snapshot.intake" :targets="targets" :estimating="report.status==='pending'" details />
 
       <section v-if="missingFoodCount" class="vb-report-estimation" aria-live="polite">
         <div class="vb-report-estimation-heading">
           <div>
             <h3>{{ missingFoodCount === 1 ? '有 1 项食物缺少部分营养数据' : `有多项食物缺少部分营养数据（${missingFoodCount} 项）` }}</h3>
-            <p>缺失指标已自动交由 AI 估算范围，并用于下方参考差值；不需要额外点击。</p>
+            <p>缺少数据库数据的食物会按识别名称和确认克数估算，并计入上方合计；维生素和矿物质仍以可靠数据为准。</p>
           </div>
           <span class="vb-pill">{{ report?.status === 'pending' ? '正在估算' : 'AI 参考估算' }}</span>
         </div>
-        <p class="vb-data-note">{{ report?.calculation?.estimation?.disclaimer || '估算结果基于食物名称和可食部克数，只用于本报告参考，不会写入食物库或原始饮食记录。' }}</p>
+        <p class="vb-data-note">缺失数据按常见品种与做法给出AI单值参考，不是数据库值或检测结果；旧估算范围按上下限中点换算。</p>
         <ul v-if="estimates.length" class="vb-report-estimation-list">
           <li v-for="food in estimates" :key="food.entryId">
-            <div><strong>{{ food.name }} · {{ formatNutrient(food.grams) }} 克</strong><small>{{ food.assumption }}</small></div>
+            <div><strong>{{ food.name }} · {{ formatNutrient(food.grams) }} 克</strong><small>{{ estimateAssumption(food) }}</small></div>
             <div class="vb-report-estimation-values">
-              <span v-for="metric in MACROS.filter((item) => food.values[item.id])" :key="metric.id">
-                {{ metric.id === 'carbs' ? '碳水' : metric.name }} {{ formatNutrient(food.values[metric.id].low) }}–{{ formatNutrient(food.values[metric.id].high) }} {{ metric.unit }}
+              <span v-for="metric in MACROS.filter((item) => estimatePoint(food.values[item.id],item.unit)!==null)" :key="metric.id">
+                {{ metric.id === 'carbs' ? '碳水' : metric.name }} {{ formatNutrient(estimatePoint(food.values[metric.id],metric.unit)) }} {{ metric.unit }}
               </span>
             </div>
           </li>
@@ -83,14 +98,14 @@ const signed = (value) => (value > 0 ? '+' : value < 0 ? '−' : '') + formatNut
         <div v-for="metric in report.calculation.comparison" :key="metric.id">
           <span>{{ metric.id === 'carbs' ? '碳水' : metric.name }}</span>
           <strong v-if="metric.estimatedRange?.delta">
-            AI 估算差值：{{ signed(metric.estimatedRange.delta.low) }} 至 {{ signed(metric.estimatedRange.delta.high) }} {{ metric.unit }}
+            AI 估算参考差值：{{ signedEstimate(metric.estimatedRange.delta) }} {{ metric.unit }}
           </strong>
           <strong v-else-if="metric.delta !== null">
             {{ metric.delta > 0 ? '+' : '' }}{{ formatNutrient(metric.delta) }} {{ metric.unit }}
           </strong>
           <strong v-else>{{ metric.estimatedRange || metric.complete && metric.target === null ? '缺少个人目标，无法计算差值' : 'AI 估算尚未完成' }}</strong>
-          <small v-if="metric.estimatedRange?.delta">根据数据库已知小计与 AI 估算范围计算；记录未必覆盖全天，不代表达标或不足。</small>
-          <small v-else-if="metric.estimatedRange && !metric.estimatedRange.delta">含估算范围，暂无适用个人目标。</small>
+          <small v-if="metric.estimatedRange?.delta">按数据库已知值与 AI 单值估算计算；旧范围按中点换算。记录未必覆盖全天，不代表达标或不足。</small>
+          <small v-else-if="metric.estimatedRange && !metric.estimatedRange.delta">含AI单值估算，暂无适用个人目标。</small>
           <small v-else-if="metric.delta !== null">记录合计减去全天目标，记录未必覆盖全天。</small>
           <small v-else-if="metric.complete && metric.target === null">请完善个人营养档案后再查看与目标的差值。</small>
           <small v-else>数据不完整，暂不比较。</small>
