@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onUnmounted, ref } from 'vue';
 import { accountUser, accountSyncStatus, signInOrRegister, signOut, retryAccountSync, lastAccountSync, lastChatSync, chatSyncStatus, accountConflict, exportSyncBackup } from '../lib/storageScope.js';
+import { PRIVACY_POLICY_ITEMS, PRIVACY_POLICY_VERSION } from '../lib/privacyPolicy.js';
 
 const emit = defineEmits(['close']);
 const mode = ref('login');
@@ -14,6 +15,7 @@ const cooldown = ref(0);
 const sendingCode = ref(false);
 let cooldownTimer = 0;
 const acceptTerms = ref(false);
+const privacyPolicyOpen = ref(false);
 const error = ref('');
 const busy = ref(false);
 const isLocalTest = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
@@ -21,6 +23,8 @@ const syncLabel = computed(() => ({ guest: '游客数据只保存在本机', syn
 
 function switchMode(next) {
   mode.value = next;
+  acceptTerms.value = false;
+  privacyPolicyOpen.value = false;
   if(next!=='login')void refreshCaptcha();
   error.value = '';
   verificationCode.value = '';
@@ -68,13 +72,17 @@ async function requestCode() {
 async function submit() {
   if (busy.value) return;
   error.value = '';
+  if ((mode.value === 'login' || mode.value === 'register') && !acceptTerms.value) {
+    error.value = '请先阅读并勾选同意隐私政策。';
+    return;
+  }
   busy.value = true;
   try {
     if(mode.value==='reset'){
       const r=await fetch('/api/auth/reset-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email.value.trim(),password:password.value,verificationCode:verificationCode.value.trim()})});
       const result=await r.json();if(!r.ok)throw Error(result.error);switchMode('login');password.value='';error.value='密码已重置，请重新登录。';return;
     }
-    await signInOrRegister({ mode: mode.value, email: email.value.trim(), password: password.value, acceptTerms: acceptTerms.value, verificationCode: verificationCode.value.trim() });
+    await signInOrRegister({ mode: mode.value, email: email.value.trim(), password: password.value, acceptTerms: acceptTerms.value, privacyPolicyVersion: PRIVACY_POLICY_VERSION, verificationCode: verificationCode.value.trim() });
   } catch (cause) {
     error.value = cause instanceof Error ? cause.message : '操作失败，请重试。';
   } finally {
@@ -116,7 +124,11 @@ async function logout() {
           <label v-if="mode !== 'login'">图形验证码<div class="vb-code-row"><input v-model="captchaAnswer" autocomplete="off" maxlength="4" placeholder="4位图形验证码" /><button type="button" class="vb-button vb-button-quiet" @click="refreshCaptcha" aria-label="刷新图形验证码"><img v-if="captchaImage" :src="captchaImage" alt="图形验证码，点击刷新" style="width:150px;height:49px;max-width:none" /><span v-else>点击加载图片</span></button></div><small>看不清可点击图片刷新。验证通过后才能发送邮箱验证码。</small></label>
           <label v-if="mode !== 'login'">邮箱验证码<div class="vb-code-row"><input v-model="verificationCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="6 位验证码" required /><button class="vb-button vb-button-quiet" type="button" :disabled="sendingCode || cooldown > 0" @click="requestCode">{{ sendingCode ? '发送中…' : cooldown ? `${cooldown} 秒后重发` : '获取验证码' }}</button></div></label>
           <p v-if="localDebugCode" class="vb-local-code" role="status">本地调试验证码：<strong>{{ localDebugCode }}</strong>（仅 localhost 调试使用，线上不会显示）</p>
-          <label v-if="mode === 'register'" class="vb-account-consent"><input v-model="acceptTerms" type="checkbox" required /><span>我了解账号数据会保存在网站服务器，并同意使用说明。</span></label>
+          <label v-if="mode === 'login' || mode === 'register'" class="vb-account-consent"><input v-model="acceptTerms" type="checkbox" required /><span>我已阅读并同意 <button type="button" class="vb-account-policy-toggle" :aria-expanded="privacyPolicyOpen" aria-controls="vb-account-privacy-content" @click.stop.prevent="privacyPolicyOpen = !privacyPolicyOpen">隐私政策</button></span></label>
+          <div v-if="(mode === 'login' || mode === 'register') && privacyPolicyOpen" id="vb-account-privacy-content" class="vb-account-privacy-content">
+            <p>隐私政策版本：{{ PRIVACY_POLICY_VERSION }}</p>
+            <ol><li v-for="item in PRIVACY_POLICY_ITEMS" :key="item">{{ item }}</li></ol>
+          </div>
           <p v-if="mode === 'register'" class="vb-account-note">注册需要有效邮箱、邮箱验证码和至少 10 位密码。验证码 10 分钟有效。游客仍可直接使用，无需注册。</p>
           <p v-if="error" class="vb-field-error" role="alert">{{ error }}</p>
           <button class="vb-button vb-button-primary vb-account-submit" :disabled="busy">{{ busy ? '请稍候…' : mode === 'login' ? '登录并打开账号空间' : mode==='reset'?'验证并重置密码':'创建邮箱账号' }}</button>

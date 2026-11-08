@@ -12,6 +12,7 @@ import { AuthStore, clearSessionCookie, sessionCookie, tokenFromRequest, validat
 import { sendRegistrationCode, smtpIsConfigured } from './server/email-service.mjs';
 import { handleAiApi, deepseekConfig } from './server/ai-api.mjs';
 import { FOOD_DATA_VERSION, ALL_FOODS, PHOTO_FOODS, REFERENCE_FOODS } from './src/data/catalogue.js';
+import { PRIVACY_POLICY_VERSION } from './src/lib/privacyPolicy.js';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 try { process.loadEnvFile(join(root, '.env')); } catch { /* Environment variables may be set in the shell instead. */ }
@@ -182,14 +183,14 @@ createServer(async(req,res)=>{
       if(created&&(password.length<10||password.length>128))return json(res,400,{error:'注册密码长度需为 10 至 128 个字符。'});
       if(!created&&(!password||password.length>128))return json(res,400,{error:'请输入有效密码。'});
       if(demoAccountEnabled&&email===demoAccountEmail&&!demoAliasRequest)return json(res,401,{error:'邮箱或密码不正确。'});
-      if(created&&input.acceptTerms!==true)return json(res,400,{error:'请先确认账号使用说明。'});
+      if(input.acceptTerms!==true||input.privacyPolicyVersion!==PRIVACY_POLICY_VERSION)return json(res,400,{error:'请先阅读并勾选同意隐私政策。'});
       if(created){
         const codeStatus=auth.verifyRegistrationCode(email,String(input.verificationCode||'').trim());
         if(codeStatus==='missing'||codeStatus==='expired')return json(res,400,{error:'验证码已失效或尚未获取，请重新获取。'});
         if(codeStatus==='attempt_limit')return json(res,429,{error:'验证码尝试次数过多，请重新获取。'});
         if(codeStatus!=='valid')return json(res,400,{error:'邮箱验证码不正确。'});
       }
-      const result=created?auth.register(email,password):auth.login(email,password);
+      const result=created?auth.register(email,password,input.privacyPolicyVersion):auth.login(email,password,input.privacyPolicyVersion);
       if(result?.error)return json(res,409,{error:result.error});
       if(!result)return json(res,401,{error:'邮箱或密码不正确。'});
       const secure=(process.env.NODE_ENV==='production'||String(req.headers['x-forwarded-proto']||'').includes('https'))?'; Secure':'';

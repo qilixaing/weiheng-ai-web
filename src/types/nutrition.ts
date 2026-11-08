@@ -240,6 +240,13 @@ export interface ChatAttachment extends ChatAttachmentMeta {
   dataUrl?: string;
 }
 
+export interface AiWebSource {
+  title: string;
+  url: string;
+  siteName?: string;
+  date?: string;
+}
+
 export interface AiDietChatMessage {
   id: string;
   role: AiDietChatRole;
@@ -250,6 +257,10 @@ export interface AiDietChatMessage {
   error?: string;
   context?: AiDietChatResponse['contextSummary'];
   attachments?: ChatAttachmentMeta[];
+  webSearch?: boolean;
+  webSearchStatus?: string;
+  webSearchWarning?: string;
+  webSources?: AiWebSource[];
 }
 
 export interface AiDietChatRequestMessage {
@@ -278,9 +289,12 @@ export interface AiDietChatResponse {
     targetsAvailable: boolean;
     profileAvailable: boolean;
   };
+  webSources?: AiWebSource[];
+  webSearchWarning?: string;
 }
 
 export type AiDietChatStreamEvent =
+  | { type: 'status'; message: string }
   | { type: 'delta'; text: string }
   | { type: 'error'; code: string; message: string }
   | {
@@ -289,4 +303,6 @@ export type AiDietChatStreamEvent =
       model: string;
       generatedAt: string;
       contextSummary: AiDietChatResponse['contextSummary'];
+      webSources?: AiWebSource[];
+      webSearchWarning?: string;
     };

@@ -23,6 +23,7 @@ export async function aiStream(path,body,onEvent,abortSignal){
   let event;try{event=JSON.parse(data);}catch{throw new Error('AI 流式响应格式异常，请重试。');}
   if(event?.type==='error'){const error=new Error(event.message||'AI 暂时无法回复，请重试。');error.code=event.code;throw error;}
   if(event?.type==='progress'&&event.step){onEvent(event);return;}
+  if(event?.type==='status'&&typeof event.message==='string'){onEvent(event);return;}
   if(event?.type==='delta'&&typeof event.text==='string'){onEvent(event);return;}
   if(event?.type==='done'&&typeof event.model==='string'){result=event;completed=true;onEvent(event);}
  };

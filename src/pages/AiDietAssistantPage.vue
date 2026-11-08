@@ -17,6 +17,7 @@ import { prepareChatAttachment, saveChatAttachment, loadChatAttachment, deleteCh
 import { CHAT_ATTACHMENT_ACCEPT, MAX_CHAT_ATTACHMENTS, MAX_HISTORY_ATTACHMENT_TEXT, MAX_HISTORY_IMAGES, chatFileKind } from '../lib/chatAttachmentRules.js';
 import { todayDate, validDate } from '../lib/foodNutrition.js';
 import type {
+  AiWebSource,
   AiDietChatMessage,
   AiDietChatRequestMessage,
   AiDietChatStreamEvent,
@@ -61,11 +62,29 @@ function makeId(): string {
     : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
-function loadStoredState(): { threads: ChatThread[]; activeByDate: Record<string, string>; memoryEnabled: boolean } {
+function normalizeWebSources(value: unknown): AiWebSource[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((item): AiWebSource[] => {
+    if (!item || typeof item !== 'object') return [];
+    const source = item as Partial<AiWebSource>;
+    try {
+      const url = new URL(String(source.url || ''));
+      if (!['https:', 'http:'].includes(url.protocol)) return [];
+      return [{
+        title: typeof source.title === 'string' ? source.title.slice(0, 180) : '网页来源',
+        url: url.href,
+        siteName: typeof source.siteName === 'string' ? source.siteName.slice(0, 100) : undefined,
+        date: typeof source.date === 'string' ? source.date.slice(0, 40) : undefined,
+      }];
+    } catch { return []; }
+  }).slice(0, 5);
+}
+
+function loadStoredState(): { threads: ChatThread[]; activeByDate: Record<string, string>; memoryEnabled: boolean; webSearchEnabled: boolean } {
   try {
     const parsed: unknown = JSON.parse(appStorage.getItem(STORAGE_KEY) || 'null');
-    if (!parsed || typeof parsed !== 'object') return { threads: [], activeByDate: {}, memoryEnabled: true };
-    const stored = parsed as { threads?: unknown; activeByDate?: unknown; memoryEnabled?: unknown };
+    if (!parsed || typeof parsed !== 'object') return { threads: [], activeByDate: {}, memoryEnabled: true, webSearchEnabled: true };
+    const stored = parsed as { threads?: unknown; activeByDate?: unknown; memoryEnabled?: unknown; webSearchEnabled?: unknown };
     const threads = Array.isArray(stored.threads) ? stored.threads.flatMap((item): ChatThread[] => {
       if (!item || typeof item !== 'object') return [];
       const thread = item as Partial<ChatThread>;
@@ -78,17 +97,23 @@ function loadStoredState(): { threads: ChatThread[]; activeByDate: Record<string
           message && typeof message === 'object'
           && ['user', 'assistant'].includes((message as AiDietChatMessage).role)
           && typeof (message as AiDietChatMessage).content === 'string',
-        )).map((message) => message.status === 'sending'
-          ? { ...message, status: 'failed', error: '页面刷新时请求中断。点击重试可继续这条问题。' }
-          : message),
+        )).map((message) => ({
+          ...message,
+          status: message.status === 'sending' ? 'failed' : message.status,
+          error: message.status === 'sending' ? '页面刷新时请求中断。点击重试可继续这条问题。' : message.error,
+          webSearch: typeof message.webSearch === 'boolean' ? message.webSearch : undefined,
+          webSearchStatus: typeof message.webSearchStatus === 'string' ? message.webSearchStatus.slice(0, 80) : undefined,
+          webSearchWarning: typeof message.webSearchWarning === 'string' ? message.webSearchWarning.slice(0, 160) : undefined,
+          webSources: normalizeWebSources(message.webSources),
+        })),
       }];
     }) : [];
     const activeByDate = stored.activeByDate && typeof stored.activeByDate === 'object'
       ? Object.fromEntries(Object.entries(stored.activeByDate as Record<string, unknown>).filter(([date, id]) => validDate(date) && typeof id === 'string'))
       : {};
-    return { threads: threads.slice(-60), activeByDate: activeByDate as Record<string, string>, memoryEnabled: stored.memoryEnabled !== false };
+    return { threads: threads.slice(-60), activeByDate: activeByDate as Record<string, string>, memoryEnabled: stored.memoryEnabled !== false, webSearchEnabled: stored.webSearchEnabled !== false };
   } catch {
-    return { threads: [], activeByDate: {}, memoryEnabled: true };
+    return { threads: [], activeByDate: {}, memoryEnabled: true, webSearchEnabled: true };
   }
 }
 
@@ -97,6 +122,7 @@ const threads = ref<ChatThread[]>(stored.threads);
 const activeByDate = ref<Record<string, string>>(selectChatThreads(stored,stored.activeByDate));
 const explicitEmptyThreads=new Set<string>();
 const memoryEnabled = ref(stored.memoryEnabled);
+const webSearchEnabled = ref(stored.webSearchEnabled);
 const date = ref(todayDate());
 const draft = ref('');
 interface DraftAttachment extends ChatAttachmentMeta {
@@ -267,7 +293,7 @@ watch(date, (value) => {
 let applyingRemote=false,pendingRemoteChat=false;
 function applyRemoteChat(){
  if(sending.value){pendingRemoteChat=true;return;}
- pendingRemoteChat=false;applyingRemote=true;const next=loadStoredState();threads.value=next.threads;activeByDate.value=selectChatThreads(next,activeByDate.value,[...explicitEmptyThreads]);memoryEnabled.value=next.memoryEnabled;
+ pendingRemoteChat=false;applyingRemote=true;const next=loadStoredState();threads.value=next.threads;activeByDate.value=selectChatThreads(next,activeByDate.value,[...explicitEmptyThreads]);memoryEnabled.value=next.memoryEnabled;webSearchEnabled.value=next.webSearchEnabled;
  ensureThread(date.value);
  void nextTick(()=>{applyingRemote=false;});
 }
@@ -280,7 +306,7 @@ function persistState(): void {
   persistTimer = undefined;
   if (isAppResetting()) return;
   try {
-    appStorage.setItem(STORAGE_KEY, JSON.stringify({ threads: threads.value, activeByDate: activeByDate.value, memoryEnabled: memoryEnabled.value }));
+    appStorage.setItem(STORAGE_KEY, JSON.stringify({ threads: threads.value, activeByDate: activeByDate.value, memoryEnabled: memoryEnabled.value, webSearchEnabled: webSearchEnabled.value }));
     storageError.value = '';
   } catch {
     storageError.value = '浏览器未能保存对话记录；请检查本地存储空间或隐私设置。';
@@ -295,7 +321,7 @@ function schedulePersist(): void {
   persistTimer = setTimeout(persistState, 160);
 }
 
-watch([threads, activeByDate, memoryEnabled], schedulePersist, { deep: true });
+watch([threads, activeByDate, memoryEnabled, webSearchEnabled], schedulePersist, { deep: true });
 
 function handlePageHide(): void {
   // Save the latest partial response before a real tab close or reload.
@@ -394,6 +420,7 @@ async function sendQuestion(rawQuestion: string, retryAssistantId?: string, atta
 
   let assistantMessage: AiDietChatMessage;
   let assistantIndex: number;
+  let requestWebSearch = webSearchEnabled.value;
   if (retryAssistantId) {
     assistantIndex = thread.messages.findIndex((message) => message.id === retryAssistantId && message.role === 'assistant');
     const previous = thread.messages[assistantIndex - 1];
@@ -401,13 +428,18 @@ async function sendQuestion(rawQuestion: string, retryAssistantId?: string, atta
       notice.value = '找不到这条问题对应的对话，请开始新对话后重试。';
       return false;
     }
+    requestWebSearch = previous.webSearch !== false;
     assistantMessage = thread.messages[assistantIndex];
     assistantMessage.status = 'sending';
     assistantMessage.error = undefined;
     assistantMessage.content = '';
+    assistantMessage.webSearchWarning = undefined;
+    assistantMessage.webSources = undefined;
+    assistantMessage.webSearchStatus = requestWebSearch ? '正在联网搜索…' : '正在回复…';
   } else {
-    thread.messages.push({ id: makeId(), role: 'user', content: question, attachments: attachments.length ? attachments.map(attachmentMeta) : undefined, status: 'complete', createdAt: new Date().toISOString() });
+    thread.messages.push({ id: makeId(), role: 'user', content: question, attachments: attachments.length ? attachments.map(attachmentMeta) : undefined, webSearch: requestWebSearch, status: 'complete', createdAt: new Date().toISOString() });
     assistantMessage = appendPendingAssistantMessage(thread.messages, makeId(), new Date().toISOString());
+    assistantMessage.webSearchStatus = requestWebSearch ? '正在联网搜索…' : '正在回复…';
     if (thread.messages.length > 120) discardAttachments(thread.messages.splice(0, thread.messages.length - 120));
     assistantIndex = thread.messages.length - 1;
   }
@@ -433,15 +465,21 @@ async function sendQuestion(rawQuestion: string, retryAssistantId?: string, atta
       targets: requestTargets,
       profile: requestProfile,
       memory: conversationMemory,
+      webSearch: requestWebSearch,
     }, (event: AiDietChatStreamEvent) => {
       if (activeRequest !== request) return;
-      if (event.type === 'delta') {
+      if (event.type === 'status') {
+        assistantMessage.webSearchStatus = event.message;
+      } else if (event.type === 'delta') {
         assistantMessage.content += event.text;
       } else if (event.type === 'done') {
         if(typeof event.content==='string')assistantMessage.content=event.content;
         assistantMessage.model = event.model;
         assistantMessage.context = event.contextSummary;
         assistantMessage.createdAt = event.generatedAt || new Date().toISOString();
+        assistantMessage.webSources = normalizeWebSources(event.webSources);
+        assistantMessage.webSearchWarning = event.webSearchWarning;
+        assistantMessage.webSearchStatus = '';
       }
     }, controller.signal);
     if (activeRequest !== request) return false;
@@ -451,6 +489,9 @@ async function sendQuestion(rawQuestion: string, retryAssistantId?: string, atta
     assistantMessage.model = response.model;
     assistantMessage.context = response.contextSummary;
     assistantMessage.createdAt = response.generatedAt || new Date().toISOString();
+    assistantMessage.webSources = normalizeWebSources(response.webSources);
+    assistantMessage.webSearchWarning = response.webSearchWarning;
+    assistantMessage.webSearchStatus = '';
     assistantMessage.status = 'complete';
     persistState();
     void syncChat();
@@ -459,6 +500,7 @@ async function sendQuestion(rawQuestion: string, retryAssistantId?: string, atta
     if (activeRequest !== request) return false;
     assistantMessage.status = 'failed';
     assistantMessage.error = error instanceof Error ? error.message : 'AI 暂时无法回复，请重试。';
+    assistantMessage.webSearchStatus = '';
     persistState();
     return false;
   } finally {
@@ -573,7 +615,7 @@ function clearLocalHistory(): void {
                 <span><strong>{{ attachment.name }}</strong><small>{{ attachment.kind === 'image' ? '照片' : '文件文字' }} · {{ formatFileSize(attachment.size) }}</small></span>
               </button>
             </div>
-            <div v-if="message.status === 'sending' && !message.content" class="vb-simple-loading"><span class="vb-loading-ring" /><span>正在回复…</span></div>
+            <div v-if="message.status === 'sending' && !message.content" class="vb-simple-loading"><span class="vb-loading-ring" /><span>{{ message.webSearchStatus || '正在回复…' }}</span></div>
             <p v-else-if="message.status === 'sending'" class="vb-simple-text">{{ message.content }}<span class="vb-chat-stream-cursor" aria-label="正在生成">▍</span></p>
             <template v-else-if="message.status === 'failed'">
               <p v-if="message.content" class="vb-simple-text">{{ message.content }}</p>
@@ -582,6 +624,17 @@ function clearLocalHistory(): void {
             </template>
             <p v-else-if="message.role!=='assistant'||!requestedDocumentFormat(exportQuestion(message.id))" class="vb-simple-text">{{ message.content }}</p>
             <ChatMessageExport v-if="message.role==='assistant'&&message.status==='complete'&&message.content.trim()&&requestedDocumentFormat(exportQuestion(message.id))" :content="message.content" :question="exportQuestion(message.id)" :auto="currentMessages.at(-1)?.id===message.id" @retry="retry(message.id)" />
+            <small v-if="message.status==='sending'&&message.content&&message.webSearchStatus" class="vb-chat-search-status" role="status">{{ message.webSearchStatus }}</small>
+            <p v-if="message.role==='assistant'&&message.status==='complete'&&message.webSearchWarning" class="vb-chat-search-warning">{{ message.webSearchWarning }}</p>
+            <details v-if="message.role==='assistant'&&message.status==='complete'&&message.webSources?.length" class="vb-chat-sources">
+              <summary>联网来源 · {{ message.webSources.length }}</summary>
+              <ol>
+                <li v-for="(source, index) in message.webSources" :key="source.url">
+                  <a :href="source.url" target="_blank" rel="noopener noreferrer"><span>[{{ index + 1 }}]</span> {{ source.title }}</a>
+                  <small v-if="source.siteName||source.date">{{ [source.siteName, source.date].filter(Boolean).join(' · ') }}</small>
+                </li>
+              </ol>
+            </details>
             <small v-if="message.status === 'complete'" class="vb-simple-message-meta">
               {{ formatMessageTime(message.createdAt) }}<template v-if="message.role === 'assistant'"> · {{ aiDisplayName(message.model) }}</template>
             </small>
@@ -619,6 +672,10 @@ function clearLocalHistory(): void {
           <div class="vb-simple-editor-bottom">
             <div class="vb-chat-input-tools">
               <button type="button" class="vb-chat-attach-button" aria-label="添加照片或文件" title="添加照片或文件：最多 3 个；照片 8 MB，文件 10 MB" @click="fileInput?.click()"><AppIcon name="paperclip" :size="18" /><span>附件</span></button>
+              <label class="vb-chat-search-toggle" title="开启后会用本条问题文字搜索网页；不会把档案、饮食记录或附件发送给搜索接口。">
+                <input v-model="webSearchEnabled" type="checkbox" aria-label="联网搜索" />
+                <span>联网搜索</span>
+              </label>
               <span>Enter 发送 · Shift+Enter 换行</span>
             </div>
             <button type="button" class="vb-button vb-button-primary vb-simple-send" :disabled="!draft.trim() && !hasReadyAttachment" @click="submit()"><AppIcon name="arrow" :size="16" />{{ sending ? '打断并发送' : '发送' }}</button>
@@ -633,6 +690,7 @@ function clearLocalHistory(): void {
               <p>附件支持 JPG、PNG、WebP、PDF、DOCX 和常见文本文件，每条消息最多 3 个。照片每张最多 8 MB，文件每个最多 10 MB、24,000 字；PDF 最多 40 页，仅提取可读文字，扫描件请改发截图。</p>
               <p>选择附件时仅在本地读取；点击发送后，所选照片的压缩图、文件提取的文字及问题会发送给维衡 AI，并在后续相关对话中作为上下文。PDF、Word 的排版与内嵌图片不发送。登录后的文字对话同步至网站服务器，游客对话和附件文件保存在当前浏览器。</p>
               <p>点击发送时，会携带你当前浏览器中最新保存的身体档案（性别、年龄、身高、体重、活动水平），以及所选日期的食物名称、克数、餐次、程序计算的营养汇总与每日目标，供 维衡 AI 回答相关问题。修改档案后，下次提问会使用新数据；未填写的档案不会被猜测或补全。饮食记录中的照片、备注、健康标记和偏好备注不会自动发送。</p>
+              <p>开启“联网搜索”后，仅把本条问题文字（最多 128 字）发送给网页搜索接口；身体档案、饮食记录、附件和跨对话记忆不会发送给搜索接口。联网检索由 DeepSeek Search &amp; Fetch 提供，可能产生搜索 API 费用。</p>
               <p>跨对话记忆开启时，发送新问题会额外携带最多最近 50 轮完整的纯文字对话作为背景（不含附件）。为控制请求长度，每条记忆最多保留 220 字。可在“更多”中关闭；多人共用此浏览器时建议关闭。当前问题和最新身体档案优先于旧对话。</p>
               <p>饮食相关回复仅供一般参考；引用营养数据时会区分程序计算值与未知项，不把缺失数据当作 0。</p>
             </div>
@@ -726,6 +784,16 @@ summary::-webkit-details-marker { display: none; }
 .vb-chat-input-tools > span { color: var(--vb-faint); font-size: 10px; }
 .vb-chat-attach-button { display: inline-flex; align-items: center; gap: 4px; padding: 5px; border: 0; border-radius: 6px; color: var(--vb-accent); background: transparent; font-size: 11px; }
 .vb-chat-attach-button:hover { background: var(--vb-accent-soft); }
+.vb-chat-search-toggle { display: inline-flex; align-items: center; gap: 5px; padding: 5px 7px; border-radius: 7px; color: var(--vb-accent); background: var(--vb-accent-soft); font-size: 11px; cursor: pointer; white-space: nowrap; }
+.vb-chat-search-toggle input { margin: 0; accent-color: var(--vb-accent); }
+.vb-chat-search-status, .vb-chat-search-warning { display: block; margin-top: 8px; color: var(--vb-muted); font-size: 11px; line-height: 1.6; }
+.vb-chat-search-warning { color: var(--vb-danger); }
+.vb-chat-sources { margin-top: 9px; color: var(--vb-muted); font-size: 11px; }
+.vb-chat-sources summary { width: fit-content; color: var(--vb-accent); cursor: pointer; }
+.vb-chat-sources ol { display: grid; gap: 7px; margin: 8px 0 0; padding-left: 21px; }
+.vb-chat-sources li { padding-left: 2px; line-height: 1.55; overflow-wrap: anywhere; }
+.vb-chat-sources a { color: var(--vb-accent); text-decoration: underline; text-underline-offset: 2px; }
+.vb-chat-sources li small { display: block; margin-top: 2px; color: var(--vb-faint); font-size: 10px; }
 .vb-chat-draft-attachments, .vb-chat-sent-attachments { display: flex; flex-wrap: wrap; gap: 8px; }
 .vb-chat-draft-attachments { max-height: 140px; margin-bottom: 12px; overflow-y: auto; }
 .vb-chat-sent-attachments { margin-bottom: 9px; }

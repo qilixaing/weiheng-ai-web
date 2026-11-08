@@ -178,13 +178,13 @@ export async function initializeStorageScope() {
   });
 }
 
-export async function signInOrRegister({ mode, email, password, acceptTerms = false, verificationCode = '' }) {
+export async function signInOrRegister({ mode, email, password, acceptTerms = false, privacyPolicyVersion = '', verificationCode = '' }) {
   const guestState = globalThis.localStorage.getItem(MAIN_DATA_KEY);
   const response = await fetch(`/api/auth/${mode === 'register' ? 'register' : 'login'}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     cache: 'no-store',
-    body: JSON.stringify({ email, password, acceptTerms, verificationCode }),
+    body: JSON.stringify({ email, password, acceptTerms, privacyPolicyVersion, verificationCode }),
   });
   const result = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(result.error || '登录暂时失败，请重试。');

@@ -41,7 +41,12 @@ export class AuthStore {
         updated_at TEXT NOT NULL
       );
     `);
+    const userColumns = new Set(this.db.prepare('PRAGMA table_info(users)').all().map(column => column.name));
+    if (!userColumns.has('privacy_policy_version')) this.db.exec('ALTER TABLE users ADD COLUMN privacy_policy_version TEXT');
+    if (!userColumns.has('privacy_policy_accepted_at')) this.db.exec('ALTER TABLE users ADD COLUMN privacy_policy_accepted_at TEXT');
     this.insertUser = this.db.prepare('INSERT INTO users(id,email,password_salt,password_hash,created_at) VALUES(?,?,?,?,?)');
+    this.insertUserWithConsent = this.db.prepare('INSERT INTO users(id,email,password_salt,password_hash,created_at,privacy_policy_version,privacy_policy_accepted_at) VALUES(?,?,?,?,?,?,?)');
+    this.updatePrivacyConsent = this.db.prepare('UPDATE users SET privacy_policy_version=?,privacy_policy_accepted_at=? WHERE id=?');
     this.findByEmail = this.db.prepare('SELECT id,email,password_salt,password_hash FROM users WHERE email=? COLLATE NOCASE');
     this.findVerificationCode = this.db.prepare('SELECT code_salt,code_hash,expires_at,attempts,created_at FROM email_verification_codes WHERE email=? COLLATE NOCASE');
     this.insertVerificationCode = this.db.prepare(`INSERT INTO email_verification_codes(email,code_salt,code_hash,expires_at,attempts,created_at) VALUES(?,?,?,?,0,?)
@@ -58,11 +63,12 @@ export class AuthStore {
     this.deleteData = this.db.prepare('DELETE FROM app_data WHERE user_id=?');
   }
 
-  register(email, password) {
+  register(email, password, privacyPolicyVersion = null) {
     const salt = randomBytes(16).toString('hex');
     const id = randomBytes(16).toString('hex');
+    const acceptedAt = new Date().toISOString();
     try {
-      this.insertUser.run(id, email, salt, scryptSync(password, salt, 64).toString('hex'), new Date().toISOString());
+      this.insertUserWithConsent.run(id, email, salt, scryptSync(password, salt, 64).toString('hex'), acceptedAt, privacyPolicyVersion || null, privacyPolicyVersion ? acceptedAt : null);
     } catch (error) {
       if (String(error.message).includes('UNIQUE')) return { error: '该邮箱已注册，请直接登录。' };
       throw error;
@@ -124,12 +130,13 @@ export class AuthStore {
     return true;
   }
 
-  login(email, password) {
+  login(email, password, privacyPolicyVersion = null) {
     const row = this.findByEmail.get(email);
     if (!row) return null;
     const actual = scryptSync(password, row.password_salt, 64);
     const expected = Buffer.from(row.password_hash, 'hex');
     if (actual.length !== expected.length || !timingSafeEqual(actual, expected)) return null;
+    if (privacyPolicyVersion) this.updatePrivacyConsent.run(privacyPolicyVersion, new Date().toISOString(), row.id);
     return { user: { id: row.id, email: row.email }, token: this.newSession(row.id) };
   }
 
