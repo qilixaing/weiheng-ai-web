@@ -56,7 +56,7 @@ onBeforeUnmount(()=>clearTimeout(toastTimer));
     <main ref="content" class="vb-content" tabindex="-1"><p v-if="storageError||reportStorageError" class="vb-storage-error" role="alert">{{ storageError||reportStorageError }}</p><template v-if="true">
      <!-- Keep the chat page mounted while navigating so an in-flight SSE request survives route changes. -->
      <AiDietAssistantPage v-show="active==='dietAssistant'" :active="active==='dietAssistant'" :records="state.records" :targets="nutrition" :profile="effectiveProfile" />
-     <OverviewPage v-if="active==='overview'" :profile="effectiveProfile" :nutrition="nutrition" :record-count="records.length" :records="records" @edit="wizardOpen=true" @navigate="navigate" />
+     <OverviewPage v-if="active==='overview'" :profile="effectiveProfile" :nutrition="nutrition" :record-count="records.length" :records="records" :reports="reports" @edit="wizardOpen=true" @navigate="navigate" />
      <AiNutritionAssessmentPage v-if="active==='assessment'" :records="records" :habits="state.habits" :flags="state.flags" :reports="reports" :profile="effectiveProfile" @navigate="navigate" @toggle-habit="toggleHabit" @open-report="openAnalysis" @retry-report="retryAnalysis" />
      <DiaryPage v-else-if="active==='diary'" :records="records" :reports="reports" :profile="effectiveProfile" :nutrition="nutrition" :initial-date="diaryDate" :saving="saving" @save="saved" @remove="removeRecord" @analysis="openAnalysis" @browse="navigate('food')" @detail="detailFood=FOOD_BY_ID[$event]" />
      <FoodBrowserPage v-else-if="active==='food'" @detail="detailFood=FOOD_BY_ID[$event]" />

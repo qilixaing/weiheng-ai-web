@@ -1,4 +1,4 @@
-import {calculateIntake,recordEntries,NUTRIENTS} from './foodNutrition.js';
+import {calculateIntake,recordEntriesWithAiEstimates,NUTRIENTS} from './foodNutrition.js';
 import {overviewNutrition,lifeStageMicronutrients} from './lifeStageNutrition.js';
 const ids={a:'vitaminA',c:'vitaminC',d:'vitaminD',e:'vitaminE',k:'vitaminK'};
 export function referenceMap(profile){
@@ -14,9 +14,9 @@ export function nutrientRows(entries,profile){
  const comparable=!!ref&&ref.unit===metric.unit&&metric.id!=='vitaminE'&&!ref.kind?.startsWith('年龄组');
  return {...metric,...total,reference:ref,ratio:comparable&&total.complete&&!total.range&&typeof total.value==='number'?total.value/ref.value:null};});
 }
-export function intakeTrend(records,endDate,days=7){
+export function intakeTrend(records,endDate,days=7,reports=[]){
  const end=new Date(endDate+'T12:00:00Z');if(!Number.isFinite(+end))return [];
- return Array.from({length:days},(_,i)=>{const d=new Date(end);d.setUTCDate(d.getUTCDate()-days+1+i);const date=d.toISOString().slice(0,10),record=records.find(r=>r.date===date),entries=recordEntries(record);return {date,recorded:entries.length>0,...calculateIntake(entries)};});
+ return Array.from({length:days},(_,i)=>{const d=new Date(end);d.setUTCDate(d.getUTCDate()-days+1+i);const date=d.toISOString().slice(0,10),record=records.find(r=>r.date===date),entries=recordEntriesWithAiEstimates(record,reports);return {date,recorded:entries.length>0,...calculateIntake(entries)};});
 }
 export function interpretation(row){
  if(row.range)return row.complete?'含AI单值参考估算；不作营养诊断':'含AI单值估算，仍有未知项';

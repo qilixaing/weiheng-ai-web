@@ -1,5 +1,5 @@
-import { a as Z, l as ne, e as me, j as se, r as W, h as ae, k as le, m as ge, n as be, p as he } from "./main-DmghEwNS.js";
-import { o as u, d as c, F as D, f as j, w as pe, s as ue, h as fe, x as ce, r as N, e, g as z, i as L, t as i, j as x, u as k, p as g, K as ye, l as oe, n as ke, L as we, a as U, M as Ae, k as G, m as Q, N as Me, v as $, B as Ce } from "./vue-runtime-wiGxZMXT.js";
+import { a as Z, l as ne, e as me, j as se, r as W, h as ae, k as le, m as ge, n as be, p as he } from "./main-DQbgHF-o.js";
+import { o as u, d as c, F as D, f as j, w as pe, s as ue, h as fe, x as ce, r as N, e, g as z, i as L, t as i, j as x, u as k, p as g, K as ye, l as oe, n as ke, L as Ae, a as U, M as we, k as G, m as Q, N as Me, v as $, B as Ce } from "./vue-runtime-wiGxZMXT.js";
 const O = [
   { key: "sedentary", label: "久坐", factor: 1.2, detail: "大部分时间坐着，很少运动", icon: "chair" },
   { key: "light", label: "轻度活动", factor: 1.375, detail: "日常走动，每周轻度运动 1–3 天", icon: "walk" },
@@ -26,7 +26,7 @@ function ee(t) {
 function de(t) {
   const l = Number(t?.age), s = t?.sex === "male";
   if (!K(t?.age) || l < 18 || !t?.sex) return { vitamins: [], minerals: [] };
-  const n = (m, f, w, C, A = "RNI", S = "") => ({ id: m, name: f, value: w, unit: C, kind: A, note: S }), v = l < 50 ? s ? 770 : 660 : l < 65 ? s ? 750 : 660 : l < 75 ? s ? 730 : 640 : s ? 710 : 600, h = [
+  const n = (m, f, A, C, w = "RNI", S = "") => ({ id: m, name: f, value: A, unit: C, kind: w, note: S }), v = l < 50 ? s ? 770 : 660 : l < 65 ? s ? 750 : 660 : l < 75 ? s ? 730 : 640 : s ? 710 : 600, h = [
     n("a", "维生素 A", v, "μg RAE"),
     n("d", "维生素 D", l >= 65 ? 15 : 10, "μg"),
     n("e", "维生素 E", 14, "mg α-TE", "AI"),
@@ -134,7 +134,7 @@ const Ne = ["width", "height"], Re = ["d"], B = {
 function Le(t) {
   const l = N(null), s = N(null), n = N(!1);
   let v = null, h = null, b = 0, d, m, f = !1;
-  function w(A = !1) {
+  function A(w = !1) {
     const S = l.value, E = s.value;
     if (!S || !E) return;
     if (!d.matches) {
@@ -151,7 +151,7 @@ function Le(t) {
     const V = r.top - a.top + S.scrollTop, R = r.left - a.left, T = I.top - a.top + S.scrollTop, q = I.height, P = r.height, F = V - T;
     E.style.width = r.width + "px", E.style.height = P + "px", E.style.left = R + "px", E.style.borderRadius = getComputedStyle(p).borderRadius, E.style.transform = `translate3d(0,${V}px,0)`;
     const Y = n.value;
-    if (n.value = !0, !A || !Y || m.matches || Math.abs(F) < 0.5 || typeof E.animate != "function") return;
+    if (n.value = !0, !w || !Y || m.matches || Math.abs(F) < 0.5 || typeof E.animate != "function") return;
     const X = 1 + Math.min(10, Math.abs(F) * 0.065) / P, M = Math.sign(F) * Math.min(3, Math.abs(F) * 0.018);
     v = E.animate([
       { transform: `translate3d(0,${T}px,0) scale(1,${q / P})`, offset: 0 },
@@ -162,16 +162,16 @@ function Le(t) {
     });
   }
   function C() {
-    cancelAnimationFrame(b), b = requestAnimationFrame(() => w(!1));
+    cancelAnimationFrame(b), b = requestAnimationFrame(() => A(!1));
   }
   return pe(t, async () => {
-    await ue(), f || w(!0);
+    await ue(), f || A(!0);
   }, { flush: "post" }), fe(() => {
     if (d = matchMedia("(min-width:761px)"), m = matchMedia("(prefers-reduced-motion: reduce)"), d.addEventListener("change", C), m.addEventListener("change", C), typeof ResizeObserver < "u") {
       h = new ResizeObserver(C), h.observe(l.value);
-      for (const A of l.value.querySelectorAll(".vb-nav-button")) h.observe(A);
+      for (const w of l.value.querySelectorAll(".vb-nav-button")) h.observe(w);
     }
-    window.addEventListener("resize", C), w(!1), document.fonts?.ready.then(() => {
+    window.addEventListener("resize", C), A(!1), document.fonts?.ready.then(() => {
       f || C();
     });
   }), ce(() => {
@@ -226,13 +226,13 @@ const Be = { class: "vb-sidebar" }, Ve = ["aria-current", "onClick"], Ke = {
           class: "vb-nav-liquid",
           "aria-hidden": "true"
         }, null, 512),
-        (u(), c(D, null, j(h, ([m, f, w]) => e("button", {
+        (u(), c(D, null, j(h, ([m, f, A]) => e("button", {
           key: m,
           class: z(["vb-nav-button", { "is-active": t.active === m }]),
           "aria-current": t.active === m ? "page" : void 0,
           onClick: (C) => b.$emit("navigate", m)
         }, [
-          L(B, { name: w }, null, 8, ["name"]),
+          L(B, { name: A }, null, 8, ["name"]),
           e("span", null, i(f), 1),
           t.active === m ? (u(), c("span", Ke)) : x("", !0)
         ], 10, Ve)), 64))
@@ -259,11 +259,11 @@ function ve(t) {
   const l = Number(t.age), s = t.ageMonths;
   if (l === 0 && !J(s)) return { vitamins: [], minerals: [] };
   if (l >= 18) return de(t);
-  const n = l === 0 && !J(s), v = l === 0 ? Number(s) >= 6 ? 1 : 0 : l < 4 ? 2 : l < 9 ? 3 : l < 14 ? t.sex === "male" ? 4 : 6 : t.sex === "male" ? 5 : 7, h = _.rows[v], b = (d, m) => m.map(([f, w, C], A) => ({
+  const n = l === 0 && !J(s), v = l === 0 ? Number(s) >= 6 ? 1 : 0 : l < 4 ? 2 : l < 9 ? 3 : l < 14 ? t.sex === "male" ? 4 : 6 : t.sex === "male" ? 5 : 7, h = _.rows[v], b = (d, m) => m.map(([f, A, C], w) => ({
     id: f,
-    name: w,
+    name: A,
     unit: C,
-    value: n ? `0–<6月 ${_.rows[0][d][A]}；6–<12月 ${_.rows[1][d][A]}` : h[d][A],
+    value: n ? `0–<6月 ${_.rows[0][d][w]}；6–<12月 ${_.rows[1][d][w]}` : h[d][w],
     kind: n ? "AI / RDA" : l === 0 ? v === 0 || d === "vitamins" || ["calcium", "magnesium", "potassium", "phosphorus", "selenium", "iodine"].includes(f) ? "AI" : "RDA" : ["e", "k", "potassium"].includes(f) ? f === "e" ? "RDA" : "AI" : "RDA",
     note: "Health Canada / NASEM 膳食参考量；不是中国 DRIs 表，也不是补充剂剂量。"
   }));
@@ -276,10 +276,10 @@ function ze(t, l, s) {
 function ie(t, l, s, n, v, h) {
   const b = t === 0 ? h / 12 : t;
   if (t < 3) {
-    const w = t === 0 ? h < 3 ? l ? 200 : 180 : h < 6 ? l ? 50 : 60 : 20 : l ? 20 : 15;
-    return l ? -716.45 - b + 17.82 * s + 15.06 * n + w : -69.15 + 80 * b + 2.65 * s + 54.15 * n + w;
+    const A = t === 0 ? h < 3 ? l ? 200 : 180 : h < 6 ? l ? 50 : 60 : 20 : l ? 20 : 15;
+    return l ? -716.45 - b + 17.82 * s + 15.06 * n + A : -69.15 + 80 * b + 2.65 * s + 54.15 * n + A;
   }
-  const d = O.findIndex((w) => w.key === v), m = (l ? [[-447.51, 3.68, 13.01, 13.15], [19.12, 3.68, 8.62, 20.28], [-388.19, 3.68, 12.66, 20.46], [-671.75, 3.68, 15.38, 23.25]] : [[55.59, -22.25, 8.43, 17.07], [-297.54, -22.25, 12.77, 14.73], [-189.55, -22.25, 11.74, 18.34], [-709.59, -22.25, 18.22, 14.25]])[d], f = t < 4 ? l ? 20 : 15 : t < 9 ? 15 : t < 14 ? l ? 25 : 30 : 20;
+  const d = O.findIndex((A) => A.key === v), m = (l ? [[-447.51, 3.68, 13.01, 13.15], [19.12, 3.68, 8.62, 20.28], [-388.19, 3.68, 12.66, 20.46], [-671.75, 3.68, 15.38, 23.25]] : [[55.59, -22.25, 8.43, 17.07], [-297.54, -22.25, 12.77, 14.73], [-189.55, -22.25, 11.74, 18.34], [-709.59, -22.25, 18.22, 14.25]])[d], f = t < 4 ? l ? 20 : 15 : t < 9 ? 15 : t < 14 ? l ? 25 : 30 : 20;
   return m[0] + m[1] * b + m[2] * s + m[3] * n + f;
 }
 function He(t) {
@@ -289,13 +289,13 @@ function He(t) {
   if (te(t) || !t?.sex || !J(t.age) || !J(t.height) || !J(t.weight)) return null;
   const s = Number(t.age), n = t.sex === "male", v = Number(t.weight), h = Number(t.height), b = O.find((a) => a.key === t.activity);
   if (!b && s >= 3) return null;
-  const d = ze(s, n, v), m = s === 0, f = m && !J(t.ageMonths), w = f ? Array.from({ length: 12 }, (a, r) => ie(s, n, h, v, t.activity, r)) : null, C = f ? null : s < 18 ? ie(s, n, h, v, t.activity, Number(t.ageMonths)) : d * b.factor;
-  if (d <= 0 || C != null && C <= 0 || w && w.some((a) => a <= 0)) return null;
-  const A = s < 4 ? [15, 35, 50] : s < 18 ? [15, 30, 55] : [20, 25, 55], S = [["protein", "蛋白质", 4, "sage"], ["fat", "脂肪", 9, "sand"], ["carbs", "碳水化合物", 4, "lilac"]], E = Number(t.ageMonths) >= 6 ? [11, 30, 95] : [9.1, 31, 60], p = S.map(([a, r, I, V], R) => ({ id: a, name: r, kcalPerGram: I, color: V, percent: m ? null : A[R], grams: m ? f ? ["9.1–11", "30–31", "60–95"][R] : E[R] : C * A[R] / 100 / I, foods: m ? "年龄段膳食参考量，包含乳汁与辅食；不用于配奶。" : "按年龄段 AMDR 内示例比例换算，非个体处方。" }));
+  const d = ze(s, n, v), m = s === 0, f = m && !J(t.ageMonths), A = f ? Array.from({ length: 12 }, (a, r) => ie(s, n, h, v, t.activity, r)) : null, C = f ? null : s < 18 ? ie(s, n, h, v, t.activity, Number(t.ageMonths)) : d * b.factor;
+  if (d <= 0 || C != null && C <= 0 || A && A.some((a) => a <= 0)) return null;
+  const w = s < 4 ? [15, 35, 50] : s < 18 ? [15, 30, 55] : [20, 25, 55], S = [["protein", "蛋白质", 4, "sage"], ["fat", "脂肪", 9, "sand"], ["carbs", "碳水化合物", 4, "lilac"]], E = Number(t.ageMonths) >= 6 ? [11, 30, 95] : [9.1, 31, 60], p = S.map(([a, r, I, V], R) => ({ id: a, name: r, kcalPerGram: I, color: V, percent: m ? null : w[R], grams: m ? f ? ["9.1–11", "30–31", "60–95"][R] : E[R] : C * w[R] / 100 / I, foods: m ? "年龄段膳食参考量，包含乳汁与辅食；不用于配奶。" : "按年龄段 AMDR 内示例比例换算，非个体处方。" }));
   return {
     bmr: d,
     tdee: C,
-    energyRange: w ? [Math.min(...w), Math.max(...w)] : null,
+    energyRange: A ? [Math.min(...A), Math.max(...A)] : null,
     activity: b,
     macros: p,
     ...ve(t),
@@ -304,7 +304,7 @@ function He(t) {
     energyLabel: s < 18 ? "EER" : "TDEE",
     microSource: s < 18 ? "Health Canada / NASEM RDA、AI" : "中国 DRIs 2023",
     energyBasis: s < 18 ? "Health Canada 2023 年龄分组能量公式（包含生长需求）" : `Schofield 60岁及以上组 × ${b.factor}；高龄外推估算`,
-    macroNote: m ? "婴儿显示各阶段 AI / RDA 表值，不按成人供能比换算；各范围不是同一个月龄的配餐组合。" : `供能示例：蛋白质 ${A[0]}% / 脂肪 ${A[1]}% / 碳水 ${A[2]}%。`,
+    macroNote: m ? "婴儿显示各阶段 AI / RDA 表值，不按成人供能比换算；各范围不是同一个月龄的配餐组合。" : `供能示例：蛋白质 ${w[0]}% / 脂肪 ${w[1]}% / 碳水 ${w[2]}%。`,
     notice: m ? f ? "0岁跨越多个生长阶段：显示月龄范围，请补充月龄。婴儿喂养由监护人与儿科专业人员确认，不用于配奶或喂养处方。" : "婴儿估算只用于认识参考范围，不用于配奶、早产儿或疾病喂养处方。" : s < 18 ? "儿童与青少年使用生长阶段公式；活动分组为近似对应。请结合生长曲线由监护人和专业人员确认，不用于限制热量或成人减重。" : "超过78岁使用60岁及以上组作粗略外推，不代表已在百岁人群验证；实际需要应由专业人员结合健康状况评估。"
   };
 }
@@ -374,7 +374,7 @@ const Pe = { class: "vb-sources" }, Qe = ["href"], Oe = ["href"], qe = ["href"],
 }, ft = {
   key: 3,
   class: "vb-inline-note"
-}, yt = { class: "vb-glass vb-macro-section" }, kt = { class: "vb-section-heading" }, wt = { class: "vb-macro-grid" }, At = { class: "vb-macro-top" }, Mt = { class: "vb-macro-percent" }, Ct = { class: "vb-macro-top" }, It = {
+}, yt = { class: "vb-glass vb-macro-section" }, kt = { class: "vb-section-heading" }, At = { class: "vb-macro-grid" }, wt = { class: "vb-macro-top" }, Mt = { class: "vb-macro-percent" }, Ct = { class: "vb-macro-top" }, It = {
   key: 0,
   class: "vb-macro-strip",
   "aria-hidden": "true"
@@ -389,10 +389,10 @@ const Pe = { class: "vb-sources" }, Qe = ["href"], Oe = ["href"], qe = ["href"],
   class: "vb-glass vb-plan-context"
 }, Jt = { class: "vb-glass vb-record-prompt" }, Ft = { class: "vb-icon-badge" }, kn = {
   __name: "OverviewPage",
-  props: { profile: Object, nutrition: Object, recordCount: Number, records: Array, deferIntake: Boolean },
+  props: { profile: Object, nutrition: Object, recordCount: Number, records: Array, reports: Array, deferIntake: Boolean },
   emits: ["edit", "navigate"],
   setup(t) {
-    const l = we(() => import("./IntakeAnalysis-B99Grf8H.js").then((p) => p.I)), s = t, n = U(() => He(s.profile)), v = U(() => ve(s.profile)), h = U(() => v.value.vitamins.length > 0), b = U(() => O.find((p) => p.key === s.profile.activity)), d = U(() => [
+    const l = Ae(() => import("./IntakeAnalysis-B03JX9fS.js").then((p) => p.I)), s = t, n = U(() => He(s.profile)), v = U(() => ve(s.profile)), h = U(() => v.value.vitamins.length > 0), b = U(() => O.find((p) => p.key === s.profile.activity)), d = U(() => [
       !s.profile.sex && "性别",
       (s.profile.age == null || s.profile.age === "") && "年龄",
       (s.profile.height == null || s.profile.height === "") && "身高",
@@ -402,7 +402,7 @@ const Pe = { class: "vb-sources" }, Qe = ["href"], Oe = ["href"], qe = ["href"],
       { id: "protein", name: "蛋白质", color: "sage" },
       { id: "fat", name: "脂肪", color: "sand" },
       { id: "carbohydrate", name: "碳水化合物", color: "lilac" }
-    ], w = [["vitamins", "维生素", "leaf"], ["minerals", "矿物质", "drop"]], C = (p) => new Intl.NumberFormat("zh-CN", { maximumFractionDigits: 0 }).format(p), A = (p) => typeof p == "string" ? p : new Intl.NumberFormat("zh-CN", { maximumFractionDigits: 1 }).format(p), S = (p, a) => p == null || p === "" ? "未填写" : `${p} ${a}`, E = new Intl.DateTimeFormat("zh-CN", { month: "long", day: "numeric", weekday: "long" }).format(/* @__PURE__ */ new Date());
+    ], A = [["vitamins", "维生素", "leaf"], ["minerals", "矿物质", "drop"]], C = (p) => new Intl.NumberFormat("zh-CN", { maximumFractionDigits: 0 }).format(p), w = (p) => typeof p == "string" ? p : new Intl.NumberFormat("zh-CN", { maximumFractionDigits: 1 }).format(p), S = (p, a) => p == null || p === "" ? "未填写" : `${p} ${a}`, E = new Intl.DateTimeFormat("zh-CN", { month: "long", day: "numeric", weekday: "long" }).format(/* @__PURE__ */ new Date());
     return (p, a) => (u(), c(D, null, [
       e("div", We, [
         e("div", null, [
@@ -439,9 +439,10 @@ const Pe = { class: "vb-sources" }, Qe = ["href"], Oe = ["href"], qe = ["href"],
       ])])) : (u(), oe(k(l), {
         key: 0,
         records: t.records,
+        reports: t.reports,
         profile: t.profile,
         compact: ""
-      }, null, 8, ["records", "profile"])),
+      }, null, 8, ["records", "reports", "profile"])),
       e("section", et, [
         e("span", tt, i(t.profile.sex === "male" ? "♂" : t.profile.sex === "female" ? "♀" : "○"), 1),
         e("div", nt, [
@@ -545,18 +546,18 @@ const Pe = { class: "vb-sources" }, Qe = ["href"], Oe = ["href"], qe = ["href"],
           ]),
           a[22] || (a[22] = e("span", { class: "vb-subtle-label" }, "每日参考", -1))
         ]),
-        e("div", wt, [
+        e("div", At, [
           n.value ? (u(!0), c(D, { key: 0 }, j(n.value.macros, (r) => (u(), c("article", {
             key: r.id,
             class: z(["vb-macro-card", r.color])
           }, [
-            e("div", At, [
+            e("div", wt, [
               a[23] || (a[23] = e("span", { class: "vb-macro-dot" }, null, -1)),
               g(i(r.name), 1),
               e("span", Mt, i(r.percent == null ? "AI / RDA" : r.percent + "%"), 1)
             ]),
             e("strong", null, [
-              g(i(A(r.grams)), 1),
+              g(i(w(r.grams)), 1),
               a[24] || (a[24] = e("small", null, " 克", -1))
             ]),
             e("p", null, i(r.foods), 1)
@@ -593,7 +594,7 @@ const Pe = { class: "vb-sources" }, Qe = ["href"], Oe = ["href"], qe = ["href"],
         a[30] || (a[30] = e("span", { class: "vb-subtle-label" }, "膳食参考量，非补充剂剂量", -1))
       ]),
       h.value ? (u(), c("div", St, [
-        (u(), c(D, null, j(w, ([r, I, V]) => e("section", {
+        (u(), c(D, null, j(A, ([r, I, V]) => e("section", {
           key: r,
           class: "vb-glass vb-micro-card"
         }, [
@@ -637,7 +638,7 @@ const Pe = { class: "vb-sources" }, Qe = ["href"], Oe = ["href"], qe = ["href"],
           ])
         ])), 64))
       ])) : (u(), c("div", Kt, [
-        (u(), c(D, null, j(w, ([, r, I]) => e("section", {
+        (u(), c(D, null, j(A, ([, r, I]) => e("section", {
           key: r,
           class: "vb-glass vb-micro-card vb-micro-placeholder"
         }, [
@@ -731,39 +732,39 @@ const Pe = { class: "vb-sources" }, Qe = ["href"], Oe = ["href"], qe = ["href"],
 }, hn = {
   key: 2,
   class: "vb-account-test"
-}, wn = {
+}, An = {
   __name: "AccountDialog",
   emits: ["close"],
   setup(t, { emit: l }) {
-    const s = l, n = N("login"), v = N(""), h = N(""), b = N(""), d = N(""), m = N(""), f = N(""), w = N("");
+    const s = l, n = N("login"), v = N(""), h = N(""), b = N(""), d = N(""), m = N(""), f = N(""), A = N("");
     async function C() {
       try {
         const M = await fetch("/api/auth/captcha", { cache: "no-store" }), o = await M.json();
         if (!M.ok) throw Error(o.error);
-        m.value = o.image, f.value = o.captchaId, w.value = "";
+        m.value = o.image, f.value = o.captchaId, A.value = "";
       } catch (M) {
         r.value = M.message || "图形验证码加载失败";
       }
     }
-    const A = N(0), S = N(!1);
+    const w = N(0), S = N(!1);
     let E = 0;
     const p = N(!1), a = N(!1), r = N(""), I = N(!1), V = ["localhost", "127.0.0.1", "[::1]"].includes(window.location.hostname), R = U(() => ({ guest: "游客数据只保存在本机", syncing: "正在读取账号数据…", pending: "正在同步账号数据…", synced: "账号数据已同步", error: "同步暂时失败，本机副本仍保留" })[ae.value] || "账号数据");
     function T(M) {
-      n.value = M, p.value = !1, a.value = !1, M !== "login" && C(), r.value = "", b.value = "", d.value = "", A.value = 0, clearInterval(E);
+      n.value = M, p.value = !1, a.value = !1, M !== "login" && C(), r.value = "", b.value = "", d.value = "", w.value = 0, clearInterval(E);
     }
     function q(M = 60) {
-      clearInterval(E), A.value = M, E = setInterval(() => {
-        A.value = Math.max(0, A.value - 1), A.value || clearInterval(E);
+      clearInterval(E), w.value = M, E = setInterval(() => {
+        w.value = Math.max(0, w.value - 1), w.value || clearInterval(E);
       }, 1e3);
     }
     async function P() {
-      if (S.value || A.value) return;
+      if (S.value || w.value) return;
       const M = v.value.trim();
       if (!/^\S+@\S+\.\S+$/.test(M)) {
         r.value = "请先填写有效邮箱地址。";
         return;
       }
-      if (r.value = "", d.value = "", !/^[23456789A-H]{4}$/i.test(w.value.trim())) {
+      if (r.value = "", d.value = "", !/^[23456789A-H]{4}$/i.test(A.value.trim())) {
         r.value = "请输入图片中的4位验证码。";
         return;
       }
@@ -773,7 +774,7 @@ const Pe = { class: "vb-sources" }, Qe = ["href"], Oe = ["href"], qe = ["href"],
           method: "POST",
           headers: { "Content-Type": "application/json" },
           cache: "no-store",
-          body: JSON.stringify({ email: M, purpose: n.value === "reset" ? "reset" : "register", captchaId: f.value, captchaAnswer: w.value })
+          body: JSON.stringify({ email: M, purpose: n.value === "reset" ? "reset" : "register", captchaId: f.value, captchaAnswer: A.value })
         }), y = await o.json().catch(() => ({}));
         if (!o.ok) throw new Error(y.error || "验证码发送失败，请稍后重试。");
         typeof y.localDebugCode == "string" && (d.value = y.localDebugCode), q(Number(y.resendAfterSeconds) || 60);
@@ -811,7 +812,7 @@ const Pe = { class: "vb-sources" }, Qe = ["href"], Oe = ["href"], qe = ["href"],
       const o = URL.createObjectURL(new Blob([M], { type: "application/json" })), y = document.createElement("a");
       y.href = o, y.download = "维衡-同步冲突恢复副本.json", y.click(), setTimeout(() => URL.revokeObjectURL(o), 1e3);
     }
-    Ae(() => clearInterval(E));
+    we(() => clearInterval(E));
     async function X() {
       if (!I.value) {
         I.value = !0, r.value = "";
@@ -921,12 +922,12 @@ const Pe = { class: "vb-sources" }, Qe = ["href"], Oe = ["href"], qe = ["href"],
               o[18] || (o[18] = g("图形验证码", -1)),
               e("div", tn, [
                 Q(e("input", {
-                  "onUpdate:modelValue": o[8] || (o[8] = (y) => w.value = y),
+                  "onUpdate:modelValue": o[8] || (o[8] = (y) => A.value = y),
                   autocomplete: "off",
                   maxlength: "4",
                   placeholder: "4位图形验证码"
                 }, null, 512), [
-                  [$, w.value]
+                  [$, A.value]
                 ]),
                 e("button", {
                   type: "button",
@@ -962,9 +963,9 @@ const Pe = { class: "vb-sources" }, Qe = ["href"], Oe = ["href"], qe = ["href"],
                 e("button", {
                   class: "vb-button vb-button-quiet",
                   type: "button",
-                  disabled: S.value || A.value > 0,
+                  disabled: S.value || w.value > 0,
                   onClick: P
-                }, i(S.value ? "发送中…" : A.value ? `${A.value} 秒后重发` : "获取验证码"), 9, on)
+                }, i(S.value ? "发送中…" : w.value ? `${w.value} 秒后重发` : "获取验证码"), 9, on)
               ])
             ])) : x("", !0),
             d.value ? (u(), c("p", rn, [
@@ -1021,7 +1022,7 @@ const Pe = { class: "vb-sources" }, Qe = ["href"], Oe = ["href"], qe = ["href"],
     ]));
   }
 };
-function An(t) {
+function wn(t) {
   let l = null, s = 0, n = t.value;
   function v() {
     const h = ++s;
@@ -1057,10 +1058,10 @@ export {
   yn as b,
   Se as c,
   kn as d,
-  wn as e,
+  An as e,
   ve as l,
   He as o,
   xe as p,
-  An as u,
+  wn as u,
   te as v
 };

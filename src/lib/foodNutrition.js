@@ -1,6 +1,6 @@
 // @ts-check
 import { FOOD_BY_ID, FOOD_GROUPS, FOOD_DATA_VERSION, ensureFoodDetails } from '../data/catalogue.js';
-import {normalizeSnapshot,entryNutrient} from './nutritionSnapshot.js';
+import {normalizeSnapshot,entryNutrient,applyAiEstimatesToEntries} from './nutritionSnapshot.js';
 import {estimateMidpoint} from './nutritionEstimate.js';
 export const MEALS=[['breakfast','早餐'],['lunch','午餐'],['dinner','晚餐'],['snack','加餐'],['unspecified','未指定餐次']];
 export const NUTRIENTS=[
@@ -20,6 +20,14 @@ export function portion(food,grams){return Object.fromEntries(NUTRIENTS.map(({id
 export function normalizeEntries(entries){return(Array.isArray(entries)?entries:[]).slice(0,300).flatMap((entry,index)=>{const food=FOOD_BY_ID[entry.foodId],grams=Number(entry.grams),name=food?.name||String(entry.name||'').trim().slice(0,100);if(!name||!Number.isFinite(grams)||grams<0.1||grams>5000)return[];const nutritionSnapshot=normalizeSnapshot(entry.nutritionSnapshot,food?.key||null);return[{id:String(entry.id||`entry-${index}`),foodId:food?.key||null,name,grams:Math.round(grams*10)/10,meal:MEALS.some(([id])=>id===entry.meal)?entry.meal:'unspecified',group:food?.group||(food&&FOOD_GROUPS.some(g=>g.key===entry.group)?entry.group:'unclassified'),source:['photo','manual','catalogue','legacy'].includes(entry.source)?entry.source:'catalogue',estimated:!!entry.estimated,referenceConfirmed:entry.referenceConfirmed!==false,...(nutritionSnapshot?{nutritionSnapshot}:{})}];});}
 /** @param {Partial<import('../types/nutrition').DailyRecord>|null|undefined} record */
 export function recordEntries(record){if(Array.isArray(record?.entries))return normalizeEntries(record.entries);const entries=/** @type {unknown[]} */ (Object.entries(record?.grams||record?.items||{}).filter(([,value])=>Number(value)>0).map(([id,value])=>({id:'legacy-'+id,foodId:id,name:FOOD_BY_ID[id]?.name||id,grams:record?.grams?Number(value):Number(value)*(FOOD_BY_ID[id]?.grams||100),source:'legacy',referenceConfirmed:false})));entries.push(...(record?.customFoods||[]).map((item,i)=>({...item,id:item.id||'custom-'+i,foodId:null,source:'manual'})));return normalizeEntries(entries);}
+/** Use a completed AI report only when it was generated for this exact saved record. */
+export function recordEntriesWithAiEstimates(record,reports=[]){
+ const entries=recordEntries(record);if(!record||!entries.length)return entries;
+ const version=recordVersion(record),report=reports.find(item=>item?.date===record.date&&item.status==='complete'&&item.recordVersion===version);
+ if(!Array.isArray(report?.snapshot?.entries))return entries;
+ const estimated=applyAiEstimatesToEntries(report.snapshot.entries,report.calculation?.estimation?.foods||[],{model:report.model,generatedAt:report.generatedAt});
+ return recordEntries({entries:estimated});
+}
 /** @param {unknown} entries */
 export function calculateIntake(entries){const items=normalizeEntries(entries);const pending=items.filter(e=>e.foodId&&!e.nutritionSnapshot&&FOOD_BY_ID[e.foodId]?.__summary).map(e=>String(e.foodId));if(pending.length)void ensureFoodDetails(pending).catch(()=>{});const totals=Object.fromEntries(NUTRIENTS.map(({id})=>{let known=0,value=0,estimatedCount=0,low=0,high=0;const missing=[];for(const entry of items){const n=entryNutrient(entry,entry.foodId?FOOD_BY_ID[entry.foodId]:undefined,id),scale=entry.grams/100;if(typeof n.value==='number'&&Number.isFinite(n.value)){known++;value+=n.value*scale;}else if(n.range){estimatedCount++;low+=n.range.low*scale;high+=n.range.high*scale;}else missing.push(entry.name);}return[id,{value:known?value:null,known,estimatedCount,range:estimatedCount?{low:value+low,high:value+high}:null,missing,complete:items.length>0&&!missing.length}];}));return{totals,itemCount:items.length,knownEnergyCount:totals.energy.known+totals.energy.estimatedCount,dataVersion:FOOD_DATA_VERSION,basis:'按可食部克数计算，不再乘食部比例'};}
 /** @param {import('../types/nutrition').NutrientTotal|null|undefined} total */
