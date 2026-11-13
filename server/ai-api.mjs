@@ -375,11 +375,37 @@ function validateChatMemory(value){
 async function runDietChat(input,{env,fetchImpl}){
  let prepared=prepareDietChat(input),web={sources:[],warning:''};
  if(prepared.webSearch){web=await searchDeepSeekWeb(prepared.latestQuestion,{env,fetchImpl});prepared=addWebEvidence(prepared,web);}
- const response=await requestDeepSeek(prepared.messages,{env,fetchImpl,vision:prepared.hasImages,jsonMode:false,maxTokens:prepared.documentFormat?6000:1200});
- const choice=response.payload.choices?.[0],answerText=typeof choice?.message?.content==='string'?choice.message.content.trim():'';
- if(choice?.finish_reason==='length')throw new ApiError(502,'AI_OUTPUT_TRUNCATED','AI 回复被截断，请重试。');
- if(!answerText)throw new ApiError(502,'INVALID_AI_RESPONSE','AI 暂时没有返回有效回复，请重试。');
- return{answer:prepared.documentFormat?documentReplyBody(clean(answerText,24000)):clean(answerText,5000),model:response.model,generatedAt:response.generatedAt,contextSummary:prepared.contextSummary,webSources:web.sources,webSearchWarning:web.warning||undefined};
+ const completed=await completeDietChat(prepared,{env,fetchImpl});
+ return{answer:prepared.documentFormat?documentReplyBody(clean(completed.answer,24000)):clean(completed.answer,5000),model:completed.model,generatedAt:completed.generatedAt,contextSummary:prepared.contextSummary,webSources:web.sources,webSearchWarning:web.warning||undefined};
+}
+const MAX_CHAT_CONTINUATIONS=3;
+function chatOutputLimit(prepared){return prepared.documentFormat?24000:5000;}
+function chatTokenLimit(prepared){return prepared.documentFormat?6000:1200;}
+function continuationMessages(originalMessages,answer){
+ return[...originalMessages,{role:'assistant',content:answer},{role:'user',content:'上一条回答因单次生成长度达到上限而停止。请从内容末尾自然续写，不要重复标题、段落或已输出的表格行；保持原格式，补全用户请求的剩余内容。'}];
+}
+function continuationAddition(previous,next){
+ const limit=Math.min(1200,previous.length,next.length);
+ for(let size=limit;size>=24;size--)if(previous.slice(-size)===next.slice(0,size))return next.slice(size);
+ return next;
+}
+function truncatedChatError(){return new ApiError(502,'AI_OUTPUT_TRUNCATED','AI 回复较长，自动续写次数已达上限；请缩短内容后重试。');}
+async function completeDietChat(prepared,{env,fetchImpl}){
+ let answer='',messages=prepared.messages,model='',generatedAt='';
+ for(let attempt=0;attempt<=MAX_CHAT_CONTINUATIONS;attempt++){
+  const response=await requestDeepSeek(messages,{env,fetchImpl,vision:prepared.hasImages,jsonMode:false,maxTokens:chatTokenLimit(prepared)});
+  const choice=response.payload.choices?.[0],text=typeof choice?.message?.content==='string'?choice.message.content:'';
+  if(!text.trim())throw new ApiError(502,'INVALID_AI_RESPONSE','AI 暂时没有返回有效回复，请重试。');
+  const addition=answer?continuationAddition(answer,text):text;
+  if(answer.length+addition.length>chatOutputLimit(prepared))throw new ApiError(502,'AI_OUTPUT_TOO_LONG','AI 回复超过长度限制，请缩短内容后重试。');
+  answer+=addition;model=response.model;generatedAt=response.generatedAt;
+  if(choice?.finish_reason==='length'){
+   if(attempt===MAX_CHAT_CONTINUATIONS)throw truncatedChatError();
+   messages=continuationMessages(prepared.messages,answer);continue;
+  }
+  return{answer,model,generatedAt};
+ }
+ throw truncatedChatError();
 }
 function prepareDietChat(input){
  const date=String(input.date||'');
@@ -424,7 +450,6 @@ async function runDietChatStream(input,{env,fetchImpl,signal},res){
   if(!res.destroyed&&!res.writableEnded)res.write(': keepalive\n\n');
  },15000);
  heartbeat.unref?.();
- let response;
  try{
   if(prepared.webSearch){
    writeSse(res,{type:'status',message:'正在联网搜索…'});
@@ -433,28 +458,46 @@ async function runDietChatStream(input,{env,fetchImpl,signal},res){
    prepared=addWebEvidence(prepared,web);
    writeSse(res,{type:'status',message:web.sources.length?'正在整理网页资料并回复…':'正在回复…'});
   }else writeSse(res,{type:'status',message:'正在回复…'});
-  response=await requestDeepSeek(prepared.messages,{env,fetchImpl,vision:prepared.hasImages,jsonMode:false,maxTokens:prepared.documentFormat?6000:1200,streaming:true,signal});
- }
- finally{clearInterval(heartbeat);}
- const reader=response.body.getReader(),decoder=new TextDecoder();let pending='',answer='',model=response.model,finishReason=null,done=false,finishedByReason=false;
- const consume=(block)=>{
-  const data=block.split(/\r?\n/).filter(line=>line.startsWith('data:')).map(line=>line.slice(5).trimStart()).join('\n');
-  if(!data)return;
-  if(data==='[DONE]'){done=true;return;}
-  let payload;try{payload=JSON.parse(data);}catch{throw new ApiError(502,'INVALID_AI_STREAM','AI 流式响应格式异常，请重试。');}
-  if(typeof payload.model==='string')model=clean(payload.model,100)||model;
-  const choice=payload.choices?.[0];if(typeof choice?.finish_reason==='string'&&choice.finish_reason){finishReason=choice.finish_reason;done=true;finishedByReason=true;}
-  const text=choice?.delta?.content;
-  if(typeof text==='string'&&text){if(answer.length+text.length>(prepared.documentFormat?24000:5000))throw new ApiError(502,'AI_OUTPUT_TOO_LONG','AI 回复超过长度限制，请重试。');answer+=text;writeSse(res,{type:'delta',text});}
- };
- try{
-  while(!done){const{value,done:streamEnded}=await reader.read();if(streamEnded)break;pending+=decoder.decode(value,{stream:true});let boundary;while((boundary=pending.search(/\r\n\r\n|\n\n|\r\r/))>=0){const block=pending.slice(0,boundary);const separator=pending.slice(boundary).match(/^(?:\r\n\r\n|\n\n|\r\r)/)[0];pending=pending.slice(boundary+separator.length);consume(block);if(done)break;}}
-  pending+=decoder.decode();if(pending.trim()&&!done)consume(pending);
-  if(finishedByReason)await reader.cancel().catch(()=>{});
-  if(finishReason==='length')throw new ApiError(502,'AI_OUTPUT_TRUNCATED','AI 回复被截断，请重试。');
+  let answer='',messages=prepared.messages,model='',finished=false;
+  for(let attempt=0;attempt<=MAX_CHAT_CONTINUATIONS&&!finished;attempt++){
+   if(signal?.aborted)throw signal.reason||new DOMException('Aborted','AbortError');
+   if(attempt>0)writeSse(res,{type:'status',message:`正在补全较长回复（${attempt}/${MAX_CHAT_CONTINUATIONS}）…`});
+   const response=await requestDeepSeek(messages,{env,fetchImpl,vision:prepared.hasImages,jsonMode:false,maxTokens:chatTokenLimit(prepared),streaming:true,signal});model=clean(response.model,100)||model;
+   const reader=response.body.getReader(),decoder=new TextDecoder();let pending='',segmentAnswer='',finishReason=null,done=false,finishedByReason=false,sawDoneSentinel=false;
+   const consume=(block)=>{
+    const data=block.split(/\r?\n/).filter(line=>line.startsWith('data:')).map(line=>line.slice(5).trimStart()).join('\n');
+    if(!data)return;
+    if(data==='[DONE]'){done=true;sawDoneSentinel=true;return;}
+    let payload;try{payload=JSON.parse(data);}catch{throw new ApiError(502,'INVALID_AI_STREAM','AI 流式响应格式异常，请重试。');}
+    if(typeof payload.model==='string')model=clean(payload.model,100)||model;
+    const choice=payload.choices?.[0];if(typeof choice?.finish_reason==='string'&&choice.finish_reason){finishReason=choice.finish_reason;done=true;finishedByReason=true;}
+    const text=choice?.delta?.content;
+    if(typeof text==='string'&&text){
+     if(answer.length+segmentAnswer.length+text.length>chatOutputLimit(prepared)+1200)throw new ApiError(502,'AI_OUTPUT_TOO_LONG','AI 回复超过长度限制，请缩短内容后重试。');
+     segmentAnswer+=text;
+     if(attempt===0)writeSse(res,{type:'delta',text});
+    }
+   };
+   try{
+    while(!done){const{value,done:streamEnded}=await reader.read();if(streamEnded)break;pending+=decoder.decode(value,{stream:true});let boundary;while((boundary=pending.search(/\r\n\r\n|\n\n|\r\r/))>=0){const block=pending.slice(0,boundary);const separator=pending.slice(boundary).match(/^(?:\r\n\r\n|\n\n|\r\r)/)[0];pending=pending.slice(boundary+separator.length);consume(block);if(done)break;}}
+    pending+=decoder.decode();if(pending.trim()&&!done)consume(pending);
+    if(finishedByReason)await reader.cancel().catch(()=>{});
+   }finally{reader.releaseLock();}
+   if(!segmentAnswer.trim())throw new ApiError(502,'INVALID_AI_RESPONSE','AI 暂时没有返回有效回复，请重试。');
+   if(!finishReason&&!sawDoneSentinel)throw new ApiError(502,'AI_STREAM_INTERRUPTED','AI 流式连接提前结束，未生成完整回复；请重试。');
+   const addition=answer?continuationAddition(answer,segmentAnswer):segmentAnswer;
+   if(answer.length+addition.length>chatOutputLimit(prepared))throw new ApiError(502,'AI_OUTPUT_TOO_LONG','AI 回复超过长度限制，请缩短内容后重试。');
+   answer+=addition;
+   if(attempt>0&&addition)writeSse(res,{type:'delta',text:addition});
+   if(finishReason==='length'){
+    if(attempt===MAX_CHAT_CONTINUATIONS)throw truncatedChatError();
+    messages=continuationMessages(prepared.messages,answer);continue;
+   }
+   finished=true;
+  }
   if(!answer.trim())throw new ApiError(502,'INVALID_AI_RESPONSE','AI 暂时没有返回有效回复，请重试。');
   writeSse(res,{type:'done',model,generatedAt:new Date().toISOString(),contextSummary:prepared.contextSummary,webSources:web.sources,webSearchWarning:web.warning||undefined,...(prepared.documentFormat?{content:documentReplyBody(answer)}:{})});
- }finally{reader.releaseLock();}
+ }finally{clearInterval(heartbeat);}
 }
 export function createAiHandler({env=process.env,fetchImpl}={}){
  const attempts=new Map(),jobs=new Map(),foodEstimateCache=new Map();

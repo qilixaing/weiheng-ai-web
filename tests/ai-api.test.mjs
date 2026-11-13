@@ -223,6 +223,18 @@ test('diet chat preserves missing nutrition as unknown and rejects oversized or 
  const oversizedMemory=await post('chat',{date:'2026-10-30',messages:[{role:'user',content:'你好'}],entries:[],memory:'记忆'.repeat(12001)});assert.equal(oversizedMemory.status,400);assert.equal(oversizedMemory.body.code,'INVALID_CHAT_MEMORY');assert.equal(calls,1);
 });
 
+test('non-stream document chat continues a response that reaches the model output limit',async t=>{
+ const first='# 一周计划\n\n| 周一 | 早餐：燕麦、牛奶、鸡蛋 | 午餐：米饭、鱼和蔬菜 |',duplicate='| 周一 | 早餐：燕麦、牛奶、鸡蛋 | 午餐：米饭、鱼和蔬菜 |';let calls=0,continuationRequest;
+ const post=await endpoint(t,async(_url,options)=>{
+  const request=JSON.parse(options.body);calls++;
+  if(calls===1)return new Response(JSON.stringify({model:'simulated-document',choices:[{finish_reason:'length',message:{content:first}}]}),{status:200});
+  continuationRequest=request;
+  return new Response(JSON.stringify({model:'simulated-document',choices:[{finish_reason:'stop',message:{content:duplicate+'\n| 周二 | 早餐：鸡蛋 | 午餐：豆腐、青菜和米饭 |'}}]}),{status:200});
+ });
+ const result=await post('chat',{date:'2026-10-30',entries:[],messages:[{role:'user',content:'请生成一周计划PDF'}]});
+ assert.equal(result.status,200);assert.equal(calls,2);assert.equal(result.body.answer,first+'\n| 周二 | 早餐：鸡蛋 | 午餐：豆腐、青菜和米饭 |');assert.equal(continuationRequest.messages.at(-2).content,first);assert.match(continuationRequest.messages.at(-1).content,/续写/);
+});
+
 test('diet chat reports an upstream error and allows a clean retry',async t=>{
  let calls=0;const post=await endpoint(t,async()=>{calls++;if(calls===1)return new Response('sensitive upstream response',{status:401});return new Response(JSON.stringify({model:'simulated-chat-model',choices:[{message:{content:'重试成功，仍以程序计算的记录为依据。'}}]}),{status:200});});
  const input={date:'2026-10-30',messages:[{role:'user',content:'结合我的饮食记录给建议。'}],entries:[]};

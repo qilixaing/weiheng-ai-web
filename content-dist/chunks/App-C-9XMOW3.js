@@ -1,7 +1,7 @@
 import { r as D, a as H, b as ot, w as ve, o, d as a, e, F as L, f as J, n as Sn, g as ge, h as Et, i as U, j as A, k as Be, t as l, l as pe, m as te, v as ce, p as P, u as b, q as Ue, s as Me, x as We, y as as, z as ut, A as Ye, B as ke, C as nt, D as ls, E as In, G as Dt, H as is } from "./vue-runtime-BJOX_u7T.js";
-import { v as Oe, t as _e, F as oe, c as xt, r as at, n as rs, m as us, a as Vt, b as lt, A as Wt, d as En, e as Le, f as xn, g as At, M as Te, h as Kt, i as Ct, j as Un, _ as F, p as ds, s as jn, k as yt, l as un, N as cs, o as Fe, q as vs, C as Nt, G as Dn, u as qt, w as Yt, x as dn, P as Pt, R as ms, y as Mt, z as ps, B as cn, D as Qe, E as gt, H as Nn, I as vn, J as bs, K as fs, L as gs, O as hs } from "./useThemeTransition-s6aVG0oE.js";
-import { s as it, a as Ee, o as ys, b as Ce, t as Pn, c as ks, d as Ie, e as ws, f as $s, g as _s, h as kt } from "./main-CyTpJLTw.js";
-import { _ as Xt, a as Mn, b as As } from "./IntakeAnalysis-soWajjHV.js";
+import { v as Oe, t as _e, F as oe, c as xt, r as at, n as rs, m as us, a as Vt, b as lt, A as Wt, d as En, e as Le, f as xn, g as At, M as Te, h as Kt, i as Ct, j as Un, _ as F, p as ds, s as jn, k as yt, l as un, N as cs, o as Fe, q as vs, C as Nt, G as Dn, u as qt, w as Yt, x as dn, P as Pt, R as ms, y as Mt, z as ps, B as cn, D as Qe, E as gt, H as Nn, I as vn, J as bs, K as fs, L as gs, O as hs } from "./useThemeTransition-DbokgInj.js";
+import { s as it, a as Ee, o as ys, b as Ce, t as Pn, c as ks, d as Ie, e as ws, f as $s, g as _s, h as kt } from "./main-DNdXffFd.js";
+import { _ as Xt, a as Mn, b as As } from "./IntakeAnalysis-DIx-S1qk.js";
 function Cs(t, s) {
   if (!s || !Oe(s.date) || s.date > _e() || !["breakfast", "lunch", "dinner", "snack", "unspecified"].includes(s.meal) || !Array.isArray(s.items) || !s.items.length || s.items.length > 8) throw new Error("请核对方案日期、餐次和食物列表。");
   const n = String(s.confirmationId || "").slice(0, 100);
@@ -245,7 +245,7 @@ async function rt(t, s) {
   return i;
 }
 async function Fn(t, s, n, u) {
-  const i = Pn(9e4), r = u ? ks([u, i]) : i;
+  const i = Pn(t === "chat" ? 4e5 : 9e4), r = u ? ks([u, i]) : i;
   let d;
   try {
     d = await fetch("/api/ai/" + t, { method: "POST", headers: { "Content-Type": "application/json", Accept: "text/event-stream" }, body: JSON.stringify({ .../** @type {Record<string, unknown>} */

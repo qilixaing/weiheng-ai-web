@@ -263,10 +263,10 @@ function ae() {
 async function H() {
   try {
     await z();
-    const { default: e } = await import("./App-D1pmID5E.js");
+    const { default: e } = await import("./App-C-9XMOW3.js");
     L(e).mount("#app");
   } catch {
-    const { default: e } = await import("./HomeEntry-K6BAjm-m.js");
+    const { default: e } = await import("./HomeEntry-_AIvSAQY.js");
     L(e).mount("#app");
   }
 }

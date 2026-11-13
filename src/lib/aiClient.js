@@ -14,7 +14,7 @@ export async function aiRequest(path,body){
  * @param {AbortSignal} [abortSignal]
  */
 export async function aiStream(path,body,onEvent,abortSignal){
- const timedSignal=timeoutSignal(90000),signal=abortSignal?anySignal([abortSignal,timedSignal]):timedSignal;
+ const timedSignal=timeoutSignal(path==='chat'?400000:90000),signal=abortSignal?anySignal([abortSignal,timedSignal]):timedSignal;
  let response;try{response=await fetch('/api/ai/'+path,{method:'POST',headers:{'Content-Type':'application/json','Accept':'text/event-stream'},body:JSON.stringify({.../** @type {Record<string, unknown>} */ (body),stream:true}),signal});}catch(cause){throw new Error(cause?.name==='TimeoutError'?'AI 请求等待超时，可以重试；已保存的记录不受影响。':'无法连接 AI 服务，请检查后端是否启动及网络连接。');}
  if(!response.ok){let payload;try{payload=await response.json();}catch{throw new Error('后端没有返回有效数据，请使用 npm start 或启动带代理的开发服务。');}const error=new Error(payload.error||'AI 服务暂时不可用。');error.code=payload.code;throw error;}
  if(!response.body)throw new Error('浏览器没有提供流式读取能力，请更新浏览器后重试。');

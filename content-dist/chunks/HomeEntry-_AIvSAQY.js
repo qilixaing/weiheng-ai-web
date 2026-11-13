@@ -1,5 +1,5 @@
-import { J as K, K as L, _ as C, L as U, O as q } from "./useThemeTransition-s6aVG0oE.js";
-import { b as h, a as z, i as F } from "./main-CyTpJLTw.js";
+import { J as K, K as L, _ as C, L as U, O as q } from "./useThemeTransition-DbokgInj.js";
+import { b as h, a as z, i as F } from "./main-DNdXffFd.js";
 import { w as H, h as M, x as Z, o as d, l as S, I as G, d as N, i as g, e as t, p as _, t as f, u as T, j as B, r as s, J as Q, K as W, a as X } from "./vue-runtime-BJOX_u7T.js";
 async function Y() {
   try {
@@ -69,7 +69,7 @@ const ee = ["data-theme"], te = { class: "vb-main" }, ae = { class: "vb-topbar" 
           if (await F(), y) return;
           n.value = !0, P(), E.value && (m.value = !0);
         }
-        const e = await V(import("./App-D1pmID5E.js"), 3e4);
+        const e = await V(import("./App-C-9XMOW3.js"), 3e4);
         !y && a === p && (i.value = Q(e.default));
       } catch {
         !y && a === p && (v.value = n.value ? "部分功能暂未载入，首页仍可查看。" : "账号连接暂未完成，首页仍可查看，已有数据会保留。");

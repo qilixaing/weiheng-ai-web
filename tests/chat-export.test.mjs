@@ -56,3 +56,20 @@ test('document streaming accepts a complete long plan and replaces capability bo
  const response=await fetch(`http://127.0.0.1:${server.address().port}/api/ai/chat`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({stream:true,date:'2026-11-06',entries:[],messages:[{role:'user',content:'根据我的身体数据生成一周的计划用pdf'}]})});
  const events=(await response.text()).split('\n').filter(s=>s.startsWith('data: ')).map(s=>JSON.parse(s.slice(6)));assert.equal(sent.max_tokens,6000);assert.match(sent.messages[0].content,/当前为文件正文输出模式/);assert.equal(events.at(-1).type,'done');assert.equal(events.at(-1).content,body.trim());assert.ok(events.at(-1).content.length>5000);
 });
+
+test('a long PDF answer continues after the model token limit and exports only the completed text',async(t)=>{
+ const first='# 一周饮食安排\n\n| 日期 | 餐食安排 |\n| --- | --- |\n| 周一 | 早餐：燕麦、牛奶；午餐：米饭、鱼和蔬菜 |',duplicate='| 周一 | 早餐：燕麦、牛奶；午餐：米饭、鱼和蔬菜 |',continuation=duplicate+'\n| 周二 | 早餐：鸡蛋；午餐：豆腐、青菜和米饭 |\n';let calls=0,secondRequest;
+ const handler=createAiHandler({env:{DEEPSEEK_API_KEY:'synthetic-document-continuation'},fetchImpl:async(_url,options)=>{
+  const request=JSON.parse(options.body);calls++;
+  if(calls===1)return new Response('data: '+JSON.stringify({model:'synthetic-document',choices:[{delta:{content:first},finish_reason:'length'}]})+'\n\n',{headers:{'Content-Type':'text/event-stream'}});
+  secondRequest=request;
+  return new Response('data: '+JSON.stringify({model:'synthetic-document',choices:[{delta:{content:continuation},finish_reason:'stop'}]})+'\n\ndata: [DONE]\n\n',{headers:{'Content-Type':'text/event-stream'}});
+ }});
+ const server=createServer((req,res)=>handler(req,res,new URL(req.url,'http://localhost')));server.listen(0,'127.0.0.1');await once(server,'listening');t.after(()=>server.close());
+ const response=await fetch(`http://127.0.0.1:${server.address().port}/api/ai/chat`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({stream:true,date:'2026-11-06',entries:[],messages:[{role:'user',content:'请生成一周饮食安排并生成PDF'}]})});
+ const events=(await response.text()).split('\n').filter(line=>line.startsWith('data: ')).map(line=>JSON.parse(line.slice(6))),done=events.at(-1);
+ assert.equal(calls,2);assert.equal(secondRequest.max_tokens,6000);assert.equal(secondRequest.messages.at(-2).role,'assistant');assert.equal(secondRequest.messages.at(-2).content,first);assert.equal(secondRequest.messages.at(-1).role,'user');assert.match(secondRequest.messages.at(-1).content,/续写/);
+ assert.equal(events.filter(event=>event.type==='error').length,0);assert.equal(done.type,'done');assert.equal(done.content,first+'\n| 周二 | 早餐：鸡蛋；午餐：豆腐、青菜和米饭 |');
+ const streamed=events.filter(event=>event.type==='delta').map(event=>event.text).join('');assert.equal(streamed.trimEnd(),done.content);
+ const file=await createChatExport('pdf',done.content,{canvasFactory:createCanvas});assert.equal(file.mime,'application/pdf');assert.equal(new TextDecoder().decode(file.bytes.slice(0,8)),'%PDF-1.4');
+});
