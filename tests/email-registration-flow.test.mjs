@@ -1,4 +1,5 @@
 import {AuthStore} from '../auth-store.mjs';
+import {PRIVACY_POLICY_VERSION} from '../src/lib/privacyPolicy.js';
 import {testCaptcha} from './captcha-helper.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -54,7 +55,7 @@ test('localhost registration requires its one-time code while local login remain
 
   const email = `student-${Date.now()}@example.com`;
   const request = (path, body) => fetch(base + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-  const withoutCode = await request('/api/auth/register', { email, password: '12345678w-strong', acceptTerms: true });
+  const withoutCode = await request('/api/auth/register', { email, password: '12345678w-strong', acceptTerms: true, privacyPolicyVersion: PRIVACY_POLICY_VERSION });
   assert.equal(withoutCode.status, 400);
 
   const challenge=await testCaptcha(base);
@@ -63,7 +64,7 @@ test('localhost registration requires its one-time code while local login remain
   const code = (await codeResponse.json()).localDebugCode;
   assert.match(code, /^\d{6}$/);
 
-  const registered = await request('/api/auth/register', { email, password: '12345678w-strong', acceptTerms: true, verificationCode: code });
+  const registered = await request('/api/auth/register', { email, password: '12345678w-strong', acceptTerms: true, privacyPolicyVersion: PRIVACY_POLICY_VERSION, verificationCode: code });
   assert.equal(registered.status, 201);
   assert.ok((await registered.json()).user.id);
   const cookie=registered.headers.get('set-cookie').split(';')[0];
@@ -78,6 +79,6 @@ test('localhost registration requires its one-time code while local login remain
   assert.equal((await otherResponse.json()).state.threads.length,0);
   testStore.db.close();
 
-  const reused = await request('/api/auth/register', { email, password: 'another-strong-pass', acceptTerms: true, verificationCode: code });
+  const reused = await request('/api/auth/register', { email, password: 'another-strong-pass', acceptTerms: true, privacyPolicyVersion: PRIVACY_POLICY_VERSION, verificationCode: code });
   assert.notEqual(reused.status, 201);
 });

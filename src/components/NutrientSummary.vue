@@ -47,7 +47,7 @@ const chartRows = computed(() => {
     unit: metric.unit,
     value,
     total,
-    axis: metric.id === 'energy' ? 'energy' : 'grams',
+    axis: (metric.id === 'energy' ? 'energy' : 'grams') as 'energy' | 'grams',
     tone: metric.id === 'energy' ? 'energy' : metric.id,
   };
   });

@@ -1,4 +1,4 @@
-import {FOOD_DATA_VERSION} from '../data/catalogue.js';
+import {FOOD_BY_ID,FOOD_DATA_VERSION} from '../data/catalogue.js';
 import storedEstimates from '../data/foodEstimates.js';
 import {estimatePoint,pointRange} from './nutritionEstimate.js';
 

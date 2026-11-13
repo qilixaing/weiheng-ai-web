@@ -21,6 +21,7 @@ export function normalizeEntries(entries){return(Array.isArray(entries)?entries:
 /** @param {Partial<import('../types/nutrition').DailyRecord>|null|undefined} record */
 export function recordEntries(record){if(Array.isArray(record?.entries))return normalizeEntries(record.entries);const entries=/** @type {unknown[]} */ (Object.entries(record?.grams||record?.items||{}).filter(([,value])=>Number(value)>0).map(([id,value])=>({id:'legacy-'+id,foodId:id,name:FOOD_BY_ID[id]?.name||id,grams:record?.grams?Number(value):Number(value)*(FOOD_BY_ID[id]?.grams||100),source:'legacy',referenceConfirmed:false})));entries.push(...(record?.customFoods||[]).map((item,i)=>({...item,id:item.id||'custom-'+i,foodId:null,source:'manual'})));return normalizeEntries(entries);}
 /** Use a completed AI report only when it was generated for this exact saved record. */
+/** @param {import('../types/nutrition').DailyRecord|null|undefined} record @param {import('../types/nutrition').AiNutritionReport[]} [reports] */
 export function recordEntriesWithAiEstimates(record,reports=[]){
  const entries=recordEntries(record);if(!record||!entries.length)return entries;
  const version=recordVersion(record),report=reports.find(item=>item?.date===record.date&&item.status==='complete'&&item.recordVersion===version);

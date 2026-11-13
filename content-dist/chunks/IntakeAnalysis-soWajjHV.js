@@ -1,5 +1,5 @@
-import { A as U, o as s, d as i, g as B, e as t, t as a, u as y, F as x, f as D, n as T, p as f, j as h, a as p, D as z, r as E, m as L, v as q, l as P, i as H } from "./vue-runtime-wiGxZMXT.js";
-import { o as M, l as S, M as V, N as R, g as w, q as O, t as j, Q, S as W, k as G, a as F, T as J, U as K } from "./useThemeTransition-xONdG_8q.js";
+import { A as U, o as s, d as i, g as B, e as t, t as a, u as y, F as x, f as C, n as T, p as f, j as h, a as p, E as z, r as E, m as L, v as q, l as P, i as H } from "./vue-runtime-BJOX_u7T.js";
+import { o as M, l as S, M as V, N as R, g as w, q as O, t as j, Q, S as W, k as G, a as F, T as J, U as K } from "./useThemeTransition-s6aVG0oE.js";
 const X = ["aria-label"], Y = {
   class: "vb-intake-chart-axis vb-intake-chart-axis-left",
   "aria-hidden": "true"
@@ -32,16 +32,16 @@ const X = ["aria-label"], Y = {
       return l == null || !Number.isFinite(Number(l)) ? null : Number(l);
     }, g = (n) => n === null ? "暂无数据" : n.toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }), $ = (n) => {
       if (!Number.isFinite(n) || n <= 0) return 1;
-      const e = 10 ** Math.floor(Math.log10(n)) / 2, C = Math.ceil(n / e) * e;
-      return C > n ? C : C + e;
+      const e = 10 ** Math.floor(Math.log10(n)) / 2, D = Math.ceil(n / e) * e;
+      return D > n ? D : D + e;
     }, I = p(() => {
       const n = V.map((l) => {
-        const e = u.value.totals[l.id], C = N(e);
+        const e = u.value.totals[l.id], D = N(e);
         return {
           id: l.id,
           name: l.id === "carbs" ? "碳水" : l.name,
           unit: l.unit,
-          value: C,
+          value: D,
           total: e,
           axis: l.id === "energy" ? "energy" : "grams",
           tone: l.id === "energy" ? "energy" : l.id
@@ -71,7 +71,7 @@ const X = ["aria-label"], Y = {
           l[0] || (l[0] = t("span", null, "0 g", -1))
         ]),
         t("div", Z, [
-          (s(!0), i(x, null, D(I.value, (e) => (s(), i("div", {
+          (s(!0), i(x, null, C(I.value, (e) => (s(), i("div", {
             key: e.id,
             class: "vb-intake-chart-item"
           }, [
@@ -100,7 +100,7 @@ const X = ["aria-label"], Y = {
         ]),
         t("p", ne, a(r.value), 1)
       ], 8, X)) : (s(), i("div", se, [
-        (s(!0), i(x, null, D(y(V), (e) => (s(), i("div", {
+        (s(!0), i(x, null, C(y(V), (e) => (s(), i("div", {
           key: e.id
         }, [
           t("span", null, a(e.id === "carbs" ? "碳水" : e.name), 1),
@@ -115,7 +115,7 @@ const X = ["aria-label"], Y = {
       t("details", oe, [
         l[2] || (l[2] = t("summary", null, "查看计算依据", -1)),
         t("p", re, "按可食部重量计算 · " + a(d.estimating ? "AI正在估算缺失的能量与三大营养素。" : `${u.value.knownEnergyCount}/${u.value.itemCount} 项有热量数值（含AI估算）。记录可能未覆盖全天。`), 1),
-        (s(!0), i(x, null, D(y(V), (e) => (s(), i("p", {
+        (s(!0), i(x, null, C(y(V), (e) => (s(), i("p", {
           key: e.id
         }, [
           f(a(e.name) + "：数据库小计 " + a(u.value.totals[e.id].value === null ? "—" : y(M)(u.value.totals[e.id].value)) + " " + a(e.unit), 1),
@@ -126,7 +126,7 @@ const X = ["aria-label"], Y = {
       d.details ? (s(), i("details", ve, [
         l[3] || (l[3] = t("summary", null, "查看其他营养指标", -1)),
         t("dl", null, [
-          (s(!0), i(x, null, D(y(R).slice(4), (e) => (s(), i(x, {
+          (s(!0), i(x, null, C(y(R).slice(4), (e) => (s(), i(x, {
             key: e.id
           }, [
             t("dt", null, a(e.name), 1),
@@ -150,7 +150,7 @@ const X = ["aria-label"], Y = {
 }, be = { class: "vb-daily-chart__heading" }, ge = { class: "vb-daily-chart__summary" }, ke = { key: 0 }, _e = { class: "vb-daily-chart__select" }, fe = ["value"], $e = ["value"], Ie = ["aria-label"], Ae = ["aria-label"], xe = { class: "vb-daily-chart__date" }, Ne = ["datetime"], Me = {
   class: "vb-daily-chart__track",
   "aria-hidden": "true"
-}, De = { class: "vb-daily-chart__value" }, Ce = { key: 0 }, Se = {
+}, Ce = { class: "vb-daily-chart__value" }, De = { key: 0 }, Se = {
   key: 1,
   class: "vb-daily-chart__empty"
 }, Re = {
@@ -203,7 +203,7 @@ const X = ["aria-label"], Y = {
             "aria-label": "每日图表营养指标",
             onChange: A
           }, [
-            (s(!0), i(x, null, D(y(R), (r) => (s(), i("option", {
+            (s(!0), i(x, null, C(y(R), (r) => (s(), i("option", {
               key: r.id,
               value: r.id
             }, a(r.name), 9, $e))), 128))
@@ -216,7 +216,7 @@ const X = ["aria-label"], Y = {
         role: "list",
         "aria-label": `截至 ${d.endDate} 的近七日${g.value.name}记录图表`
       }, [
-        (s(!0), i(x, null, D($.value, (r) => (s(), i("div", {
+        (s(!0), i(x, null, C($.value, (r) => (s(), i("div", {
           key: r.date,
           class: "vb-daily-chart__row",
           role: "listitem",
@@ -235,9 +235,9 @@ const X = ["aria-label"], Y = {
               style: T({ width: `${r.percent}%` })
             }, null, 6)) : h("", !0)
           ]),
-          t("strong", De, [
+          t("strong", Ce, [
             f(a(r.label), 1),
-            r.value !== null ? (s(), i("small", Ce, a(g.value.unit), 1)) : h("", !0)
+            r.value !== null ? (s(), i("small", De, a(g.value.unit), 1)) : h("", !0)
           ])
         ], 8, Ae))), 128))
       ], 8, Ie)) : (s(), i("p", Se, "这 7 天没有可展示的 " + a(g.value.name) + "数值；未记录或未知的数据不会按 0 绘制。", 1)),
@@ -254,7 +254,7 @@ const X = ["aria-label"], Y = {
   __name: "IntakeAnalysis",
   props: { records: { type: Array, default: () => [] }, reports: { type: Array, default: () => [] }, profile: Object, compact: Boolean },
   setup(d) {
-    const b = d, u = E(j()), N = E("主要营养"), g = E("energy"), $ = p(() => b.records.find((c) => c.date === u.value)), I = p(() => $.value ? b.reports.find((c) => c.date === u.value && c.status === "complete" && c.recordVersion === F($.value)) : null), A = p(() => $.value && b.reports.some((c) => c.date === u.value && c.status === "pending" && c.recordVersion === F($.value))), v = p(() => W($.value, b.reports)), k = p(() => w(v.value)), r = p(() => [...new Set(v.value.map((c) => c.meal))].map((c) => G.find((m) => m[0] === c)?.[1]).join("、")), _ = p(() => J(v.value, b.profile).filter((c) => c.section === N.value)), n = p(() => K(b.records, u.value, 7, b.reports)), l = p(() => n.value.filter((c) => c.recorded)), e = p(() => l.value.filter((c) => c.totals[g.value].complete && !c.totals[g.value].range)), C = p(() => e.value.length ? e.value.reduce((c, m) => c + m.totals[g.value].value, 0) / e.value.length : null);
+    const b = d, u = E(j()), N = E("主要营养"), g = E("energy"), $ = p(() => b.records.find((c) => c.date === u.value)), I = p(() => $.value ? b.reports.find((c) => c.date === u.value && c.status === "complete" && c.recordVersion === F($.value)) : null), A = p(() => $.value && b.reports.some((c) => c.date === u.value && c.status === "pending" && c.recordVersion === F($.value))), v = p(() => W($.value, b.reports)), k = p(() => w(v.value)), r = p(() => [...new Set(v.value.map((c) => c.meal))].map((c) => G.find((m) => m[0] === c)?.[1]).join("、")), _ = p(() => J(v.value, b.profile).filter((c) => c.section === N.value)), n = p(() => K(b.records, u.value, 7, b.reports)), l = p(() => n.value.filter((c) => c.recorded)), e = p(() => l.value.filter((c) => c.totals[g.value].complete && !c.totals[g.value].range)), D = p(() => e.value.length ? e.value.reduce((c, m) => c + m.totals[g.value].value, 0) / e.value.length : null);
     return (c, m) => (s(), i("section", Ve, [
       t("div", Be, [
         t("div", null, [
@@ -283,7 +283,7 @@ const X = ["aria-label"], Y = {
       }, null, 8, ["entries", "estimating"])) : h("", !0),
       d.compact ? h("", !0) : (s(), i(x, { key: 1 }, [
         t("div", we, [
-          (s(), i(x, null, D(["主要营养", "维生素", "矿物质", "其他"], (o) => t("button", {
+          (s(), i(x, null, C(["主要营养", "维生素", "矿物质", "其他"], (o) => t("button", {
             key: o,
             class: "vb-button vb-button-quiet",
             "aria-pressed": N.value === o,
@@ -302,7 +302,7 @@ const X = ["aria-label"], Y = {
               ])
             ], -1)),
             t("tbody", null, [
-              (s(!0), i(x, null, D(_.value, (o) => (s(), i("tr", {
+              (s(!0), i(x, null, C(_.value, (o) => (s(), i("tr", {
                 key: o.id
               }, [
                 t("th", null, a(o.name), 1),
@@ -350,7 +350,7 @@ const X = ["aria-label"], Y = {
           "end-date": u.value,
           days: l.value.length,
           "complete-days": e.value.length,
-          mean: C.value,
+          mean: D.value,
           "onUpdate:metric": m[1] || (m[1] = (o) => g.value = o)
         }, null, 8, ["trend", "metric", "end-date", "days", "complete-days", "mean"])
       ], 64)),

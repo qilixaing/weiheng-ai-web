@@ -3,6 +3,7 @@ import { appStorage, accountUser, chatSyncStatus, clearSyncedChat, syncChat } fr
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 import AppIcon from '../components/AppIcon.vue';
 import ChatMessageExport from '../components/ChatMessageExport.vue';
+import SafeMarkdown from '../components/SafeMarkdown.js';
 import {useChatScroll} from '../composables/useChatScroll';
 import ModalShell from '../components/ModalShell.vue';
 import { aiStream } from '../lib/aiClient.js';
@@ -41,11 +42,13 @@ const props = withDefaults(defineProps<{
   records: DailyRecord[];
   targets: NutritionTargets | null;
   profile: NutritionProfile | null;
+  initialDate?: string;
 }>(), {
   active: true,
   records: () => [],
   targets: null,
   profile: null,
+  initialDate: '',
 });
 
 const STORAGE_KEY = 'weiheng.ai-diet-chat.v1';
@@ -83,7 +86,7 @@ function normalizeWebSources(value: unknown): AiWebSource[] {
 function loadStoredState(): { threads: ChatThread[]; activeByDate: Record<string, string>; memoryEnabled: boolean; webSearchEnabled: boolean } {
   try {
     const parsed: unknown = JSON.parse(appStorage.getItem(STORAGE_KEY) || 'null');
-    if (!parsed || typeof parsed !== 'object') return { threads: [], activeByDate: {}, memoryEnabled: true, webSearchEnabled: true };
+    if (!parsed || typeof parsed !== 'object') return { threads: [], activeByDate: {}, memoryEnabled: true, webSearchEnabled: false };
     const stored = parsed as { threads?: unknown; activeByDate?: unknown; memoryEnabled?: unknown; webSearchEnabled?: unknown };
     const threads = Array.isArray(stored.threads) ? stored.threads.flatMap((item): ChatThread[] => {
       if (!item || typeof item !== 'object') return [];
@@ -111,9 +114,9 @@ function loadStoredState(): { threads: ChatThread[]; activeByDate: Record<string
     const activeByDate = stored.activeByDate && typeof stored.activeByDate === 'object'
       ? Object.fromEntries(Object.entries(stored.activeByDate as Record<string, unknown>).filter(([date, id]) => validDate(date) && typeof id === 'string'))
       : {};
-    return { threads: threads.slice(-60), activeByDate: activeByDate as Record<string, string>, memoryEnabled: stored.memoryEnabled !== false, webSearchEnabled: stored.webSearchEnabled !== false };
+    return { threads: threads.slice(-60), activeByDate: activeByDate as Record<string, string>, memoryEnabled: stored.memoryEnabled !== false, webSearchEnabled: stored.webSearchEnabled === true };
   } catch {
-    return { threads: [], activeByDate: {}, memoryEnabled: true, webSearchEnabled: true };
+    return { threads: [], activeByDate: {}, memoryEnabled: true, webSearchEnabled: false };
   }
 }
 
@@ -124,6 +127,7 @@ const explicitEmptyThreads=new Set<string>();
 const memoryEnabled = ref(stored.memoryEnabled);
 const webSearchEnabled = ref(stored.webSearchEnabled);
 const date = ref(todayDate());
+watch(() => props.initialDate, value => { if (value && validDate(value) && value <= todayDate()) date.value = value; });
 const draft = ref('');
 interface DraftAttachment extends ChatAttachmentMeta {
   status: 'reading' | 'ready' | 'failed';
@@ -367,6 +371,8 @@ function apiEntries() {
     grams: entry.grams,
     meal: entry.meal,
     referenceConfirmed: entry.referenceConfirmed,
+    source: entry.source,
+    nutritionSnapshot: entry.nutritionSnapshot,
   }));
 }
 
@@ -616,13 +622,14 @@ function clearLocalHistory(): void {
               </button>
             </div>
             <div v-if="message.status === 'sending' && !message.content" class="vb-simple-loading"><span class="vb-loading-ring" /><span>{{ message.webSearchStatus || '正在回复…' }}</span></div>
-            <p v-else-if="message.status === 'sending'" class="vb-simple-text">{{ message.content }}<span class="vb-chat-stream-cursor" aria-label="正在生成">▍</span></p>
+            <div v-else-if="message.status === 'sending'" class="vb-simple-text"><SafeMarkdown :content="message.content" /><span class="vb-chat-stream-cursor" aria-label="正在生成">▍</span></div>
             <template v-else-if="message.status === 'failed'">
-              <p v-if="message.content" class="vb-simple-text">{{ message.content }}</p>
+              <SafeMarkdown v-if="message.content" class="vb-simple-text" :content="message.content" />
               <p class="vb-simple-error" role="alert">{{ message.error || 'AI 回复失败。' }}</p>
               <button class="vb-text-button vb-simple-retry" type="button" @click="retry(message.id)"><AppIcon name="activity" :size="14" />重试这条问题</button>
             </template>
-            <p v-else-if="message.role!=='assistant'||!requestedDocumentFormat(exportQuestion(message.id))" class="vb-simple-text">{{ message.content }}</p>
+            <p v-else-if="message.role!=='assistant'" class="vb-simple-text">{{ message.content }}</p>
+            <SafeMarkdown v-else-if="!requestedDocumentFormat(exportQuestion(message.id))" class="vb-simple-text" :content="message.content" />
             <ChatMessageExport v-if="message.role==='assistant'&&message.status==='complete'&&message.content.trim()&&requestedDocumentFormat(exportQuestion(message.id))" :content="message.content" :question="exportQuestion(message.id)" :auto="currentMessages.at(-1)?.id===message.id" @retry="retry(message.id)" />
             <small v-if="message.status==='sending'&&message.content&&message.webSearchStatus" class="vb-chat-search-status" role="status">{{ message.webSearchStatus }}</small>
             <p v-if="message.role==='assistant'&&message.status==='complete'&&message.webSearchWarning" class="vb-chat-search-warning">{{ message.webSearchWarning }}</p>
@@ -754,6 +761,18 @@ summary::-webkit-details-marker { display: none; }
 .vb-simple-message-body { min-width: 0; padding-top: 1px; }
 .vb-simple-message.is-user .vb-simple-message-body { padding: 12px 17px 10px; border-radius: 14px 4px 14px 14px; background: var(--vb-accent-soft); }
 .vb-simple-text { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; line-height: 1.95; }
+:deep(.vb-safe-markdown) { white-space: normal; overflow-wrap: anywhere; }
+:deep(.vb-safe-markdown :is(p,ul,ol,pre,table)) { margin: 0 0 .7em; }
+:deep(.vb-safe-markdown :last-child) { margin-bottom: 0; }
+:deep(.vb-safe-markdown :is(h1,h2,h3,h4,h5,h6)) { margin: .7em 0 .25em; font-size: 1.08em; line-height: 1.5; }
+:deep(.vb-safe-markdown :is(ul,ol)) { padding-left: 1.6em; }
+:deep(.vb-safe-markdown pre) { overflow-x: auto; padding: .7em; border-radius: 8px; background: #eef5f1; white-space: pre; }
+:deep(.vb-safe-markdown code) { padding: .08em .25em; border-radius: 4px; background: #eef5f1; }
+:deep(.vb-safe-markdown pre code) { padding: 0; }
+:deep(.vb-markdown-table-wrap) { max-width: 100%; overflow-x: auto; }
+:deep(.vb-safe-markdown table) { border-collapse: collapse; width: max-content; min-width: 100%; }
+:deep(.vb-safe-markdown :is(th,td)) { border: 1px solid #dce9e2; padding: .35em .6em; text-align: left; }
+:deep(.vb-safe-markdown th) { background: #e9f4ed; }
 .vb-simple-message-meta { display: block; margin-top: 7px; color: var(--vb-faint); font-size: 10px; }
 .vb-simple-message.is-user .vb-simple-message-meta { text-align: right; }
 .vb-simple-loading { display: flex; align-items: center; gap: 9px; min-height: 28px; color: var(--vb-muted); font-size: 13px; }

@@ -11,12 +11,12 @@ const aiRange=(foodId,id)=>aiFoodEstimates.estimates[foodId].values[id];
 const env={DEEPSEEK_API_KEY:'test-only-synthetic-token',DEEPSEEK_TEXT_MODEL:'configured-text',DEEPSEEK_VISION_MODEL:'configured-vision'};
 const answer=value=>new Response(JSON.stringify({model:'simulated-model',choices:[{message:{content:JSON.stringify(value)}}]}),{status:200});
 const toolCall=(name,args,id='call-'+name)=>new Response(JSON.stringify({model:'simulated-tool-model',choices:[{message:{role:'assistant',content:null,tool_calls:[{id,type:'function',function:{name,arguments:JSON.stringify(args)}}]}}]}),{status:200});
-test('dish estimate fills missing macros with labelled ranges without changing catalogue or caching personal recipe globally',async t=>{
+test('dish estimate fills missing macros with labelled single values without changing catalogue or caching personal recipe globally',async t=>{
  const food=ALL_FOODS.find(f=>f.photoCatalogue&&!f.source),before=JSON.stringify(food.nutrients);let calls=0,sent;
  const post=await endpoint(t,async(_url,options)=>{
   calls++;sent=JSON.parse(options.body);const data=JSON.parse(sent.messages[1].content),item=data.items[0];
   assert.equal(item.grams,100);assert.deepEqual(item.missing,['energy','protein','carbs','fat']);assert.deepEqual(item.knownPer100,{});
-  return answer({estimates:[{entryId:item.entryId,values:{energy:{low:100,high:200},protein:{low:2,high:5},carbs:{low:10,high:20},fat:{low:3,high:8}},assumption:'模拟测试：按常见做法估算，用油量未知。'}]});
+  return answer({estimates:[{entryId:item.entryId,values:{energy:150,protein:3.5,carbs:15,fat:5},assumption:'模拟测试：按常见做法估算，用油量未知。'}]});
  });
  const result=await post('food-estimate',{foodId:food.key});
  assert.equal(result.status,200);assert.equal(result.body.basisGrams,100);assert.equal(result.body.valueType,'ai-estimate');assert.equal(result.body.estimate.values.energy.unit,'kcal');assert.equal(result.body.estimate.values.protein.unit,'g');
@@ -35,7 +35,7 @@ test('batch dish estimates are disabled unless explicitly enabled for local cata
 });
 test('batch dish estimates support offline catalogue generation and accept only registered food IDs',async t=>{
  const foods=ALL_FOODS.filter(f=>f.photoCatalogue&&!f.source).slice(0,3);let sent;
- const post=await endpoint(t,async(_url,options)=>{sent=JSON.parse(options.body);const input=JSON.parse(sent.messages[1].content);return answer({estimates:input.items.map(item=>({entryId:item.entryId,values:{energy:{low:25,high:80},protein:{low:1,high:4},carbs:{low:3,high:12},fat:{low:1,high:5}},assumption:'测试用宽范围'}))});},{...env,WEIHENG_LOCAL_FOOD_ESTIMATE_BATCH:'1'});
+ const post=await endpoint(t,async(_url,options)=>{sent=JSON.parse(options.body);const input=JSON.parse(sent.messages[1].content);return answer({estimates:input.items.map(item=>({entryId:item.entryId,values:{energy:52,protein:2.5,carbs:7.5,fat:3},assumption:'测试用单值估算'}))});},{...env,WEIHENG_LOCAL_FOOD_ESTIMATE_BATCH:'1'});
  const result=await post('food-estimates-batch',{foodIds:foods.map(food=>food.key)});
  assert.equal(result.status,200);assert.equal(result.body.estimates.length,3);assert.deepEqual(result.body.estimates.map(row=>row.foodId),foods.map(food=>food.key));assert.ok(result.body.estimates.every(row=>row.basisGrams===100&&row.valueType==='ai-estimate'));
  assert.equal((await post('food-estimates-batch',{foodIds:['not-in-catalogue']})).status,400);
@@ -43,7 +43,7 @@ test('batch dish estimates support offline catalogue generation and accept only 
 });
 test('invalid dish estimates remain errors and permit a later retry',async t=>{
  const food=ALL_FOODS.find(f=>f.photoCatalogue&&!f.source);let calls=0;
- const post=await endpoint(t,async()=>{calls++;return calls<=2?answer({estimates:[{entryId:'0',values:{energy:{low:100,high:99000}}}]}):answer({estimates:[{entryId:'0',values:{energy:{low:100,high:200},protein:{low:2,high:5},carbs:{low:10,high:20},fat:{low:3,high:8}},assumption:'模拟估算'}]});});
+ const post=await endpoint(t,async()=>{calls++;return calls<=2?answer({estimates:[{entryId:'0',values:{energy:99000}}]}):answer({estimates:[{entryId:'0',values:{energy:150,protein:3.5,carbs:15,fat:5},assumption:'模拟估算'}]});});
  const first=await post('food-estimate',{foodId:food.key});assert.equal(first.status,502);assert.equal(first.body.code,'INVALID_AI_ESTIMATE');
  const retry=await post('food-estimate',{foodId:food.key});assert.equal(retry.status,200);assert.equal(calls,3);
 });
@@ -98,20 +98,20 @@ test('status does not reveal key; food QA uses actual retrieved values and confi
  const result=await post('ask',{question:'150克香蕉热量是多少？'});assert.equal(result.status,200);assert.equal(sent.model,'configured-text');assert.equal(result.body.database[0].portion.energy,133.5);assert.equal(result.body.database[0].source.id,'09040');
 });
 test('vision sends image content in user message and marks unknown weights',async t=>{
- let sent;const post=await endpoint(t,async(url,options)=>{sent=JSON.parse(options.body);return answer({items:[{name:'香蕉',foodId:'banana',grams:120,uncertainty:'模拟估重'},{name:'未知菜式',foodId:null,grams:null}],note:'模拟识别'});});
+ let sent,calls=0;const post=await endpoint(t,async(url,options)=>{sent=JSON.parse(options.body);return ++calls===1?answer({items:[{name:'香蕉',foodId:'banana',grams:120,uncertainty:'模拟估重'},{name:'未知菜式',foodId:null,grams:null}],note:'模拟识别'}):answer({items:[{index:0,grams:15,uncertainty:'模拟补充估重'}]});});
  const image='data:image/jpeg;base64,'+Buffer.from([255,216,255,217]).toString('base64');
- const result=await post('recognize',{image});assert.equal(result.status,200);assert.equal(sent.model,'configured-vision');assert.equal(sent.messages[1].role,'user');assert.equal(sent.messages[1].content[1].image_url.url,image);assert.equal(sent.messages[1].content[1].image_url.detail,'high');assert.equal(result.body.items[1].grams,null);assert.equal(result.body.items[1].foodId,null);assert.equal(result.body.items[0].foodId,'banana');
+ const result=await post('recognize',{image});assert.equal(result.status,200);assert.equal(calls,2);assert.equal(sent.model,'configured-vision');assert.equal(sent.messages[1].role,'user');assert.equal(sent.messages[1].content[1].image_url.url,image);assert.equal(sent.messages[1].content[1].image_url.detail,'high');assert.equal(result.body.items[1].grams,15);assert.equal(result.body.items[1].foodId,null);assert.equal(result.body.items[0].foodId,'banana');
  assert.equal((await post('recognize',{image:'data:image/png;base64,YmFk'})).body.code,'INVALID_IMAGE');
 });
 test('vision retries malformed model output and verifies catalogue IDs against identified names',async t=>{
- let calls=0;const post=await endpoint(t,async(url,options)=>{calls++;const sent=JSON.parse(options.body);assert.equal(sent.messages.at(-1).content.some?.(part=>part.type==='image_url')??true,true);if(calls===1)return answer({items:'not-an-array'});return answer({items:[{name:'苹果',foodId:'banana',grams:125,uncertainty:'品种不确定'},{name:'厨房里的未知菜',foodId:'banana',grams:'90',uncertainty:'照片模糊'},{name:'苹果',foodId:'apple',grams:25,uncertainty:'另一处苹果'}],note:'仅识别清晰可见内容'});});
+ let calls=0;const post=await endpoint(t,async(url,options)=>{calls++;const sent=JSON.parse(options.body);assert.equal(sent.messages.at(-1).content.some?.(part=>part.type==='image_url')??true,true);if(calls===1)return answer({items:'not-an-array'});if(calls===2)return answer({items:[{name:'苹果',foodId:'banana',grams:125,uncertainty:'品种不确定'},{name:'厨房里的未知菜',foodId:'banana',grams:'90',uncertainty:'照片模糊'},{name:'苹果',foodId:'apple',grams:25,uncertainty:'另一处苹果'}],note:'仅识别清晰可见内容'});return answer({items:[{index:0,grams:90,uncertainty:'模拟补充估重'}]});});
  const image='data:image/jpeg;base64,'+Buffer.from([255,216,255,217]).toString('base64');const result=await post('recognize',{image});
- assert.equal(result.status,200);assert.equal(calls,2);assert.equal(result.body.items[0].foodId,'apple');assert.equal(result.body.items[0].name,'苹果（带皮，生）');assert.equal(result.body.items[0].grams,150);assert.match(result.body.items[0].uncertainty,/多处同种食物已合并/);assert.equal(result.body.items[1].foodId,null);assert.equal(result.body.items[1].grams,null);assert.equal(result.body.items[1].uncertainty,'照片模糊');
+ assert.equal(result.status,200);assert.equal(calls,3);assert.equal(result.body.items[0].foodId,'apple');assert.equal(result.body.items[0].name,'苹果（带皮，生）');assert.equal(result.body.items[0].grams,150);assert.match(result.body.items[0].uncertainty,/多处同种食物已合并/);assert.equal(result.body.items[1].foodId,null);assert.equal(result.body.items[1].grams,90);assert.match(result.body.items[1].uncertainty,/照片模糊/);
 });
 test('analysis recomputes totals, discards fake totals/profile extras and deduplicates requests',async t=>{
- let calls=0;const sent=[];const post=await endpoint(t,async(url,options)=>{calls++;const callIndex=calls,body=JSON.parse(options.body);sent.push(body);await new Promise(resolve=>setTimeout(resolve,20));if(callIndex===1)return answer({estimates:[{entryId:'1',values:{energy:{low:40,high:50},protein:{low:1,high:2},carbs:{low:8,high:12},fat:{low:0.2,high:1}},assumption:'按名称与50克份量给出宽范围'}]});return answer({summary:'模拟单日解释',overview:['记录范围有限'],scope:'协议测试'});});
+ let calls=0;const sent=[];const post=await endpoint(t,async(url,options)=>{calls++;const callIndex=calls,body=JSON.parse(options.body);sent.push(body);await new Promise(resolve=>setTimeout(resolve,20));if(callIndex===1)return answer({estimates:[{entryId:'1',values:{energy:45,protein:1.5,carbs:10,fat:0.6},assumption:'按名称与50克份量给出单值参考'}]});return answer({summary:'模拟单日解释',overview:['记录范围有限'],scope:'协议测试'});});
  const input={date:'2026-10-30',entries:[{foodId:'banana',grams:150},{name:'未知菜式',grams:50}],totals:{energy:99999},profile:{sex:'male',age:30,height:175,weight:65,activity:'light',secretNotes:'不得发送'}};
- const [one,two]=await Promise.all([post('analyze-day',input),post('analyze-day',input)]);assert.equal(one.status,200);assert.equal(two.status,200);assert.equal(calls,2);assert.equal(one.body.calculation.intake.totals.energy.value,133.5);assert.equal(one.body.calculation.comparison[0].delta,null);assert.ok(!JSON.stringify(sent).includes('不得发送'));assert.equal(JSON.parse(sent[1].messages[1].content).calculation.intake.totals.energy.value,133.5);assert.equal(one.body.calculation.estimation.status,'complete');assert.equal(one.body.calculation.estimation.missingFoodCount,1);assert.equal(one.body.calculation.estimation.foods[0].name,'未知菜式');assert.equal(one.body.calculation.comparison[0].estimatedRange.intake.low,173.5);assert.equal(one.body.calculation.comparison[0].estimatedRange.intake.high,183.5);assert.ok(one.body.calculation.comparison[0].estimatedRange.delta);
+ const [one,two]=await Promise.all([post('analyze-day',input),post('analyze-day',input)]);assert.equal(one.status,200);assert.equal(two.status,200);assert.equal(calls,2);assert.equal(one.body.calculation.intake.totals.energy.value,133.5);assert.equal(one.body.calculation.comparison[0].delta,null);assert.ok(!JSON.stringify(sent).includes('不得发送'));assert.equal(JSON.parse(sent[1].messages[1].content).calculation.intake.totals.energy.value,133.5);assert.equal(one.body.calculation.estimation.status,'complete');assert.equal(one.body.calculation.estimation.missingFoodCount,1);assert.equal(one.body.calculation.estimation.foods[0].name,'未知菜式');assert.equal(one.body.calculation.comparison[0].estimatedRange.intake.low,178.5);assert.equal(one.body.calculation.comparison[0].estimatedRange.intake.high,178.5);assert.ok(one.body.calculation.comparison[0].estimatedRange.delta);
  assert.equal((await post('analyze-day',{date:input.date,entries:[]})).body.code,'NO_DATA');
 });
 test('daily analysis reuses local AI food estimates and requests AI only for the explanation',async t=>{
@@ -120,7 +120,7 @@ test('daily analysis reuses local AI food estimates and requests AI only for the
  const result=await post('analyze-day',{date:'2026-11-04',entries:[{foodId:food.key,grams:50}]});
  assert.equal(result.status,200);assert.equal(calls,1);assert.equal(result.body.calculation.estimation.storedEstimateCount,1);assert.equal(result.body.calculation.estimation.liveEstimateCount,0);
  const value=food.nutrients.energy??null,range=result.body.calculation.estimation.foods[0].values.energy;
- assert.equal(result.body.calculation.estimation.foods[0].valueType,'ai-estimate-local');assert.equal(range.low,aiRange(food.key,'energy').low*0.5);assert.equal(range.high,aiRange(food.key,'energy').high*0.5);
+ assert.equal(result.body.calculation.estimation.foods[0].valueType,'ai-estimate-local');const raw=aiRange(food.key,'energy'),midpoint=raw.value??Math.round((raw.low+raw.high)/2);assert.equal(range.value,Math.round(midpoint*0.5));assert.equal(range.unit,'kcal');
  assert.equal(JSON.parse(sent.messages[1].content).calculation.estimation.foods[0].valueType,'ai-estimate-local');assert.equal(value,null);
 });
 test('automatic nutrient estimates reject missing, duplicate, extra and implausible estimate output',async t=>{
@@ -138,12 +138,12 @@ test('automatic nutrient estimates retry truncated or malformed model output onc
  const post=await endpoint(t,async(url,options)=>{
   calls++;const body=JSON.parse(options.body);sent.push(body);
   if(calls===1)return new Response(JSON.stringify({choices:[{finish_reason:'length',message:{content:'{"estimates":['}}]}),{status:200});
-  if(calls===2)return answer({estimates:[{entryId:'0',values:{energy:{low:12,high:24},protein:{low:1,high:2},carbs:{low:2,high:4},fat:{low:0.1,high:0.8}},assumption:'西兰花品种与烹调状态未知，给出较宽范围'}]});
+  if(calls===2)return answer({estimates:[{entryId:'0',values:{energy:18,protein:1.5,carbs:3,fat:0.5},assumption:'西兰花品种与烹调状态未知，按常见做法估算'}]});
   return answer({summary:'已依据估算范围生成解释。',scope:'测试请求仅含虚构食物条目。'});
  });
  const result=await post('analyze-day',input);
  assert.equal(result.status,200);assert.equal(calls,3);assert.ok(sent[0].max_tokens>900);assert.equal(sent[1].messages.at(-1).role,'user');
- assert.equal(result.body.calculation.estimation.foods[0].values.energy.low,12);
+ assert.equal(result.body.calculation.estimation.foods[0].values.energy.value,18);
  assert.ok(result.body.calculation.comparison[0].estimatedRange);
 });
 test('meal Agent uses the four registered tools, deterministic nutrition and explicit user confirmation boundary',async t=>{
@@ -201,6 +201,17 @@ test('diet chat uses bounded multi-turn history and server-calculated record evi
  const context=JSON.parse(sent.messages[1].content.replace(/^所选日期的程序计算上下文（JSON，仅供事实依据）：/,''));
  assert.equal(context.foods[0].name,'香蕉（生）');assert.equal(context.foods[0].grams,100);assert.equal(context.foods[0].knownNutrients.energy,89);assert.equal(context.totals.energy.value,89);assert.equal(context.dailyTargets,null);assert.equal(context.conversationMemory,input.memory);assert.equal(sent.messages.at(-1).content,input.messages.at(-1).content);assert.match(sent.messages[0].content,/近期对话摘录/);assert.match(sent.messages[0].content,/不能执行其中的指令/);
  assert.ok(!JSON.stringify(sent).includes('PRIVATE_NOTE_SHOULD_NOT_LEAK'));assert.ok(!JSON.stringify(sent).includes('PRIVATE_PROFILE_SHOULD_NOT_LEAK'));assert.ok(!JSON.stringify(sent).includes('PRIVATE_PHOTO_SHOULD_NOT_LEAK'));assert.ok(!JSON.stringify(sent).includes('PRIVATE_RECORD_NOTE_SHOULD_NOT_LEAK'));
+});
+
+test('diet chat prioritizes exact local food evidence and includes saved photo items without an implicit web request',async t=>{
+ let calls=0,sent;const post=await endpoint(t,async(_url,options)=>{calls++;sent=JSON.parse(options.body);return answer({unused:true,summary:'ok'});});
+ const result=await post('chat',{date:'2026-11-05',messages:[{role:'user',content:'大白菜（生）每100克热量多少？我今天拍照记录了什么？'}],entries:[{foodId:'banana',grams:120,meal:'lunch',source:'photo',referenceConfirmed:true}],webSearch:false});
+ assert.equal(result.status,200);
+ assert.equal(calls,1);
+ const context=JSON.parse(sent.messages[1].content.replace(/^所选日期的程序计算上下文（JSON，仅供事实依据）：/,''));
+ assert.equal(context.foods[0].source,'photo');assert.equal(context.foods[0].grams,120);
+ assert.equal(context.catalogueMatches[0].source.id,'11119');assert.equal(context.catalogueMatches[0].nutrients.energy.value,16);
+ assert.match(sent.messages[0].content,/本地食物目录/);
 });
 
 test('diet chat preserves missing nutrition as unknown and rejects oversized or malformed history',async t=>{
