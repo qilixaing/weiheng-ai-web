@@ -5,7 +5,7 @@ import {once} from 'node:events';
 import {FOOD_BY_ID} from '../src/data/catalogue.js';
 import {createNutritionSnapshot,normalizeSnapshot} from '../src/lib/nutritionSnapshot.js';
 import {calculateIntake,makeRecord,recordEntries,recordVersion,formatTotal} from '../src/lib/foodNutrition.js';
-import {referenceMap,nutrientRows,intakeTrend} from '../src/lib/intakeAnalysis.js';
+import {referenceMap,nutrientRows,intakeTrend,energyTrendRows} from '../src/lib/intakeAnalysis.js';
 import {overviewNutrition} from '../src/lib/lifeStageNutrition.js';
 import {sampleChoices} from '../src/lib/foodSamples.js';
 import {mergeAccountState} from '../src/lib/accountMerge.js';
@@ -34,6 +34,22 @@ test('mixed sums include a database value once, retain zero and expose unknown c
  assert.equal(sum.totals.sodium.value,0);assert.equal(sum.totals.sodium.complete,false);
  assert.equal(nutrientRows(entries,{sex:'male',age:25,height:175,weight:70,activity:'light'}).find(n=>n.id==='energy').ratio,null);
  assert.equal(intakeTrend([{date:'2026-11-05',entries}], '2026-11-05',2)[0].totals.energy.value,null);
+});
+test('overview trend tooltip matches saved photo intake and completed AI estimate',()=>{
+ const date='2026-11-05';
+ const record=makeRecord({date,entries:[{...tofu(),source:'photo'}]});
+ const report={date,status:'complete',recordVersion:recordVersion(record),snapshot:{entries:record.entries},calculation:{estimation:{foods:[]}}};
+ const total=calculateIntake(record.entries).totals.energy;
+ const row=energyTrendRows([record],date,1,[report])[0];
+ assert.equal(row.value,170);
+ assert.equal(row.label,`${formatTotal(total)} kcal`);
+ assert.equal(row.status,'含 AI 估算');
+ const recognized=makeRecord({date,entries:[{name:'合成测试菜',grams:100,source:'photo'}]});
+ const recognizedReport={date,status:'complete',recordVersion:recordVersion(recognized),snapshot:{entries:recognized.entries},calculation:{estimation:{foods:[{entryId:'0',values:{energy:{value:333,unit:'kcal'}}}]}}};
+ const estimatedRow=energyTrendRows([recognized],date,1,[recognizedReport])[0];
+ assert.equal(estimatedRow.value,333);
+ assert.equal(estimatedRow.label,'333 kcal');
+ assert.equal(energyTrendRows([],date,1,[])[0].value,null);
 });
 test('snapshot identity, unit and AI metric restrictions are enforced; old records remain old',()=>{
  const s=tofu().nutritionSnapshot;s.ranges.calcium={low:1,high:3};s.ranges.energy={low:10,high:20};s.units.energy='kJ';

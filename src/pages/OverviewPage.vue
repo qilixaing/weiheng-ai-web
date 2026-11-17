@@ -3,8 +3,7 @@ import { computed, defineAsyncComponent, ref } from 'vue';
 import { ACTIVITIES, getAgeBand } from '../lib/nutrition.js';
 import { overviewNutrition, lifeStageMicronutrients } from '../lib/lifeStageNutrition.js';
 import { formatNutrient, todayDate } from '../lib/foodNutrition.js';
-import { intakeTrend } from '../lib/intakeAnalysis.js';
-import { estimateMidpoint } from '../lib/nutritionEstimate.js';
+import { energyTrendRows } from '../lib/intakeAnalysis.js';
 import AppIcon from '../components/AppIcon.vue';
 const IntakeAnalysis = defineAsyncComponent(() => import('../components/IntakeAnalysis.vue'));
 import SourcesNote from '../components/SourcesNote.vue';
@@ -56,13 +55,7 @@ const macroStructureNote = computed(() => {
     ? `按${activity.value.label}活动水平换算供能比例；蛋白质摄入请结合已记录数据核对。`
     : '按适用档案换算供能比例；蛋白质摄入请结合已记录数据核对。';
 });
-const energyTrend = computed(() => intakeTrend(props.records || [], todayDate(), 7, props.reports || []).map(day => {
-  const total = day.totals?.energy;
-  const value = !day.recorded || !total ? null : total.range ? estimateMidpoint(total.range) : typeof total.value === 'number' && Number.isFinite(total.value) ? total.value : null;
-  const status = !day.recorded ? '未记录' : !total || value === null ? '数据未知' : total.range ? '含 AI 估算' : total.complete ? '数据库完整' : '已知小计';
-  const label = value === null ? status : total.range ? `${formatNutrient(total.range[0])}–${formatNutrient(total.range[1])} kcal（按中点绘制）` : `${formatNutrient(value)} kcal`;
-  return { date: day.date, value, status, label, kind: total?.range ? 'estimated' : value !== null && !total?.complete ? 'partial' : 'known' };
-}));
+const energyTrend = computed(() => energyTrendRows(props.records || [], todayDate(), 7, props.reports || []));
 const energyTarget = computed(() => typeof nutrition.value?.tdee === 'number' && Number.isFinite(nutrition.value.tdee) ? nutrition.value.tdee : null);
 const energyTargetRange = computed(() => Array.isArray(nutrition.value?.energyRange) ? nutrition.value.energyRange.map(Number).filter(Number.isFinite) : null);
 const energyDemoBaseline = computed(() => energyTarget.value ?? (energyTargetRange.value?.length === 2 ? (energyTargetRange.value[0] + energyTargetRange.value[1]) / 2 : null));
@@ -87,7 +80,7 @@ const energyTrendSummary = computed(() => {
   const recorded = energyTrend.value.filter(row => Number.isFinite(row.value));
   if (!recorded.length) return '近 7 天暂无可比较的已保存热量数据；未记录日期不按 0 处理。';
   const average = recorded.reduce((sum, row) => sum + row.value, 0) / recorded.length;
-  const estimates = recorded.some(row => row.kind === 'estimated') ? '（含 AI 区间中点）' : '';
+  const estimates = recorded.some(row => row.kind === 'estimated') ? '（含 AI 单值估算）' : '';
   const weekend = recorded.filter(row => [0, 6].includes(new Date(`${row.date}T00:00:00`).getDay()));
   const weekendAverage = weekend.length ? weekend.reduce((sum, row) => sum + row.value, 0) / weekend.length : null;
   const weekendSummary = weekendAverage === null

@@ -1,4 +1,5 @@
-import {calculateIntake,recordEntriesWithAiEstimates,NUTRIENTS} from './foodNutrition.js';
+import {calculateIntake,recordEntriesWithAiEstimates,formatNutrient,NUTRIENTS} from './foodNutrition.js';
+import {estimateMidpoint} from './nutritionEstimate.js';
 import {overviewNutrition,lifeStageMicronutrients} from './lifeStageNutrition.js';
 const ids={a:'vitaminA',c:'vitaminC',d:'vitaminD',e:'vitaminE',k:'vitaminK'};
 export function referenceMap(profile){
@@ -17,6 +18,14 @@ export function nutrientRows(entries,profile){
 export function intakeTrend(records,endDate,days=7,reports=[]){
  const end=new Date(endDate+'T12:00:00Z');if(!Number.isFinite(+end))return [];
  return Array.from({length:days},(_,i)=>{const d=new Date(end);d.setUTCDate(d.getUTCDate()-days+1+i);const date=d.toISOString().slice(0,10),record=records.find(r=>r.date===date),entries=recordEntriesWithAiEstimates(record,reports);return {date,recorded:entries.length>0,...calculateIntake(entries)};});
+}
+export function energyTrendRows(records,endDate,days=7,reports=[]){
+ return intakeTrend(records,endDate,days,reports).map(day=>{
+  const total=day.totals?.energy;
+  const value=!day.recorded||!total?null:total.range?estimateMidpoint(total.range):typeof total.value==='number'&&Number.isFinite(total.value)?total.value:null;
+  const status=!day.recorded?'未记录':!total||value===null?'数据未知':total.range?'含 AI 估算':total.complete?'数据库完整':'已知小计';
+  return {date:day.date,value,status,label:value===null?status:`${formatNutrient(value)} kcal`,kind:total?.range?'estimated':value!==null&&!total?.complete?'partial':'known'};
+ });
 }
 export function interpretation(row){
  if(row.range)return row.complete?'含AI单值参考估算；不作营养诊断':'含AI单值估算，仍有未知项';
