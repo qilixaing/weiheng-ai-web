@@ -86,7 +86,7 @@ const energyTrendSummary = computed(() => {
   const weekendSummary = weekendAverage === null
     ? ''
     : `；周末已记录日均 ${formatNutrient(weekendAverage)} kcal${energyTarget.value === null ? '' : `，每日需求参考 ${formatNutrient(energyTarget.value)} kcal`}`;
-  return `近 7 天可绘制数据覆盖 ${recorded.length}/7 天，记录日均小计 ${formatNutrient(average)} kcal${estimates}${weekendSummary}；未记录日期不按 0 处理。`;
+  return `近 7 天可绘制数据覆盖 ${recorded.length}/7 天，记录日均小计 ${formatNutrient(average)} kcal${estimates}${weekendSummary}；连线仅连接已有记录，未记录日期不按 0 处理。`;
 });
 const energyTrendScaleMax = computed(() => {
   const values = [...energyTrendDisplay.value.map(row => row.value), energyTarget.value, ...(energyTargetRange.value || [])].filter(value => Number.isFinite(value) && value > 0);
@@ -108,16 +108,12 @@ const energyTrendKeyIndices = computed(() => energyDemoActive.value
   : [0, Math.floor((energyTrendPoints.value.length - 1) / 2), energyTrendPoints.value.length - 1]);
 const energyTrendHasValues = computed(() => energyTrendPoints.value.some(point => point.value !== null));
 const energyTrendPaths = computed(() => {
-  const groups = [];
-  let current = [];
-  for (const point of energyTrendPoints.value) {
-    if (point.value === null) {
-      if (current.length > 1) groups.push(current);
-      current = [];
-    } else current.push(point);
-  }
-  if (current.length > 1) groups.push(current);
-  return groups.map(group => group.map((point, index) => `${index ? 'L' : 'M'} ${point.x * 10} ${point.y}`).join(' '));
+  // Keep calendar spacing, but connect only days with a saved energy value.
+  // Missing dates have no point and are never treated as zero.
+  const recorded = energyTrendPoints.value.filter(point => point.value !== null);
+  return recorded.length > 1
+    ? [recorded.map((point, index) => `${index ? 'L' : 'M'} ${point.x * 10} ${point.y}`).join(' ')]
+    : [];
 });
 const energyTrendAreaPaths = computed(() => {
   const groups = [];
