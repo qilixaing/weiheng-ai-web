@@ -247,6 +247,15 @@ export interface AiWebSource {
   date?: string;
 }
 
+export interface AiLocalSource {
+  id: string;
+  title: string;
+  version: string;
+  url: string;
+  summary: string;
+  kind: string;
+}
+
 export interface AiDietChatMessage {
   id: string;
   role: AiDietChatRole;
@@ -261,6 +270,7 @@ export interface AiDietChatMessage {
   webSearchStatus?: string;
   webSearchWarning?: string;
   webSources?: AiWebSource[];
+  localSources?: AiLocalSource[];
 }
 
 export interface AiDietChatRequestMessage {
@@ -290,6 +300,7 @@ export interface AiDietChatResponse {
     profileAvailable: boolean;
   };
   webSources?: AiWebSource[];
+  localSources?: AiLocalSource[];
   webSearchWarning?: string;
 }
 
@@ -304,5 +315,6 @@ export type AiDietChatStreamEvent =
       generatedAt: string;
       contextSummary: AiDietChatResponse['contextSummary'];
       webSources?: AiWebSource[];
+      localSources?: AiLocalSource[];
       webSearchWarning?: string;
     };

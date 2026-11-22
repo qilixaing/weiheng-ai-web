@@ -18,6 +18,7 @@ import { prepareChatAttachment, saveChatAttachment, loadChatAttachment, deleteCh
 import { CHAT_ATTACHMENT_ACCEPT, MAX_CHAT_ATTACHMENTS, MAX_HISTORY_ATTACHMENT_TEXT, MAX_HISTORY_IMAGES, chatFileKind } from '../lib/chatAttachmentRules.js';
 import { todayDate, validDate } from '../lib/foodNutrition.js';
 import type {
+  AiLocalSource,
   AiWebSource,
   AiDietChatMessage,
   AiDietChatRequestMessage,
@@ -83,6 +84,25 @@ function normalizeWebSources(value: unknown): AiWebSource[] {
   }).slice(0, 5);
 }
 
+function normalizeLocalSources(value: unknown): AiLocalSource[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((item): AiLocalSource[] => {
+    if (!item || typeof item !== 'object') return [];
+    const source = item as Partial<AiLocalSource>;
+    try {
+      const url = new URL(String(source.url || ''));
+      if (url.protocol !== 'https:' || typeof source.id !== 'string' || typeof source.title !== 'string') return [];
+      return [{
+        id: source.id.slice(0, 80), title: source.title.slice(0, 180),
+        version: typeof source.version === 'string' ? source.version.slice(0, 100) : '',
+        url: url.href,
+        summary: typeof source.summary === 'string' ? source.summary.slice(0, 1200) : '',
+        kind: typeof source.kind === 'string' ? source.kind.slice(0, 40) : '本地整理摘要',
+      }];
+    } catch { return []; }
+  }).slice(0, 3);
+}
+
 function loadStoredState(): { threads: ChatThread[]; activeByDate: Record<string, string>; memoryEnabled: boolean; webSearchEnabled: boolean } {
   try {
     const parsed: unknown = JSON.parse(appStorage.getItem(STORAGE_KEY) || 'null');
@@ -108,6 +128,7 @@ function loadStoredState(): { threads: ChatThread[]; activeByDate: Record<string
           webSearchStatus: typeof message.webSearchStatus === 'string' ? message.webSearchStatus.slice(0, 80) : undefined,
           webSearchWarning: typeof message.webSearchWarning === 'string' ? message.webSearchWarning.slice(0, 160) : undefined,
           webSources: normalizeWebSources(message.webSources),
+          localSources: normalizeLocalSources(message.localSources),
         })),
       }];
     }) : [];
@@ -441,6 +462,7 @@ async function sendQuestion(rawQuestion: string, retryAssistantId?: string, atta
     assistantMessage.content = '';
     assistantMessage.webSearchWarning = undefined;
     assistantMessage.webSources = undefined;
+    assistantMessage.localSources = undefined;
     assistantMessage.webSearchStatus = requestWebSearch ? '正在联网搜索…' : '正在回复…';
   } else {
     thread.messages.push({ id: makeId(), role: 'user', content: question, attachments: attachments.length ? attachments.map(attachmentMeta) : undefined, webSearch: requestWebSearch, status: 'complete', createdAt: new Date().toISOString() });
@@ -484,6 +506,7 @@ async function sendQuestion(rawQuestion: string, retryAssistantId?: string, atta
         assistantMessage.context = event.contextSummary;
         assistantMessage.createdAt = event.generatedAt || new Date().toISOString();
         assistantMessage.webSources = normalizeWebSources(event.webSources);
+        assistantMessage.localSources = normalizeLocalSources(event.localSources);
         assistantMessage.webSearchWarning = event.webSearchWarning;
         assistantMessage.webSearchStatus = '';
       }
@@ -496,6 +519,7 @@ async function sendQuestion(rawQuestion: string, retryAssistantId?: string, atta
     assistantMessage.context = response.contextSummary;
     assistantMessage.createdAt = response.generatedAt || new Date().toISOString();
     assistantMessage.webSources = normalizeWebSources(response.webSources);
+    assistantMessage.localSources = normalizeLocalSources(response.localSources);
     assistantMessage.webSearchWarning = response.webSearchWarning;
     assistantMessage.webSearchStatus = '';
     assistantMessage.status = 'complete';
@@ -633,6 +657,15 @@ function clearLocalHistory(): void {
             <ChatMessageExport v-if="message.role==='assistant'&&message.status==='complete'&&message.content.trim()&&requestedDocumentFormat(exportQuestion(message.id))" :content="message.content" :question="exportQuestion(message.id)" :auto="currentMessages.at(-1)?.id===message.id" @retry="retry(message.id)" />
             <small v-if="message.status==='sending'&&message.content&&message.webSearchStatus" class="vb-chat-search-status" role="status">{{ message.webSearchStatus }}</small>
             <p v-if="message.role==='assistant'&&message.status==='complete'&&message.webSearchWarning" class="vb-chat-search-warning">{{ message.webSearchWarning }}</p>
+            <details v-if="message.role==='assistant'&&message.status==='complete'&&message.localSources?.length" class="vb-chat-sources">
+              <summary>本地参考依据 · {{ message.localSources.length }}</summary>
+              <ol>
+                <li v-for="(source, index) in message.localSources" :key="source.id">
+                  <a :href="source.url" target="_blank" rel="noopener noreferrer"><span>[本地{{ index + 1 }}]</span> {{ source.title }}</a>
+                  <small>{{ source.version }} · {{ source.kind }}：{{ source.summary }}</small>
+                </li>
+              </ol>
+            </details>
             <details v-if="message.role==='assistant'&&message.status==='complete'&&message.webSources?.length" class="vb-chat-sources">
               <summary>联网来源 · {{ message.webSources.length }}</summary>
               <ol>

@@ -7,10 +7,34 @@ import {createAiHandler,callDeepSeek,deepseekConfig} from '../server/ai-api.mjs'
 import {fetchWithEnvironmentProxy} from '../server/env-proxy.mjs';
 import {searchFoods,ALL_FOODS} from '../src/data/catalogue.js';
 import aiFoodEstimates from '../src/data/aiFoodEstimates.json' with {type:'json'};
+import {applyAiEstimatesToEntries} from '../src/lib/nutritionSnapshot.js';
+import {calculateIntake} from '../src/lib/foodNutrition.js';
 const aiRange=(foodId,id)=>aiFoodEstimates.estimates[foodId].values[id];
 const env={DEEPSEEK_API_KEY:'test-only-synthetic-token',DEEPSEEK_TEXT_MODEL:'configured-text',DEEPSEEK_VISION_MODEL:'configured-vision'};
 const answer=value=>new Response(JSON.stringify({model:'simulated-model',choices:[{message:{content:JSON.stringify(value)}}]}),{status:200});
 const toolCall=(name,args,id='call-'+name)=>new Response(JSON.stringify({model:'simulated-tool-model',choices:[{message:{role:'assistant',content:null,tool_calls:[{id,type:'function',function:{name,arguments:JSON.stringify(args)}}]}}]}),{status:200});
+test('confirmed unmatched photo food receives labelled AI macros in the draft summary',async t=>{
+ let sent;
+ const post=await endpoint(t,async(_url,options)=>{
+  sent=JSON.parse(JSON.parse(options.body).messages[1].content).items;
+  return answer({estimates:[{entryId:'0',values:{energy:120,protein:4,carbs:18,fat:3},assumption:'模拟测试：按普通熟制食品估算'}]});
+ });
+ const input={items:[{name:'未收录的测试餐食',grams:150}]},response=await post('photo-food-estimate',input);
+ assert.equal(response.status,200);assert.equal(sent[0].grams,150);assert.equal(sent[0].name,input.items[0].name);
+ assert.equal(response.body.estimates[0].values.energy.value,120);
+ const [entry]=applyAiEstimatesToEntries([{foodId:null,name:input.items[0].name,grams:150,source:'photo',referenceConfirmed:true}],response.body.estimates);
+ assert.equal(entry.nutritionSnapshot.values.energy,undefined);
+ assert.equal(entry.nutritionSnapshot.ranges.energy.low,80);
+ assert.equal(calculateIntake([entry]).totals.energy.range.low,120);
+ assert.equal((await post('photo-food-estimate',{items:[{name:'',grams:150}]})).status,400);
+ assert.equal((await post('photo-food-estimate',{items:[{name:'测试',grams:0}]})).status,400);
+ assert.equal((await post('photo-food-estimate',{items:[{name:'测试',grams:100,foodId:'banana'}]})).status,400);
+});
+test('unmatched photo food rejects incomplete AI values instead of inventing zeros',async t=>{
+ const post=await endpoint(t,async()=>answer({estimates:[{entryId:'0',values:{energy:120},assumption:'缺失宏量'}]}));
+ const response=await post('photo-food-estimate',{items:[{name:'测试食品',grams:150}]});
+ assert.equal(response.status,502);assert.equal(response.body.code,'INVALID_AI_ESTIMATE');
+});
 test('dish estimate fills missing macros with labelled single values without changing catalogue or caching personal recipe globally',async t=>{
  const food=ALL_FOODS.find(f=>f.photoCatalogue&&!f.source),before=JSON.stringify(food.nutrients);let calls=0,sent;
  const post=await endpoint(t,async(_url,options)=>{
@@ -214,6 +238,20 @@ test('diet chat prioritizes exact local food evidence and includes saved photo i
  assert.match(sent.messages[0].content,/本地食物目录/);
 });
 
+test('diet guidance retrieves local reference summaries with traceable sources without web search',async t=>{
+ let calls=0,sent;
+ const post=await endpoint(t,async(_url,options)=>{calls++;sent=JSON.parse(options.body);return new Response(JSON.stringify({model:'simulated-chat-model',choices:[{message:{content:'RNI 是推荐摄入量 [本地1]。'}}]}),{status:200});});
+ const result=await post('chat',{date:'2026-11-05',messages:[{role:'user',content:'RNI 参考值是什么意思？'}],entries:[],webSearch:false});
+ assert.equal(result.status,200);
+ assert.equal(calls,1);
+ assert.equal(result.body.localSources[0].id,'reference-terms');
+ assert.match(result.body.localSources[0].version,/2023/);
+ const context=JSON.parse(sent.messages[1].content.replace(/^所选日期的程序计算上下文（JSON，仅供事实依据）：/,''));
+ assert.equal(context.localGuidance[0].id,'reference-terms');
+ assert.ok(!JSON.stringify(sent).includes('私人健康数据'));
+ assert.match(sent.messages[0].content,/本地1/);
+});
+
 test('diet chat preserves missing nutrition as unknown and rejects oversized or malformed history',async t=>{
  let calls=0;const post=await endpoint(t,async(url,options)=>{calls++;const sent=JSON.parse(options.body),context=JSON.parse(sent.messages[1].content.replace(/^所选日期的程序计算上下文（JSON，仅供事实依据）：/,''));assert.equal(context.totals.energy.value,null);assert.deepEqual(context.totals.energy.missingFoods,['自定义未知食物']);assert.ok(!('energy' in context.foods[0].knownNutrients));return new Response(JSON.stringify({model:'simulated-chat-model',choices:[{message:{content:'这一天没有可核验的热量数据，因此我不把缺失值当作 0。'}}]}),{status:200});});
  const missing=await post('chat',{date:'2026-10-30',messages:[{role:'user',content:'我摄入多少热量？'}],entries:[{name:'自定义未知食物',grams:80}]});
@@ -254,14 +292,14 @@ test('diet chat streams incremental text before the upstream response is complet
  };
  const handler=createAiHandler({env,fetchImpl}),server=createServer(async(req,res)=>{if(!await handler(req,res,new URL(req.url,'http://localhost')))res.end();});
  server.listen(0,'127.0.0.1');await once(server,'listening');t.after(()=>server.close());
- const response=await fetch(`http://127.0.0.1:${server.address().port}/api/ai/chat`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({stream:true,date:'2026-10-30',messages:[{role:'user',content:'合成流式测试'}],entries:[],targets:null})});
+ const response=await fetch(`http://127.0.0.1:${server.address().port}/api/ai/chat`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({stream:true,date:'2026-10-30',messages:[{role:'user',content:'RNI 参考值合成流式测试'}],entries:[],targets:null})});
  assert.equal(response.status,200);assert.match(response.headers.get('content-type'),/text\/event-stream/);
  const reader=response.body.getReader(),decoder=new TextDecoder();let output='',firstDeltaAt=0;
  while(true){const{value,done}=await reader.read();if(done)break;const text=decoder.decode(value,{stream:true});output+=text;if(!firstDeltaAt&&text.includes('第一段'))firstDeltaAt=Date.now();}
  assert.ok(firstDeltaAt>0);assert.ok(upstreamFinishedAt>0);assert.ok(firstDeltaAt<upstreamFinishedAt,'first delta should arrive before the upstream stream completes');
  const events=output.split(/\r?\n\r?\n/).filter(block=>block.split(/\r?\n/).some(line=>line.startsWith('data:'))).map(block=>JSON.parse(block.split(/\r?\n/).find(line=>line.startsWith('data:')).slice(5)));
  assert.deepEqual(events.filter(event=>event.type==='delta').map(event=>event.text),['第一段','第二段。']);
- assert.equal(events.at(-1).type,'done');assert.equal(events.at(-1).model,'simulated-stream-model');assert.equal(events.at(-1).contextSummary.date,'2026-10-30');
+ assert.equal(events.at(-1).type,'done');assert.equal(events.at(-1).model,'simulated-stream-model');assert.equal(events.at(-1).contextSummary.date,'2026-10-30');assert.equal(events.at(-1).localSources[0].id,'reference-terms');
 });
 
 test('diet chat opens the browser stream and sends keepalive comments while DeepSeek starts',async t=>{
