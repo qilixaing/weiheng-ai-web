@@ -10,7 +10,7 @@ import {preloadAppAssets} from './lib/preloadApp.js';
 
 const fullApp=shallowRef(null),identityReady=ref(false),preview=ref({}),recordCount=ref(0);
 const initialPage=ref('overview'),initialEditor=ref(false),accountOpen=ref(false),theme=ref('light');
-const titles={overview:'概览',dietAssistant:'维衡AI助手',diary:'饮食记录',mealplan:'膳食方案',assessment:'营养分析',food:'食物浏览',profile:'个人档案',about:'关于'};
+const titles={overview:'概览',dietAssistant:'维衡 AI 助手',diary:'饮食记录',mealplan:'膳食方案',assessment:'营养分析',food:'食物浏览',profile:'个人档案',about:'关于'};
 const error=ref(''),busy=ref(false),pendingAction=ref(false),pendingLogin=ref(false);
 const {toggleTheme}=useThemeTransition(theme);
 watch(theme,value=>{if(identityReady.value){try{appStorage.setItem('weiheng.theme.v1',value);}catch{}}});

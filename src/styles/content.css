@@ -1,6 +1,6 @@
 /* Content-only design tokens; the background shell and canvas are unchanged. */
 .vb-app {
-  --vb-ink:#243d32; --vb-muted:#7c8e83; --vb-faint:#9aa89f;
+  --vb-ink:#243d32; --vb-muted:#5d7164; --vb-faint:#61766a;
   --vb-accent:#347a5d; --vb-accent-hover:#276247; --vb-accent-soft:rgba(214,235,218,.55);
   --vb-surface:rgba(255,255,255,.76); --vb-surface-strong:rgba(255,255,255,.95);
   --vb-line:rgba(111,148,123,.15); --vb-wash:rgba(237,245,236,.08); --vb-table-stripe:rgba(214,235,218,.18); --vb-table-hover:rgba(214,235,218,.34);
@@ -17,7 +17,7 @@
   font-synthesis:none; color-scheme:light;
 }
 .vb-app[data-theme="dark"] {
-  --vb-ink:#e1eae1; --vb-muted:#9eafa3; --vb-faint:#748e7e;
+  --vb-ink:#e1eae1; --vb-muted:#b6c8b9; --vb-faint:#aec3b1;
   --vb-accent:#a5d4b0; --vb-accent-hover:#bde2c3; --vb-accent-soft:rgba(91,139,102,.18);
   --vb-surface:rgba(24,43,33,.80); --vb-surface-strong:rgba(26,45,35,.97);
   --vb-line:rgba(172,205,177,.12); --vb-wash:rgba(9,24,18,.88); --vb-table-stripe:rgba(91,139,102,.09); --vb-table-hover:rgba(91,139,102,.17);

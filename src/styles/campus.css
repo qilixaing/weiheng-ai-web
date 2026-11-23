@@ -28,3 +28,21 @@
 @media(max-width:600px){.vb-account-dialog{padding:20px}.vb-topbar-actions .vb-account-trigger{font-size:11px;padding:7px 8px}}
 
 .vb-account-policy-toggle{padding:0;border:0;background:none;color:var(--vb-accent);font:inherit;font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer}.vb-account-privacy-content{margin:8px 0 0 24px;padding:10px 12px;border-left:2px solid var(--vb-accent);border-radius:0 8px 8px 0;background:var(--vb-wash);color:var(--vb-muted);font-size:12px;line-height:1.75}.vb-account-privacy-content p{margin:0 0 6px;font-weight:600}.vb-account-privacy-content ol{display:grid;gap:6px;margin:0;padding-left:20px}
+
+@media(max-width:600px){
+  .vb-food-card-image{height:150px;aspect-ratio:auto}
+  .vb-food-photo-placeholder{padding:8px;gap:4px}
+  .vb-food-photo-placeholder>svg{width:24px;height:24px}
+  .vb-food-photo-placeholder>strong{font-size:11px;line-height:1.4}
+  .vb-food-photo-placeholder>small{font-size:8px}
+}
+@media(max-width:600px){
+  .vb-topbar-actions .vb-theme-button,.vb-topbar-actions .vb-avatar{width:42px;height:42px;flex:none}
+  .vb-food-card-copy p,.vb-food-card-copy dt,.vb-food-card-copy dd small,.vb-food-card-bottom,.vb-food-card-bottom button,.vb-food-photo-note,.vb-agent-source p,.vb-section-note,.vb-micro-card td small,.vb-nutrient-table>div,.vb-nutrient-table small,.vb-food-detail-top .vb-data-note{font-size:11px;line-height:1.5}
+}
+@media(max-width:480px){
+  .vb-topbar-actions{gap:6px}
+  .vb-topbar-actions .vb-account-trigger{min-width:40px;min-height:40px;padding:7px 6px}
+  .vb-local-chip{font-size:0;gap:0}
+  .vb-breadcrumb{white-space:nowrap}
+}

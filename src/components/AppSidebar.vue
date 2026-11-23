@@ -7,7 +7,7 @@ const props=defineProps({ active: String });
 const {navRoot,highlight,liquidReady}=useLiquidNavigation(toRef(props,'active'));
 defineEmits(['navigate']);
 const menu = [
-  ['overview', '概览', 'grid'], ['dietAssistant', '维衡AI助手', 'sparkles'], ['diary', '饮食记录', 'list'],
+  ['overview', '概览', 'grid'], ['dietAssistant', '维衡 AI 助手', 'sparkles'], ['diary', '饮食记录', 'list'],
   ['mealplan', '膳食方案', 'bowl'], ['assessment', '营养分析', 'chart'],
   ['food', '食物浏览', 'apple'],
   ['profile', '个人档案', 'person'], ['about', '关于', 'info']

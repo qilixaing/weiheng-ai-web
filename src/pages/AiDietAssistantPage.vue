@@ -163,6 +163,7 @@ const hasReadyAttachment = computed(() => draftAttachments.value.some((item) => 
 let attachmentBatchVersion = 0;
 const storageError = ref('');
 const notice = ref('');
+const confirmClear = ref(false);
 const conversation = ref<HTMLElement | null>(null);
 const conversationContent = ref<HTMLElement | null>(null);
 const sending = computed(() => threads.value.some((thread) => thread.messages.some((message) => message.status === 'sending')));
@@ -573,7 +574,7 @@ function startNewConversation(): void {
 }
 
 function clearLocalHistory(): void {
-  if (!window.confirm('清除当前使用空间的全部 AI 对话？登录账号的删除会同步到其他设备，此操作无法撤销。')) return;
+  confirmClear.value = false;
   const attachments = threads.value.flatMap((thread) => thread.messages.flatMap((message) => message.attachments || []));
   for (const item of attachments) {
     delete attachmentCache.value[item.id];
@@ -589,10 +590,10 @@ function clearLocalHistory(): void {
 </script>
 
 <template>
-  <section class="vb-chat-page vb-simple-chat" aria-label="维衡AI助手对话">
+  <section class="vb-chat-page vb-simple-chat" aria-label="维衡 AI 助手对话">
     <header class="vb-simple-header">
       <div class="vb-simple-title">
-        <h1>维衡AI助手</h1>
+        <h1>维衡 AI 助手</h1>
         <p>聊聊想法；开启记忆后，也能延续之前的对话。</p>
       </div>
       <div class="vb-simple-actions">
@@ -617,7 +618,7 @@ function clearLocalHistory(): void {
               <span><strong>跨对话记忆</strong><small>开启后，新对话会参考近期完整文字交流（不含附件），并随提问发送给 AI。</small></span>
             </label>
             <p>登录后文字对话按账号同步。测试账号为多人共用，其他使用者也能看到该账号的聊天；个人聊天请使用自己的账号。</p>
-            <button type="button" :disabled="sending" @click="clearLocalHistory">清除本地记录</button>
+            <button type="button" :disabled="sending" @click="confirmClear=true">清除本地记录</button>
           </div>
         </details>
       </div>
@@ -739,6 +740,7 @@ function clearLocalHistory(): void {
         </div>
       </div>
     </footer>
+    <ModalShell v-if="confirmClear" title="确认清空 AI 对话？" @close="confirmClear=false"><p>将清除当前使用空间的全部 AI 对话。登录账号的删除会同步到其他设备，且无法撤销。</p><div class="vb-reset-actions"><button class="vb-button vb-button-quiet" @click="confirmClear=false">取消</button><button class="vb-button vb-button-primary" @click="clearLocalHistory">确认清空</button></div></ModalShell>
     <ModalShell v-if="previewAttachment" :title="previewAttachment.name" wide @close="previewAttachment = null">
       <img v-if="previewAttachment.kind === 'image'" class="vb-chat-image-preview" :src="previewAttachment.dataUrl" :alt="previewAttachment.name" />
       <pre v-else class="vb-chat-text-preview">{{ previewAttachment.text }}</pre>

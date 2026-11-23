@@ -6,6 +6,7 @@ import { mergeChat, stampChat } from './chatSyncMerge.js';
 // Guest data keeps its historical keys. Signed-in workspaces use their own
 // browser namespace and sync only the main profile/food-plan state to /api/data.
 let actor = 'guest';
+let identityUnknown = false;
 let syncTimer = 0;
 const CHAT_KEY='weiheng.ai-diet-chat.v1';
 let chatBusy=false,chatTimer=0,chatStopped=false;
@@ -96,12 +97,14 @@ function scheduleAccountSync() {
 export const appStorage = {
   getItem: key => globalThis.localStorage.getItem(scopedKey(key)),
   setItem(key, value) {
+    if(identityUnknown&&(key===MAIN_DATA_KEY||key===CHAT_KEY))throw new Error('账号状态暂不可确认；请联网后刷新再保存。');
     if(key===CHAT_KEY){const previous=parseChat(appStorage.getItem(key));value=JSON.stringify(mergeChat(previous,stampChat(previous,parseChat(value))));}
     globalThis.localStorage.setItem(scopedKey(key), value);
     if(key===CHAT_KEY&&actor!=='guest'){chatSyncStatus.value='pending';clearTimeout(chatTimer);chatTimer=setTimeout(syncChat,900);}
     if (key === MAIN_DATA_KEY) scheduleAccountSync();
   },
   removeItem(key) {
+    if(identityUnknown&&(key===MAIN_DATA_KEY||key===CHAT_KEY))throw new Error('账号状态暂不可确认；请联网后刷新再删除。');
     globalThis.localStorage.removeItem(scopedKey(key));
     if (key === MAIN_DATA_KEY && actor !== 'guest') {
       accountSyncStatus.value = 'error';
@@ -136,15 +139,20 @@ async function hydrateSignedInWorkspace(userId) {
 
 export async function initializeStorageScope() {
   try {
-    const response = await fetch('/api/auth/me', { cache: 'no-store', signal: timeoutSignal(20000) });
+    const response = await fetch('/api/auth/me', { cache: 'no-store', signal: timeoutSignal(4000) });
     if (!response.ok) throw Error('identity');
     const me = await response.json();
+    identityUnknown = false;
     accountUser.value = me.authenticated && typeof me.user?.id === 'string' ? me.user : null;
     actor = accountUser.value?.id || 'guest';
     accountSyncStatus.value = actor === 'guest' ? 'guest' : 'syncing';
     if (actor !== 'guest') { try{await hydrateSignedInWorkspace(actor);}catch{accountSyncStatus.value='error';} void syncChat(); }
   } catch {
-    throw new Error('无法确认当前使用空间，暂停读取本地数据。');
+    // Keep the guest namespace readable while identity is temporarily unavailable.
+    accountUser.value = null;
+    actor = 'guest';
+    identityUnknown = true;
+    accountSyncStatus.value = 'guest';
   }
 
   // A cookie/account change in another tab must not carry the old workspace
@@ -159,12 +167,12 @@ export async function initializeStorageScope() {
       const me = await response.json();
       const next = me.authenticated && typeof me.user?.id === 'string' ? me.user.id : 'guest';
       if (next !== actor) window.location.reload();
-      else if (next !== 'guest') await flushAccountData();
+      else { identityUnknown = false; if (next !== 'guest') await flushAccountData(); }
     } catch { /* Retain local data while the server is briefly unavailable. */ }
     finally { checking = false; }
   };
   window.addEventListener('focus', ()=>{void check();void syncChat();});
-  window.addEventListener('online',()=>void syncChat());
+  window.addEventListener('online',()=>{void check();void syncChat();});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)void syncChat();});
   window.addEventListener('pagehide',()=>{window.dispatchEvent(new CustomEvent('weiheng-chat-flush'));if(actor!=='guest'){const body=appStorage.getItem(CHAT_KEY);if(body)void fetch('/api/chat',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({...parseChat(body),expectedUserId:actor}),keepalive:true}).catch(()=>{});}});
   const polling=setInterval(()=>{if(!document.hidden)void syncChat();},8000);

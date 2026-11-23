@@ -1,5 +1,5 @@
-import { A as U, o as s, d as i, g as B, e as t, t as a, u as y, F as x, f as C, n as T, p as f, j as h, a as p, E as z, r as E, m as L, v as q, l as P, i as H } from "./vue-runtime-BJOX_u7T.js";
-import { o as M, l as S, M as V, N as R, g as w, q as O, t as j, Q, S as W, k as G, a as F, T as J, U as K } from "./useThemeTransition-DIyUK0bV.js";
+import { A as U, o as s, d as i, g as B, e as t, t as a, u as y, F as x, f as C, n as T, p as f, j as h, a as p, G as z, r as E, m as L, v as q, l as P, i as G } from "./vue-runtime-tIIV23yc.js";
+import { o as M, l as S, M as V, N as R, g as w, q as O, t as j, Q as H, S as Q, k as W, a as F, T as J, U as K } from "./useThemeTransition-B3bygmGG.js";
 const X = ["aria-label"], Y = {
   class: "vb-intake-chart-axis vb-intake-chart-axis-left",
   "aria-hidden": "true"
@@ -247,14 +247,14 @@ const X = ["aria-label"], Y = {
 }, Ee = /* @__PURE__ */ ye(Re, [["__scopeId", "data-v-34b23d56"]]), Ve = { class: "vb-glass vb-intake-analysis" }, Be = { class: "vb-section-heading" }, Te = { class: "vb-date-input" }, je = ["max"], Fe = { class: "vb-data-note" }, we = {
   class: "vb-analysis-tabs",
   "aria-label": "营养指标分组"
-}, Oe = ["aria-pressed", "onClick"], Ue = { class: "vb-analysis-table-wrap" }, ze = { class: "vb-analysis-table" }, Le = { key: 0 }, qe = { key: 1 }, Pe = { key: 0 }, He = { key: 0 }, Qe = { key: 1 }, We = {
+}, Oe = ["aria-pressed", "onClick"], Ue = { class: "vb-analysis-table-wrap" }, ze = { class: "vb-analysis-table" }, Le = { key: 0 }, qe = { key: 1 }, Pe = { key: 0 }, Ge = { key: 0 }, He = { key: 1 }, Qe = {
   key: 2,
   class: "vb-data-note"
-}, Ge = {
+}, We = {
   __name: "IntakeAnalysis",
   props: { records: { type: Array, default: () => [] }, reports: { type: Array, default: () => [] }, profile: Object, compact: Boolean },
   setup(d) {
-    const b = d, u = E(j()), N = E("主要营养"), g = E("energy"), $ = p(() => b.records.find((c) => c.date === u.value)), I = p(() => $.value ? b.reports.find((c) => c.date === u.value && c.status === "complete" && c.recordVersion === F($.value)) : null), A = p(() => $.value && b.reports.some((c) => c.date === u.value && c.status === "pending" && c.recordVersion === F($.value))), v = p(() => W($.value, b.reports)), k = p(() => w(v.value)), r = p(() => [...new Set(v.value.map((c) => c.meal))].map((c) => G.find((m) => m[0] === c)?.[1]).join("、")), _ = p(() => J(v.value, b.profile).filter((c) => c.section === N.value)), n = p(() => K(b.records, u.value, 7, b.reports)), l = p(() => n.value.filter((c) => c.recorded)), e = p(() => l.value.filter((c) => c.totals[g.value].complete && !c.totals[g.value].range)), D = p(() => e.value.length ? e.value.reduce((c, m) => c + m.totals[g.value].value, 0) / e.value.length : null);
+    const b = d, u = E(j()), N = E("主要营养"), g = E("energy"), $ = p(() => b.records.find((c) => c.date === u.value)), I = p(() => $.value ? b.reports.find((c) => c.date === u.value && c.status === "complete" && c.recordVersion === F($.value)) : null), A = p(() => $.value && b.reports.some((c) => c.date === u.value && c.status === "pending" && c.recordVersion === F($.value))), v = p(() => Q($.value, b.reports)), k = p(() => w(v.value)), r = p(() => [...new Set(v.value.map((c) => c.meal))].map((c) => W.find((m) => m[0] === c)?.[1]).join("、")), _ = p(() => J(v.value, b.profile).filter((c) => c.section === N.value)), n = p(() => K(b.records, u.value, 7, b.reports)), l = p(() => n.value.filter((c) => c.recorded)), e = p(() => l.value.filter((c) => c.totals[g.value].complete && !c.totals[g.value].range)), D = p(() => e.value.length ? e.value.reduce((c, m) => c + m.totals[g.value].value, 0) / e.value.length : null);
     return (c, m) => (s(), i("section", Ve, [
       t("div", Be, [
         t("div", null, [
@@ -319,9 +319,9 @@ const X = ["aria-label"], Y = {
                   t("details", null, [
                     m[4] || (m[4] = t("summary", null, "查看依据", -1)),
                     t("p", null, a(o.known) + "项数据库值，" + a(o.estimatedCount || 0) + "项AI估算。", 1),
-                    t("p", null, a(y(Q)(o)), 1),
-                    o.missing.length ? (s(), i("p", He, "缺失：" + a(o.missing.join("、")), 1)) : h("", !0),
-                    o.reference ? (s(), i("p", Qe, a(o.reference.source || o.reference.note || o.reference.kind) + "；" + a(o.reference.kind), 1)) : h("", !0)
+                    t("p", null, a(y(H)(o)), 1),
+                    o.missing.length ? (s(), i("p", Ge, "缺失：" + a(o.missing.join("、")), 1)) : h("", !0),
+                    o.reference ? (s(), i("p", He, a(o.reference.source || o.reference.note || o.reference.kind) + "；" + a(o.reference.kind), 1)) : h("", !0)
                   ])
                 ])
               ]))), 128))
@@ -344,7 +344,7 @@ const X = ["aria-label"], Y = {
             rel: "noopener"
           }, "中国DRIs公开参考表")
         ], -1)),
-        H(Ee, {
+        G(Ee, {
           trend: n.value,
           metric: g.value,
           "end-date": u.value,
@@ -354,16 +354,16 @@ const X = ["aria-label"], Y = {
           "onUpdate:metric": m[1] || (m[1] = (o) => g.value = o)
         }, null, 8, ["trend", "metric", "end-date", "days", "complete-days", "mean"])
       ], 64)),
-      d.compact ? h("", !0) : (s(), i("p", We, "仅分析已记录食物，不作营养缺乏诊断。"))
+      d.compact ? h("", !0) : (s(), i("p", Qe, "仅分析已记录食物，不作营养缺乏诊断。"))
     ]));
   }
 }, Ye = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  default: Ge
+  default: We
 }, Symbol.toStringTag, { value: "Module" }));
 export {
   Ye as I,
   pe as _,
   ye as a,
-  Ge as b
+  We as b
 };

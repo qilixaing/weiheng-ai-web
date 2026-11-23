@@ -1,5 +1,5 @@
 <script setup>
-import {computed,ref,reactive,watch} from 'vue';
+import {computed,ref,reactive,watch,inject} from 'vue';
 import AppIcon from './AppIcon.vue';
 import NutrientSummary from './NutrientSummary.vue';
 import FoodImage from './FoodImage.vue';
@@ -12,6 +12,7 @@ import {normalizeMealConditions,calculateMealCost,foodConflicts,allowedMealFood}
 import { aiDisplayName } from '../lib/aiBranding.js';
 const props=defineProps({profile:Object,nutrition:Object,preferences:String,flags:Array,records:Array});
 const emit=defineEmits(['confirm']);
+const pushUndo=inject('pushUndo',()=>{});
 const {goal,date,meal,response,error,busy,progress,run,clear}=useMealAgent();
 goal.value='结合我的就餐条件，安排一份食物多样、方便选择的下一餐';
 const conditions=reactive({budget:'',avoids:'',preferences:props.preferences||'',exercise:'',availableFoods:[],onlyAvailable:true});
@@ -34,7 +35,7 @@ async function generate(){inputError.value='';confirmed.value=false;edited.value
 }
 function confirmPlan(){if(invalidPlan.value||confirmed.value)return;confirmed.value=true;emit('confirm',{confirmationId:ready.value.confirmationId,date:ready.value.date,meal:ready.value.meal,items:ready.value.plan.items,onResult:result=>{confirmed.value=result.ok;if(!result.ok)inputError.value=result.error||'加入草稿失败，请重试。';}});}
 function updateGrams(index,value){if(!ready.value)return;ready.value.plan.items[index].grams=Number(value);ready.value.plan.items[index].portion=portion(FOOD_BY_ID[ready.value.plan.items[index].foodId],Number(value));edited.value=true;}
-function removeFood(index){if(!ready.value)return;ready.value.plan.items.splice(index,1);edited.value=true;}
+function removeFood(index){const plan=ready.value;if(!plan)return;const [item]=plan.plan.items.splice(index,1);if(!item)return;edited.value=true;pushUndo({label:'移除方案食物',restore:()=>{if(ready.value!==plan)return;plan.plan.items.splice(index,0,item);edited.value=true;}});}
 const replacements=computed(()=>{
  let c;try{c=normalizeMealConditions(conditions);}catch{return [];}
  const options=c.availableFoods.length&&c.onlyAvailable?c.availableFoods.map(x=>FOOD_BY_ID[x.foodId]):ALL_FOODS;
@@ -64,7 +65,7 @@ const display=value=>typeof value==='number'&&Number.isFinite(value)?value.toLoc
   </form>
   <div v-if="busy||progress.length" class="vb-agent-progress" role="status" aria-live="polite"><div><strong>{{ busy?'正在执行；仅展示已完成步骤':'本次实际执行记录' }}</strong><p v-if="busy">模型响应需要一些时间，完成的工具步骤会陆续显示。</p><ol><li v-for="(step,index) in progress" :key="index"><strong>{{ step.label }}</strong> · {{ step.resultSummary }}</li></ol></div></div>
   <div v-if="error" class="vb-agent-error" role="alert"><strong>没有生成可确认方案</strong><p>{{ error }}</p><button class="vb-button vb-button-quiet" :disabled="busy" @click="generate">保留条件并重试</button></div>
-  <p v-if="response?.status==='needs_evidence'" class="vb-agent-error" role="status">{{ response.message }} 请修改备选食物或检索描述。</p>
+  <p v-if="response?.status==='needs_evidence'" class="vb-agent-error" role="status">{{ response.message }} 可展开“我能买到的食物”换一种具体食材；没有备选时系统会从整个目录检索。</p>
   <section v-if="ready" class="vb-agent-plan">
    <p v-if="edited" class="vb-data-note" role="status">方案已修改：下方营养与费用按当前份量重新计算；生成时的文字建议和目标比较已失效。{{ confirmed?'这批方案已加入草稿，请在饮食记录中继续修改。':'' }}</p>
    <div class="vb-agent-plan-heading"><div><p class="vb-eyebrow">待确认 · {{ ready.date }} · {{ mealOptions.find(x=>x[0]===ready.meal)?.[1] }}</p><h3>{{ ready.plan.title }}</h3></div><span class="vb-pill">确认后只加入草稿</span></div><p v-if="!edited">{{ ready.plan.summary }}</p>

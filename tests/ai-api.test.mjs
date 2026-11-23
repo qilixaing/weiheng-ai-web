@@ -136,6 +136,7 @@ test('analysis recomputes totals, discards fake totals/profile extras and dedupl
  let calls=0;const sent=[];const post=await endpoint(t,async(url,options)=>{calls++;const callIndex=calls,body=JSON.parse(options.body);sent.push(body);await new Promise(resolve=>setTimeout(resolve,20));if(callIndex===1)return answer({estimates:[{entryId:'1',values:{energy:45,protein:1.5,carbs:10,fat:0.6},assumption:'按名称与50克份量给出单值参考'}]});return answer({summary:'模拟单日解释',overview:['记录范围有限'],scope:'协议测试'});});
  const input={date:'2026-10-30',entries:[{foodId:'banana',grams:150},{name:'未知菜式',grams:50}],totals:{energy:99999},profile:{sex:'male',age:30,height:175,weight:65,activity:'light',secretNotes:'不得发送'}};
  const [one,two]=await Promise.all([post('analyze-day',input),post('analyze-day',input)]);assert.equal(one.status,200);assert.equal(two.status,200);assert.equal(calls,2);assert.equal(one.body.calculation.intake.totals.energy.value,133.5);assert.equal(one.body.calculation.comparison[0].delta,null);assert.ok(!JSON.stringify(sent).includes('不得发送'));assert.equal(JSON.parse(sent[1].messages[1].content).calculation.intake.totals.energy.value,133.5);assert.equal(one.body.calculation.estimation.status,'complete');assert.equal(one.body.calculation.estimation.missingFoodCount,1);assert.equal(one.body.calculation.estimation.foods[0].name,'未知菜式');assert.equal(one.body.calculation.comparison[0].estimatedRange.intake.low,178.5);assert.equal(one.body.calculation.comparison[0].estimatedRange.intake.high,178.5);assert.ok(one.body.calculation.comparison[0].estimatedRange.delta);
+ assert.equal(one.body.calculation.targetBasis,'personalized');assert.equal(JSON.parse(sent[1].messages[1].content).calculation.targetBasis,'personalized');assert.match(sent[1].messages[0].content,/基于个人档案估算/);
  assert.equal((await post('analyze-day',{date:input.date,entries:[]})).body.code,'NO_DATA');
 });
 test('daily analysis reuses local AI food estimates and requests AI only for the explanation',async t=>{
@@ -329,5 +330,32 @@ test('diet chat completes on finish_reason even if the upstream omits the [DONE]
  server.listen(0,'127.0.0.1');await once(server,'listening');t.after(()=>server.close());
  const started=Date.now(),response=await fetch(`http://127.0.0.1:${server.address().port}/api/ai/chat`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({stream:true,date:'2026-10-30',messages:[{role:'user',content:'检查完成标记'}],entries:[]})});
  const output=await response.text();assert.equal(response.status,200);assert.ok(output.includes('回复已完成。'));assert.match(output,/"type":"done"/);assert.ok(Date.now()-started<1000,'the response should not wait for a missing [DONE] sentinel');assert.equal(cancelled,true);
+});
+
+test('meal Agent retrieves common catalogue foods when an empty unqualified search needs a fallback',async t=>{
+ let stage=0,foods=[],items=[];
+ const multiple=calls=>new Response(JSON.stringify({model:'simulated-tool-model',choices:[{message:{role:'assistant',content:null,tool_calls:calls.map(([name,args],index)=>({id:`call-${name}-${index}`,type:'function',function:{name,arguments:JSON.stringify(args)}}))}}]}),{status:200});
+ const post=await endpoint(t,async(_url,options)=>{
+  const body=JSON.parse(options.body),toolResults=body.messages.filter(message=>message.role==='tool');
+  if(stage++===0)return toolCall('search_foods',{query:'不存在的测试食材名称',limit:4});
+  if(stage===2){foods=JSON.parse(toolResults.at(-1).content).foods;items=foods.map(food=>({foodId:food.id,grams:100}));return multiple(foods.map(food=>['get_food_detail',{foodId:food.id}]));}
+  if(stage===3)return toolCall('calculate_nutrition',{items});
+  if(stage===4)return toolCall('compare_with_targets',{items});
+  return answer({title:'午餐方案',summary:'根据本地目录组合。',items:items.map(item=>({...item,reason:'普通餐食搭配'})),suggestions:[],cautions:[]});
+ });
+ const result=await post('meal-plan',{goal:'安排一份午餐',date:'2026-10-30',meal:'lunch',conditions:{budget:15,availableFoods:[]}});
+ assert.equal(result.status,200);assert.equal(result.body.status,'ready');assert.equal(foods.length,4);
+ assert.ok(foods.some(food=>food.name.includes('米饭')));assert.ok(foods.some(food=>food.name.includes('鸡胸肉')));
+ assert.equal(result.body.trace.find(step=>step.tool==='search_foods').resultSummary,'检索到 4 项');
+});
+
+test('attached photo chat uses a recognized catalogue item and falls back after vision failure',async t=>{
+ const image='data:image/jpeg;base64,'+Buffer.from([255,216,255,217]).toString('base64');
+ const input={date:'2026-10-30',messages:[{role:'user',content:'这张照片中的苹果有多少热量？',attachments:[{kind:'image',name:'synthetic.jpg',dataUrl:image}]}],entries:[]};
+ let calls=0,context;
+ const post=await endpoint(t,async(_url,options)=>{const body=JSON.parse(options.body);calls++;if(calls===1)return answer({items:[{name:'苹果（带皮，生）',foodId:'apple',grams:100,uncertainty:'模拟估重'}],note:'模拟照片'});context=JSON.parse(body.messages[1].content.replace(/^所选日期的程序计算上下文（JSON，仅供事实依据）：/,''));return new Response(JSON.stringify({model:'simulated-chat-model',choices:[{message:{content:'按本地苹果样本计算，份量为估算。'}}]}),{status:200});});
+ const result=await post('chat',input);assert.equal(result.status,200);assert.equal(calls,2);assert.equal(context.catalogueMatches.find(item=>item.match==='photo').name,'苹果（带皮，生）');assert.equal(context.photoRecognition.items[0].grams,100);
+ let fallbackCalls=0;const fallback=await endpoint(t,async(_url,options)=>{fallbackCalls++;if(fallbackCalls===1)throw Error('simulated vision failure');return new Response(JSON.stringify({model:'simulated-chat-model',choices:[{message:{content:'请核对照片。'}}]}),{status:200});});
+ const failedVision=await fallback('chat',input);assert.equal(failedVision.status,200);
 });
 
