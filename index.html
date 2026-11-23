@@ -11,11 +11,108 @@
     <link rel="manifest" href="/site.webmanifest?v=2" />
     <link rel="stylesheet" href="/styles.css" />
     <script type="module" src="/app.js"></script>
+    <style>
+      #boot-screen{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:radial-gradient(circle at 50% 42%,#fff 0%,#f4f9f4 42%,#edf5ef 100%);color:#315d4a;font-family:system-ui,-apple-system,'Microsoft YaHei',sans-serif;opacity:1}
+      .boot-center{display:flex;flex-direction:column;align-items:center}
+      .boot-mark{position:relative;width:104px;height:104px}
+      .boot-ring{position:absolute;inset:2px;width:100px;height:100px;overflow:visible}
+      .boot-ring-track{fill:none;stroke:#deebe2;stroke-width:3}
+      .boot-ring-progress{fill:none;stroke:#4b9b72;stroke-width:3;stroke-linecap:round;stroke-dasharray:289;stroke-dashoffset:289;transform:rotate(-90deg);transform-origin:50% 50%}
+      .boot-orbit{position:absolute;inset:0;transform:rotate(-90deg)}
+      .boot-dot{position:absolute;left:0;top:0;width:8px;height:8px;border-radius:50%;background:#4b9b72;box-shadow:0 0 0 3px rgba(126,190,148,.2);offset-path:circle(46px at 50% 50%);offset-distance:0%;offset-rotate:0deg}
+      .boot-logo{position:absolute;left:50%;top:50%;width:58px;height:58px;border-radius:14px;transform:translate(-50%,-50%) scale(1);animation:boot-breathe 1.1s ease-in-out 2;object-fit:contain}
+      .boot-wordmark{margin-top:17px;color:#9caf9f;font-size:11px;letter-spacing:.22em;font-weight:500}
+      .boot-retry{margin-top:30px;padding:4px 7px;border:0;background:none;color:#648b72;font-family:inherit;font-size:11px;line-height:1.5;text-decoration:underline;text-underline-offset:3px;opacity:0;pointer-events:none;transition:opacity .2s ease}
+      .boot-retry.is-visible{opacity:1;pointer-events:auto}
+      .boot-retry:focus-visible{outline:2px solid #4b9b72;outline-offset:3px}
+      @keyframes boot-breathe{50%{transform:translate(-50%,-50%) scale(1.055)}100%{transform:translate(-50%,-50%) scale(1)}}
+      @media(prefers-reduced-motion:reduce){.boot-logo{animation:none}.boot-retry{transition:none}}
+    </style>
   </head>
   <body>
     <div class="ambient-background" aria-hidden="true">
       <canvas class="fluid-background-canvas" aria-hidden="true"></canvas>
     </div>
-    <div id="app"><div style="min-height:100vh;display:grid;place-content:center;text-align:center;color:#315d4a;font:16px/1.7 system-ui,sans-serif"><strong>维衡 AI 正在加载</strong><p>首次打开可能需要几秒钟。</p><button type="button" onclick="location.reload()" style="margin:auto;padding:9px 18px;border:1px solid #b9d8c6;border-radius:10px;background:#e8f4eb;color:#315d4a;cursor:pointer">重新加载</button></div></div>
+    <div id="app"></div>
+    <div id="boot-screen" role="status" aria-label="维衡 AI 正在加载">
+      <div class="boot-center">
+        <div class="boot-mark" aria-hidden="true">
+          <svg class="boot-ring" viewBox="0 0 100 100"><circle class="boot-ring-track" cx="50" cy="50" r="46"/><circle class="boot-ring-progress" cx="50" cy="50" r="46"/></svg>
+          <span class="boot-orbit"><span class="boot-dot"></span></span>
+          <img class="boot-logo" src="/assets/brand-icon-180.png?v=2" width="58" height="58" alt="" />
+        </div>
+        <span class="boot-wordmark">WEIHENG AI</span>
+        <button class="boot-retry" type="button" aria-hidden="true" tabindex="-1" onclick="location.reload()">重新加载</button>
+      </div>
+    </div>
+    <script>
+      (() => {
+        const screen = document.getElementById('boot-screen');
+        const ring = screen.querySelector('.boot-ring-progress');
+        const dot = screen.querySelector('.boot-dot');
+        const logo = screen.querySelector('.boot-logo');
+        const retry = screen.querySelector('.boot-retry');
+        const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const beganAt = performance.now();
+        let p = reducedMotion ? 1 : 0;
+        let frame = 0;
+        let ready = false;
+        let closing = false;
+
+        function draw() {
+          ring.style.strokeDashoffset = String(289 * (1 - p));
+          dot.style.offsetDistance = `${p * 100}%`;
+          dot.style.opacity = String(Math.max(0, Math.min(1, (0.88 - p) / 0.14)));
+        }
+        function close() {
+          if (closing) return;
+          closing = true;
+          screen.style.transition = 'opacity 140ms ease-out';
+          screen.style.opacity = '0';
+          setTimeout(() => screen.remove(), 140);
+        }
+        function normalFrame(now) {
+          p = Math.min(1, (now - beganAt) / 2200);
+          draw();
+          if (p < 1 && !ready) frame = requestAnimationFrame(normalFrame);
+        }
+        draw();
+        if (!reducedMotion) frame = requestAnimationFrame(normalFrame);
+        const retryTimer = setTimeout(() => {
+          if (ready) return;
+          retry.classList.add('is-visible');
+          retry.removeAttribute('aria-hidden');
+          retry.removeAttribute('tabindex');
+        }, 5000);
+
+        window.addEventListener('app-ready', () => {
+          ready = true;
+          clearTimeout(retryTimer);
+          cancelAnimationFrame(frame);
+          screen.style.pointerEvents = 'none';
+          logo.style.animation = 'none';
+          logo.style.transform = 'translate(-50%,-50%) scale(1)';
+          if (!reducedMotion) p = Math.min(1, (performance.now() - beganAt) / 2200);
+          draw();
+          if (p >= 1) { close(); return; }
+          const from = p;
+          const acceleratedAt = performance.now();
+          const deadline = setTimeout(() => {
+            cancelAnimationFrame(frame);
+            p = 1;
+            draw();
+            close();
+          }, 240);
+          function acceleratedFrame(now) {
+            const t = Math.min(1, (now - acceleratedAt) / 240);
+            p = from + (1 - from) * (1 - (1 - t) ** 3);
+            draw();
+            if (t < 1) frame = requestAnimationFrame(acceleratedFrame);
+            else { clearTimeout(deadline); close(); }
+          }
+          frame = requestAnimationFrame(acceleratedFrame);
+        }, { once: true });
+      })();
+    </script>
   </body>
 </html>

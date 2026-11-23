@@ -894,3 +894,15 @@
 .vb-content:has(.vb-body-energy-table) .vb-energy-tooltip{border-radius:var(--vb-overview-control-radius)}
 @media(max-width:760px){.vb-content:has(.vb-body-energy-table)>.vb-profile-strip{padding:14px 16px}.vb-content:has(.vb-body-energy-table)>.vb-intake-analysis,.vb-content:has(.vb-body-energy-table)>.vb-body-energy-table,.vb-content:has(.vb-body-energy-table)>.vb-macro-section{padding:14px}.vb-content:has(.vb-body-energy-table) :is(.vb-section-heading h2,.vb-micro-heading h2){font-size:17px}.vb-content:has(.vb-body-energy-table) .vb-energy-trend__x-axis time.is-key-date{font-size:7px}.vb-content:has(.vb-body-energy-table) .vb-energy-trend__note,.vb-content:has(.vb-body-energy-table) .vb-macro-structure-note{justify-content:flex-start}}
 @media(prefers-reduced-motion:reduce){.vb-content:has(.vb-body-energy-table) .vb-energy-trend__point{transition:none}}
+
+/* On phones, the scrollable workspace ends at the top of the fixed two-row nav.
+   Keeping a second nav-height spacer here left a blue band above the nav. */
+@media(max-width:760px){
+  .vb-main,.vb-app.is-diary .vb-main{
+    height:calc(100dvh - 112px - env(safe-area-inset-bottom));
+    min-height:0;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    padding-bottom:0;
+  }
+}

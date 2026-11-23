@@ -1,7 +1,7 @@
 import { r as P, a as G, b as yt, w as ce, o as s, d as l, e, F as q, f as J, n as Tn, g as be, h as $t, i as N, j as C, k as We, t as a, l as de, m as oe, v as ve, p as M, u as f, q as Fe, s as Te, x as nt, y as us, z as st, A as at, B as ke, C as ft, D as Mn, E as ds, G as zn, H as Lt, I as cs, J as vs } from "./vue-runtime-tIIV23yc.js";
-import { v as Ge, t as xe, F as ae, c as zt, r as ht, n as ms, m as ps, a as Zt, b as kt, A as on, d as On, e as Ke, f as Fn, g as Pt, M as Le, h as ln, i as Rt, j as an, _ as L, p as bs, s as Bn, k as xt, l as yn, N as fs, o as He, q as gs, C as qt, G as Ln, u as en, w as rn, x as hn, P as Vt, R as ys, y as Jt, z as hs, B as kn, D as dt, E as It, H as qn, I as wn, J as ks, K as ws, L as $s, O as _s } from "./useThemeTransition-B3bygmGG.js";
-import { s as wt, a as Me, o as As, b as Se, t as Vn, c as Cs, d as Re, e as Ss, f as Is, g as Es, h as Ut } from "./main-PLHlzPv0.js";
-import { _ as un, a as Jn, b as xs } from "./IntakeAnalysis-DyTdVsxe.js";
+import { v as Ge, t as xe, F as ae, c as zt, r as ht, n as ms, m as ps, a as Zt, b as kt, A as on, d as On, e as Ke, f as Fn, g as Pt, M as Le, h as ln, i as Rt, j as an, _ as L, p as bs, s as Bn, k as xt, l as yn, N as fs, o as He, q as gs, C as qt, G as Ln, u as en, w as rn, x as hn, P as Vt, R as ys, y as Jt, z as hs, B as kn, D as dt, E as It, H as qn, I as wn, J as ks, K as ws, L as $s, O as _s } from "./useThemeTransition-c5iZ1Bly.js";
+import { s as wt, a as Me, o as As, b as Se, t as Vn, c as Cs, d as Re, e as Ss, f as Is, g as Es, h as Ut } from "./main-CHPbj0Bd.js";
+import { _ as un, a as Jn, b as xs } from "./IntakeAnalysis-BpYbaVwP.js";
 function Us(t, o) {
   if (!o || !Ge(o.date) || o.date > xe() || !["breakfast", "lunch", "dinner", "snack", "unspecified"].includes(o.meal) || !Array.isArray(o.items) || !o.items.length || o.items.length > 8) throw new Error("请核对方案日期、餐次和食物列表。");
   const n = String(o.confirmationId || "").slice(0, 100);

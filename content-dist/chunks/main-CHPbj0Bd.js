@@ -1,5 +1,5 @@
-import { r as b, c as B } from "./vue-runtime-tIIV23yc.js";
-function A(e) {
+import { r as b, c as R } from "./vue-runtime-tIIV23yc.js";
+function I(e) {
   if (typeof AbortSignal.timeout == "function") return AbortSignal.timeout(e);
   const t = new AbortController();
   return setTimeout(() => {
@@ -7,7 +7,7 @@ function A(e) {
     a.name = "TimeoutError", t.abort(a);
   }, e).unref?.(), t.signal;
 }
-function Q(e) {
+function V(e) {
   if (typeof AbortSignal.any == "function") return AbortSignal.any(e);
   const t = new AbortController(), o = (s) => {
     t.abort(s.target.reason), a();
@@ -22,7 +22,7 @@ function Q(e) {
   return t.signal;
 }
 const C = (e, t) => JSON.stringify(e) === JSON.stringify(t);
-function R(e, t, o, a) {
+function W(e, t, o, a) {
   const s = [];
   function n(r, i, u, d) {
     return C(i, u) ? i : C(i, r) ? u : C(u, r) ? i : (s.push(d), a === "remote" ? u : i);
@@ -39,7 +39,7 @@ function R(e, t, o, a) {
       const u = [e?.[r] || {}, t?.[r] || {}, o?.[r] || {}];
       c[r] = {};
       for (const d of new Set(u.flatMap((f) => Object.keys(f)))) {
-        const f = n(...u.map((q) => q[d]), r + " " + d);
+        const f = n(...u.map((G) => G[d]), r + " " + d);
         f !== void 0 && (c[r][d] = f);
       }
       continue;
@@ -49,8 +49,8 @@ function R(e, t, o, a) {
   }
   return { state: c, conflicts: s };
 }
-const K = () => ({ threads: [], deleted: {}, activeByDate: {}, memoryEnabled: !0 });
-function P(e = K(), t = K()) {
+const B = () => ({ threads: [], deleted: {}, activeByDate: {}, memoryEnabled: !0 });
+function P(e = B(), t = B()) {
   const o = { ...e.deleted };
   for (const [n, c] of Object.entries(t.deleted || {})) o[n] = Math.max(Number(c) || 0, Number(o[n]) || 0);
   const a = Math.max(Number(e.clearedAt) || 0, Number(t.clearedAt) || 0), s = /* @__PURE__ */ new Map();
@@ -66,7 +66,7 @@ function P(e = K(), t = K()) {
   }
   return { threads: [...s.values()].sort((n, c) => String(n.createdAt || "").localeCompare(String(c.createdAt || ""))), deleted: o, clearedAt: a, activeByDate: { ...e.activeByDate, ...t.activeByDate }, memoryEnabled: t.memoryEnabled ?? e.memoryEnabled ?? !0 };
 }
-function W(e, t, o = Date.now()) {
+function $(e, t, o = Date.now()) {
   const a = new Map((e.threads || []).flatMap((c) => c.messages || []).map((c) => [c.id, c])), s = { ...e.deleted, ...t.deleted };
   new Set((t.threads || []).map((c) => c.id));
   const n = (c) => JSON.stringify({ ...c, updatedAt: void 0 });
@@ -75,7 +75,7 @@ function W(e, t, o = Date.now()) {
 let l = "guest", T = !1, O = 0;
 const y = "weiheng.ai-diet-chat.v1";
 let j = !1, E = 0, _ = !1;
-const I = b("guest"), w = (e) => {
+const A = b("guest"), w = (e) => {
   try {
     return JSON.parse(e) || { threads: [] };
   } catch {
@@ -85,20 +85,20 @@ const I = b("guest"), w = (e) => {
 async function m() {
   if (l === "guest" || j || _) return;
   const e = l, t = g(y), o = globalThis.localStorage.getItem(t);
-  j = !0, I.value = "syncing";
+  j = !0, A.value = "syncing";
   try {
-    const a = await fetch("/api/chat", { method: o ? "PUT" : "GET", cache: "no-store", signal: A(15e3), headers: { "Content-Type": "application/json" }, ...o ? { body: JSON.stringify({ ...w(o), expectedUserId: e }) } : {} }), s = await a.json();
+    const a = await fetch("/api/chat", { method: o ? "PUT" : "GET", cache: "no-store", signal: I(15e3), headers: { "Content-Type": "application/json" }, ...o ? { body: JSON.stringify({ ...w(o), expectedUserId: e }) } : {} }), s = await a.json();
     if (!a.ok) throw Error(s.error);
     if (_ || l !== e || s.userId !== e) return;
     const n = globalThis.localStorage.getItem(t), c = P(s.state, w(n)), r = JSON.stringify(c);
-    globalThis.localStorage.setItem(t, r), I.value = n !== o ? "pending" : "synced", $.value = (/* @__PURE__ */ new Date()).toISOString(), n !== r && window.dispatchEvent(new CustomEvent("weiheng-chat-synced")), n !== o && (clearTimeout(E), E = setTimeout(m, 1e3));
+    globalThis.localStorage.setItem(t, r), A.value = n !== o ? "pending" : "synced", z.value = (/* @__PURE__ */ new Date()).toISOString(), n !== r && window.dispatchEvent(new CustomEvent("weiheng-chat-synced")), n !== o && (clearTimeout(E), E = setTimeout(m, 1e3));
   } catch {
-    I.value = "error";
+    A.value = "error";
   } finally {
     j = !1;
   }
 }
-const p = "weiheng.local.v2", k = b(null), h = b("guest"), x = b(""), $ = b(""), D = b([]);
+const p = "weiheng.local.v2", k = b(null), h = b("guest"), q = b(""), z = b(""), D = b([]);
 let J = !1;
 const L = () => g("__account_sync_base.v1"), U = (e) => {
   try {
@@ -106,16 +106,16 @@ const L = () => g("__account_sync_base.v1"), U = (e) => {
   } catch {
     return {};
   }
-}, V = () => l;
+}, X = () => l;
 function g(e, t = l) {
   return t === "guest" ? e : "weiheng.account." + encodeURIComponent(t) + "." + e;
 }
-function X(e, t = l) {
+function Z(e, t = l) {
   return t === "guest" ? /^(weiheng|vitabalance)([.:\-]|$)/.test(e) && !e.startsWith("weiheng.account.") : e.startsWith("weiheng.account." + encodeURIComponent(t) + ".");
 }
 const M = () => g("__account_sync_pending.v1");
 async function S(e = "GET", t, o) {
-  const a = { method: e, cache: "no-store", signal: A(15e3), headers: { "Content-Type": "application/json" } };
+  const a = { method: e, cache: "no-store", signal: I(15e3), headers: { "Content-Type": "application/json" } };
   e === "PUT" && (a.body = JSON.stringify({ localState: t, baseLocalState: o, expectedUserId: l === "guest" ? void 0 : l }));
   const s = await fetch("/api/data", a), n = await s.json().catch(() => ({}));
   if (!s.ok) throw new Error(n.error || "账号数据同步失败。");
@@ -132,7 +132,7 @@ async function v(e) {
         h.value = "error";
         return;
       }
-      const c = globalThis.localStorage.getItem(L()), r = R(U(c), U(a), U(n), e);
+      const c = globalThis.localStorage.getItem(L()), r = W(U(c), U(a), U(n), e);
       if (r.conflicts.length) {
         const u = g("__sync_conflict_backup.v1");
         if ((!globalThis.localStorage.getItem(u) || !D.value.length) && globalThis.localStorage.setItem(u, JSON.stringify({ local: a, server: n, at: (/* @__PURE__ */ new Date()).toISOString() })), !e) {
@@ -142,7 +142,7 @@ async function v(e) {
       }
       const i = JSON.stringify(r.state);
       if (await S("PUT", i, n), l !== t) return;
-      globalThis.localStorage.setItem(L(), i), globalThis.localStorage.getItem(o) === a ? (globalThis.localStorage.setItem(o, i), globalThis.localStorage.removeItem(M()), window.dispatchEvent(new CustomEvent("weiheng-account-synced")), h.value = "synced", D.value = []) : (h.value = "pending", clearTimeout(O), O = setTimeout(() => v(), 450)), x.value = (/* @__PURE__ */ new Date()).toISOString();
+      globalThis.localStorage.setItem(L(), i), globalThis.localStorage.getItem(o) === a ? (globalThis.localStorage.setItem(o, i), globalThis.localStorage.removeItem(M()), window.dispatchEvent(new CustomEvent("weiheng-account-synced")), h.value = "synced", D.value = []) : (h.value = "pending", clearTimeout(O), O = setTimeout(() => v(), 450)), q.value = (/* @__PURE__ */ new Date()).toISOString();
     } catch {
       h.value = "error";
     } finally {
@@ -150,13 +150,13 @@ async function v(e) {
     }
   }
 }
-async function Z(e) {
+async function ee(e) {
   await v(e), await m();
 }
-function ee() {
+function te() {
   return globalThis.localStorage.getItem(g("__sync_conflict_backup.v1"));
 }
-function G() {
+function x() {
   l !== "guest" && (globalThis.localStorage.setItem(M(), "1"), h.value = "pending", clearTimeout(O), O = setTimeout(() => v(), 450));
 }
 const N = {
@@ -165,16 +165,16 @@ const N = {
     if (T && (e === p || e === y)) throw new Error("账号状态暂不可确认；请联网后刷新再保存。");
     if (e === y) {
       const o = w(N.getItem(e));
-      t = JSON.stringify(P(o, W(o, w(t))));
+      t = JSON.stringify(P(o, $(o, w(t))));
     }
-    globalThis.localStorage.setItem(g(e), t), e === y && l !== "guest" && (I.value = "pending", clearTimeout(E), E = setTimeout(m, 900)), e === p && G();
+    globalThis.localStorage.setItem(g(e), t), e === y && l !== "guest" && (A.value = "pending", clearTimeout(E), E = setTimeout(m, 900)), e === p && x();
   },
   removeItem(e) {
     if (T && (e === p || e === y)) throw new Error("账号状态暂不可确认；请联网后刷新再删除。");
     globalThis.localStorage.removeItem(g(e)), e === p && l !== "guest" && (h.value = "error", globalThis.localStorage.setItem(M(), "deleted"));
   }
 };
-async function z(e) {
+async function F(e) {
   const t = g(p, e), o = globalThis.localStorage.getItem(g("__account_sync_pending.v1", e)), a = globalThis.localStorage.getItem(t), s = await S("GET"), n = typeof s.data?.localState == "string" ? s.data.localState : null;
   if (o === "deleted") {
     if (!(await fetch("/api/data", { method: "DELETE", cache: "no-store" })).ok) throw new Error("账号数据删除状态暂未同步。");
@@ -186,16 +186,16 @@ async function z(e) {
     await v();
     return;
   } else n !== null ? globalThis.localStorage.setItem(t, n) : a !== null && await S("PUT", a, null);
-  globalThis.localStorage.setItem(L(), n || a || "{}"), x.value = (/* @__PURE__ */ new Date()).toISOString(), h.value = "synced";
+  globalThis.localStorage.setItem(L(), n || a || "{}"), q.value = (/* @__PURE__ */ new Date()).toISOString(), h.value = "synced";
 }
 async function H() {
   try {
-    const a = await fetch("/api/auth/me", { cache: "no-store", signal: A(4e3) });
+    const a = await fetch("/api/auth/me", { cache: "no-store", signal: I(4e3) });
     if (!a.ok) throw Error("identity");
     const s = await a.json();
     if (T = !1, k.value = s.authenticated && typeof s.user?.id == "string" ? s.user : null, l = k.value?.id || "guest", h.value = l === "guest" ? "guest" : "syncing", l !== "guest") {
       try {
-        await z(l);
+        await F(l);
       } catch {
         h.value = "error";
       }
@@ -209,7 +209,7 @@ async function H() {
     if (!(e || document.hidden)) {
       e = !0;
       try {
-        const a = await fetch("/api/auth/me", { cache: "no-store", signal: A(4e3) });
+        const a = await fetch("/api/auth/me", { cache: "no-store", signal: I(4e3) });
         if (!a.ok) return;
         const s = await a.json(), n = s.authenticated && typeof s.user?.id == "string" ? s.user.id : "guest";
         n !== l ? window.location.reload() : (T = !1, n !== "guest" && await v());
@@ -238,10 +238,10 @@ async function H() {
   }), window.addEventListener("weiheng-reset-abort", () => {
     _ = !1;
   }), document.addEventListener("visibilitychange", t), window.addEventListener("storage", (a) => {
-    a.key === g(y) && (window.dispatchEvent(new CustomEvent("weiheng-chat-synced")), m()), a.key === g(p) && l !== "guest" && G();
+    a.key === g(y) && (window.dispatchEvent(new CustomEvent("weiheng-chat-synced")), m()), a.key === g(p) && l !== "guest" && x();
   });
 }
-async function te({ mode: e, email: t, password: o, acceptTerms: a = !1, privacyPolicyVersion: s = "", verificationCode: n = "" }) {
+async function ae({ mode: e, email: t, password: o, acceptTerms: a = !1, privacyPolicyVersion: s = "", verificationCode: n = "" }) {
   const c = globalThis.localStorage.getItem(p), r = await fetch(`/api/auth/${e === "register" ? "register" : "login"}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -253,44 +253,47 @@ async function te({ mode: e, email: t, password: o, acceptTerms: a = !1, privacy
   let f = "账号已登录。";
   return c && d === null ? window.confirm("发现本浏览器已有游客档案和饮食记录。是否复制到这个账号？游客原数据会保留，不会删除。") ? (await S("PUT", c), globalThis.localStorage.setItem(g(p, i.user.id), c), f += "游客数据已复制到账号。") : f += "游客数据仍留在原浏览器空间。" : c && d !== null && (f += "账号已有数据，游客数据仍保留在原浏览器空间，未覆盖账号数据。"), window.location.reload(), { message: f };
 }
-async function ae() {
+async function ne() {
   if (await m(), !(await fetch("/api/auth/logout", { method: "POST", cache: "no-store" })).ok) throw new Error("退出登录失败，请重试。");
   window.location.reload();
 }
-function ne() {
+function oe() {
   const e = "weiheng.ai-diet-chat.v1", t = w(N.getItem(e)), o = { ...t.deleted };
   for (const a of t.threads || []) o[a.id] = Date.now();
   N.setItem(e, JSON.stringify({ threads: [], deleted: o, clearedAt: Date.now(), activeByDate: {}, memoryEnabled: t.memoryEnabled }));
 }
+function K(e) {
+  R(e).mount("#app"), requestAnimationFrame(() => requestAnimationFrame(() => window.dispatchEvent(new Event("app-ready"))));
+}
 async function Y() {
   try {
     await H();
-    const { default: e } = await import("./App-PO1bbmSx.js");
-    B(e).mount("#app");
+    const { default: e } = await import("./App-GMLIZznx.js");
+    K(e);
   } catch {
-    const { default: e } = await import("./HomeEntry-Drx7fARE.js");
-    B(e).mount("#app");
+    const { default: e } = await import("./HomeEntry-BHHvUvCr.js");
+    K(e);
   }
 }
 Y();
 export {
   k as a,
   N as b,
-  Q as c,
-  V as d,
-  I as e,
-  ne as f,
+  V as c,
+  X as d,
+  A as e,
+  oe as f,
   m as g,
   h,
   H as i,
-  $ as j,
+  z as j,
   D as k,
-  x as l,
-  ee as m,
-  ae as n,
-  X as o,
-  te as p,
-  Z as r,
+  q as l,
+  te as m,
+  ne as n,
+  Z as o,
+  ae as p,
+  ee as r,
   g as s,
-  A as t
+  I as t
 };
